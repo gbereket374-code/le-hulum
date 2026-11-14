@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://le-hulum.local/schemas/glossary.schema.json",
+  "title": "glossary.json",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["id", "en", "am", "clip"],
+    "properties": {
+      "id": { "type": "string" },
+      "en": { "type": "array", "items": { "type": "string" } },
+      "am": { "type": "array", "items": { "type": "string" } },
+      "clip": { "type": "string" }
+    }
+  }
+}
