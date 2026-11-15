@@ -13,6 +13,7 @@ export class SignWindow {
     this.frac = null;
     this.opacity = 1;
     this.rate = 1;
+    this.wait = true;
     this.layout = "lesson-first";
     this.userPlaced = false;
     this.timer = 0;
@@ -83,7 +84,7 @@ export class SignWindow {
   hide() {
     this.root.hidden = true;
     this.closeMenu(false);
-    this.video.pause();
+    this.root.querySelectorAll("video").forEach((video) => video.pause());
     this.stage.classList.remove("sign-first");
     this.stage.style.minHeight = "";
   }

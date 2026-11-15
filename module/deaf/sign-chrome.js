@@ -1,7 +1,7 @@
 // FR-DEAF-02, FR-DEAF-04: Sign-window look, icons, and the More menu labels.
 const NS = "http://www.w3.org/2000/svg";
 export const PLACES = [["tl", "move_top_left"], ["tr", "move_top_right"], ["bl", "move_bottom_left"], ["br", "move_bottom_right"]];
-export const ACTS = [...PLACES, ["larger", "larger"], ["smaller", "smaller"], ["opacity", "opacity"], ["speed", "signer_speed"]];
+export const ACTS = [...PLACES, ["larger", "larger"], ["smaller", "smaller"], ["opacity", "opacity"], ["speed", "signer_speed"], ["wait", "wait_for_signer"]];
 
 export const CSS = `.sign-window{position:absolute;z-index:4;border:1px solid rgba(255,255,255,.14);border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,.45);background:#14130F;overflow:visible;touch-action:none;cursor:grab;aspect-ratio:3/4}
 .sign-window:active{cursor:grabbing}.sign-window[hidden]{display:none}
@@ -17,16 +17,21 @@ export const CSS = `.sign-window{position:absolute;z-index:4;border:1px solid rg
 .grip-bl::after{left:8px;bottom:8px;border-right:0;border-top:0}.grip-br::after{right:8px;bottom:8px;border-left:0;border-top:0}
 .sign-menu{position:absolute;z-index:5;top:46px;left:8px;display:flex;flex-direction:column;min-width:12rem;padding:.25rem;border-radius:10px;background:#14130F;color:#fff;border:1px solid rgba(255,255,255,.2)}
 .sign-window.menu-in .sign-menu{left:auto;right:8px}
-.sign-none{margin:.75rem 1rem;padding:.75rem 1rem;border:2px solid #FFD54A;border-radius:8px;background:#2A2721;color:#F3F0E8}
+.sign-none,.sign-missing{margin:.75rem 1rem;padding:.75rem 1rem;border:2px solid #FFD54A;border-radius:8px;background:#2A2721;color:#F3F0E8}
+.sign-missing{position:absolute;left:.5rem;right:.5rem;bottom:.5rem;z-index:4;margin:0;pointer-events:none}
+.sign-wait{position:absolute;z-index:5;display:flex;align-items:center;gap:.35rem;margin:0;padding:.15rem .35rem .15rem .75rem;border-radius:999px;background:#14130F;color:#fff;border:1px solid rgba(255,255,255,.24);pointer-events:auto;animation:sign-fade 150ms ease}
+.sign-wait[hidden],.sign-missing[hidden]{display:none}
+.sign-wait button{min-width:2.75rem;min-height:2.75rem;border:0;border-radius:999px;background:#F3F0E8;color:#14130F;font:inherit}
+@keyframes sign-fade{from{opacity:0}to{opacity:1}}
 .sign-menu[hidden]{display:none}
 .sign-menu button{min-height:44px;text-align:start;padding:0 .75rem;border:0;border-radius:8px;background:transparent;color:inherit;font:inherit}
-.sign-window:focus-visible,.sign-icon:focus-visible,.sign-grip:focus-visible,.sign-menu button:focus-visible{outline:3px solid #FFD54A;outline-offset:2px}
+.sign-window:focus-visible,.sign-icon:focus-visible,.sign-grip:focus-visible,.sign-menu button:focus-visible,.sign-wait button:focus-visible{outline:3px solid #FFD54A;outline-offset:2px}
 .stage.sign-first{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(8rem,.72fr);gap:.75rem;align-items:start;padding:.5rem}
 .stage.sign-first>.sign-window{position:relative;left:auto;top:auto;width:min(100%,46.5vh);height:auto;grid-column:1;grid-row:1;justify-self:start;cursor:default}
 .stage.sign-first>video:not([data-sign]){grid-column:2;grid-row:1;width:100%;min-width:0}
 @media (max-width:520px){.stage.sign-first{grid-template-columns:minmax(0,1fr)}.stage.sign-first>.sign-window{grid-column:1;grid-row:1}.stage.sign-first>video:not([data-sign]){grid-column:1;grid-row:2}}
-@media (prefers-reduced-motion:reduce){.sign-bar{transition:none}}
-@media (prefers-contrast:more){.sign-window,.sign-menu,.sign-none{border-color:#fff;background:#000;color:#fff}}`;
+@media (prefers-reduced-motion:reduce){.sign-bar,.sign-wait{transition:none;animation:none}}
+@media (prefers-contrast:more){.sign-window,.sign-menu,.sign-none,.sign-missing,.sign-wait{border-color:#fff;background:#000;color:#fff}.sign-wait button{background:#fff;color:#000}}`;
 
 function svg(kind) {
   const node = document.createElementNS(NS, "svg");
@@ -100,7 +105,7 @@ export function buildChrome(win) {
     const item = document.createElement("button");
     item.type = "button";
     item.dataset.act = id;
-    item.setAttribute("role", "menuitem");
+    item.setAttribute("role", id === "wait" ? "menuitemcheckbox" : "menuitem");
     item.addEventListener("click", () => win.act(id));
     win.menu.append(item);
   }
@@ -115,13 +120,14 @@ export function paintChrome(win) {
   name(win.closeBtn, t("close_sign"));
   name(win.grip, t("resize_sign"));
   win.menu.setAttribute("aria-label", t("more"));
-  win.video.style.opacity = String(win.opacity);
+  for (const video of win.root.querySelectorAll("video")) video.style.opacity = String(win.opacity);
   for (const item of win.menu.querySelectorAll("[data-act]")) {
     const id = item.dataset.act;
     const place = PLACES.find((row) => row[0] === id);
     if (place) item.textContent = t("move_to_place", { place: t(place[1]) });
     else if (id === "opacity") item.textContent = t("opacity_value", { value: Math.round(win.opacity * 100) + "%" });
     else if (id === "speed") item.textContent = t("signer_speed_value", { value: win.rate + "×" });
+    else if (id === "wait") { item.textContent = t("wait_for_signer"); item.setAttribute("aria-checked", win.wait !== false ? "true" : "false"); }
     else item.textContent = t(id);
   }
 }

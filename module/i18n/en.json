@@ -74,5 +74,10 @@
   "sign_window_label": "Sign language window. Arrow keys move, plus and minus resize",
   "more": "More",
   "resize_sign": "Resize",
-  "speaker_teacher": "Teacher"
+  "speaker_teacher": "Teacher",
+  "sign_waiting": "Waiting for signer…",
+  "sign_waiting_first": "The lesson pauses while the signer finishes",
+  "skip_wait": "Skip",
+  "wait_for_signer": "Wait for signer",
+  "sign_missing": "No sign for this line yet"
 }

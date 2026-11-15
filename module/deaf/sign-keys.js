@@ -30,6 +30,7 @@ export function bindSignKeys(win) {
       if (back) this.more.focus();
     },
     act(id) {
+      if (id === "wait") { this.wait = this.wait === false; this.paint(); this.hooks.wait?.(this.wait); return; }
       if (id === "larger" || id === "smaller") this.resize(id === "larger" ? 1 : -1);
       else if (id === "opacity") this.fade();
       else if (id === "speed") this.hooks.speed?.();
@@ -89,7 +90,7 @@ export function bindSignKeys(win) {
       this.hooks.save?.();
     },
     menuKeys(event) {
-      const items = [...this.menu.querySelectorAll("[role=menuitem]")];
+      const items = [...this.menu.querySelectorAll("[role^=menuitem]")];
       const index = items.indexOf(event.target);
       if (event.key === "Escape") { this.closeMenu(true); event.preventDefault(); event.stopPropagation(); return; }
       if (event.key !== "ArrowDown" && event.key !== "ArrowUp" && event.key !== "Home" && event.key !== "End") return;

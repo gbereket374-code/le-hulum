@@ -1,4 +1,6 @@
 // FR-DEAF-01, FR-DEAF-05, FR-DEAF-07, FR-DEAF-08: Open the sign window and keep captions clear.
+import { attachCueSync } from "./sign-cues.js";
+import { signMode } from "./sign-schedule.js";
 import { attachSignSync, nextRate } from "./sign-sync.js";
 import { CSS, SignWindow } from "./sign-window.js";
 
@@ -25,6 +27,7 @@ export function attachSign(player) {
   const wants = Array.isArray(profile) ? profile.includes("sign") : String(profile).split(/[\s,]+/).includes("sign");
   const stage = player.shadow.querySelector(".stage");
   let open = false;
+  let mode = "continuous";
   const none = document.createElement("p");
   none.className = "sign-none";
   none.setAttribute("role", "status");
@@ -37,41 +40,56 @@ export function attachSign(player) {
     close: () => api.close(),
     layout: (next) => api.setLayout(next),
     save: () => save(),
-    moved: () => player.captions?.relayout?.(),
+    moved: () => { player.captions?.relayout?.(); cues?.place(); },
+    wait(on) { win.wait = !!on; save(); cues?.setWait(on); },
     speed() {
       win.rate = nextRate(win.rate);
       win.paint();
       player.announce("signer_speed_value", { value: win.rate + "×" });
       save();
-      sync.follow();
+      if (mode === "cues") cues?.applyRate();
+      else sync.follow();
     }
   });
   win.layout = saved.signLayout || (wants ? "sign-first" : "lesson-first");
   win.opacity = [1, 0.8, 0.6].includes(saved.signOpacity) ? saved.signOpacity : 1;
   win.rate = [1, 0.85, 0.75].includes(saved.signRate) ? saved.signRate : 1;
+  win.wait = saved.signWait !== false;
   const width = Number(saved.signW ?? saved.signScale);
   if (saved.signX != null && width >= 0.18 && width <= 0.55) {
     win.frac = { x: Number(saved.signX), y: Number(saved.signY) || 0, w: width };
     win.userPlaced = true;
   }
-  const sync = attachSignSync(player, () => (open && none.hidden ? win.video : null), () => win.rate);
+  const sync = attachSignSync(player, () => (open && none.hidden && mode !== "cues" ? win.video : null), () => win.rate);
+  const cues = attachCueSync(player, win);
   function save() {
     store(player, {
-      signLayout: win.layout, signOpacity: win.opacity, signRate: win.rate,
+      signLayout: win.layout, signOpacity: win.opacity, signRate: win.rate, signWait: win.wait !== false,
       signX: win.frac?.x, signY: win.frac?.y, signW: win.frac?.w
     });
+  }
+  function begin(src) {
+    mode = signMode(src);
+    if (!src) { cues.stop(); sync.stop(); win.hide(); return; }
+    if (mode === "cues") { sync.stop(); win.show(""); cues.start(src); }
+    else { cues.stop(); win.show(src); sync.start(); }
   }
   function emit(name) { for (const fn of bus[name] || []) fn(); }
   const api = {
     get layout() { return win.layout; },
-    get video() { return open && none.hidden ? win.video : null; },
+    get video() { return open && none.hidden ? (win.videoB && mode === "cues" ? [win.video, win.videoB].find((video) => video.style.visibility !== "hidden") || win.video : win.video) : null; },
+    get log() { return cues.log; },
+    get holds() { return cues.holds; },
+    get endWait() { return cues.endWait; },
+    get maxLag() { return cues.maxLag; },
+    get meanLag() { return cues.meanLag; },
     isOpen: () => open,
     open() {
       const src = player.host.getAttribute("sign") || "";
       open = true;
       none.textContent = player.t("sign_none");
       none.hidden = !!src;
-      if (src) { win.show(src); sync.start(); } else win.hide();
+      begin(src);
       player.captions?.relayout?.();
       player._paintAll();
       emit("open");
@@ -79,6 +97,7 @@ export function attachSign(player) {
     close() {
       open = false;
       none.hidden = true;
+      cues.stop();
       win.hide();
       sync.stop();
       player.captions?.relayout?.();
@@ -96,16 +115,15 @@ export function attachSign(player) {
     play(src, opts = {}) {
       if (!open) api.open();
       none.hidden = true;
-      if (src) win.show(src);
-      if (opts.from != null) win.video.currentTime = Number(opts.from) || 0;
-      sync.start();
+      if (src) begin(src);
+      if (opts.from != null && signMode(src || "") !== "cues") win.video.currentTime = Number(opts.from) || 0;
     },
     on(name, fn) { (bus[name] ||= []).push(fn); }
   };
   const setLang = player.setLang.bind(player);
   player.setLang = async (lang) => {
     await setLang(lang);
-    if (open) { none.textContent = player.t("sign_none"); win.paint(); }
+    if (open) { none.textContent = player.t("sign_none"); win.paint(); cues.label(); }
   };
   player.sign = api;
   return api;
