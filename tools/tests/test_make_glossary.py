@@ -16,7 +16,10 @@ class GlossaryMatchTests(unittest.TestCase):
         self.assertTrue(gloss.am_match("በስክሪን", "ስክሪን"))
         self.assertEqual(gloss.peel("በስክሪን", "ስክሪን"), "ስክሪን")
         self.assertEqual(gloss.amharic_hits("የተለዋዋጩ ስም", "ተለዋዋጭ"), ["የተለዋዋጩ"])
-        self.assertFalse(gloss.am_match("እናሳያለን", "አሳይ"))
+        self.assertTrue(gloss.am_match("እንጀምር", "ጀምር"))
+        self.assertTrue(gloss.am_match("ጀምሩ", "ጀምር"))
+        self.assertTrue(gloss.am_match("በሚቀጥለው", "ቀጥሎ"))
+        self.assertEqual(gloss.amharic_hits("እናሳያለን", "አሳይ", ["እናሳያለን"]), ["እናሳያለን"])
 
     def test_english_whole_word(self):
         self.assertEqual(gloss.english_hits("we will learn about variables.", "variable"), ["variables"])

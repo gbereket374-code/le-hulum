@@ -99,5 +99,6 @@
   "no_word_sign": "No sign for this word yet",
   "no_words_line": "No glossary words in this line",
   "glossary_word": "glossary word",
-  "key_g": "G: words"
+  "key_g": "G: words",
+  "term_of": "term {n} of {total}"
 }

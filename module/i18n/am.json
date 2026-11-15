@@ -99,5 +99,6 @@
   "no_word_sign": "ለዚህ ቃል ምልክት እስካሁን የለም",
   "no_words_line": "በዚህ መስመር የቃላት ዝርዝር የለም",
   "glossary_word": "የቃላት ዝርዝር ቃል",
-  "key_g": "G፦ ቃላት"
+  "key_g": "G፦ ቃላት",
+  "term_of": "ቃል {n} ከ {total}"
 }

@@ -1,4 +1,4 @@
-gloss,en,am,group
+gloss,en,am,group,forms_am_extra
 VARIABLE,variable,ተለዋዋጭ,tech
 VALUE,value,እሴት,tech
 DATA,data,መረጃ,tech
@@ -27,7 +27,7 @@ OPEN,open,ክፈት,action
 CLOSE,close,ዝጋ,action
 WRITE,write,ጻፍ,action
 RUN,run,አስኪድ,action
-SHOW,show,አሳይ,action
+SHOW,show,አሳይ,action,እናሳያለን|ያሳያል|አሳዩ
 SAVE,save,አስቀምጥ,action
 DELETE,delete,ሰርዝ,action
 CHANGE,change,ቀይር,action
@@ -37,10 +37,10 @@ CHECK,check,አረጋግጥ,action
 FIND,find,ፈልግ,action
 INSTALL,install,ጫን,action
 DOWNLOAD,download,አውርድ,action
-LEARN,learn,ተማር,action
+LEARN,learn,ተማር,action,እንማራለን|ተማሩ|ትማራላችሁ
 PRACTISE,practise,ለማምድ,action
 TRY,try,ሞክር,action
-START,start,ጀምር,action
+START,start,ጀምር,action,መጀመሪያ|የመጀመሪያ|ጀምሩ|እንጀምር
 FINISH,finish,ጨርስ,action
 REMEMBER,remember,አስታውስ,action
 FORGET,forget,ርሳ,action
@@ -58,7 +58,7 @@ EXAMPLE,example,ምሳሌ,learning
 TODAY,today,ዛሬ,time
 TOMORROW,tomorrow,ነገ,time
 NOW,now,አሁን,time
-NEXT,next,ቀጥሎ,time
+NEXT,next,ቀጥሎ,time,በሚቀጥለው|የሚቀጥለው
 AGAIN,again,እንደገና,other
 GOOD,good,ጥሩ,other
 IMPORTANT,important,አስፈላጊ,other

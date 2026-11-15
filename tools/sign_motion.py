@@ -35,8 +35,8 @@ def levels(motion, cfg):
     return floor, peak, floor + cfg["high"] * span, floor + cfg["low"] * span
 
 
-def _clear_run(motion, high, low, peak, sustain, fps):
-    """First run that crosses high, holds above low, and reaches this clip's peak."""
+def _clear_run(motion, high, low, _peak, sustain, fps):
+    """First run that crosses high and holds above low. A later, faster move is not the start."""
     need = max(1, int(round(sustain * fps)))
     index, count = 0, len(motion)
     while index < count:
@@ -46,7 +46,7 @@ def _clear_run(motion, high, low, peak, sustain, fps):
         end = index
         while end < count and motion[end] > low:
             end += 1
-        if end - index >= need and float(np.max(motion[index:end])) >= peak:
+        if end - index >= need:
             return index, need
         index = max(end, index + 1)
     return None, need

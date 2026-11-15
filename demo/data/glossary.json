@@ -292,7 +292,10 @@
       "sign": "lexicon/show.mp4",
       "from": 0.0,
       "to": 1.75,
-      "forms_am": [],
+      "forms_am": [
+        "እናሳያለን",
+        "ያሳያል"
+      ],
       "forms_en": [
         "show",
         "shows"
@@ -308,7 +311,7 @@
       "en": "create",
       "group": "action",
       "sign": "lexicon/create.mp4",
-      "from": 0.9,
+      "from": 0.0,
       "to": 1.7,
       "forms_am": [
         "ፈጠራችሁ"
@@ -344,13 +347,33 @@
       "sign": "lexicon/learn.mp4",
       "from": 0.05,
       "to": 1.95,
-      "forms_am": [],
+      "forms_am": [
+        "እንማራለን"
+      ],
       "forms_en": [
         "learn"
       ],
       "cues": [
         "A02",
         "A13"
+      ]
+    },
+    {
+      "id": "START",
+      "am": "ጀምር",
+      "en": "start",
+      "group": "action",
+      "sign": "lexicon/start.mp4",
+      "from": 0.0,
+      "to": 1.7,
+      "forms_am": [
+        "መጀመሪያ",
+        "የመጀመሪያ"
+      ],
+      "forms_en": [],
+      "cues": [
+        "A04",
+        "A12"
       ]
     },
     {
@@ -415,7 +438,8 @@
       "from": 0.05,
       "to": 1.6,
       "forms_am": [
-        "ቀጥሎ"
+        "ቀጥሎ",
+        "በሚቀጥለው"
       ],
       "forms_en": [
         "Next"

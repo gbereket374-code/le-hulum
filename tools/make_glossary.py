@@ -8,8 +8,8 @@ from pathlib import Path
 from cut_by_pause import duration, read_frames
 from sign_motion import absolute_motion, trim_bounds
 
-PREFIXES = ("እንደ", "ስለ", "የ", "በ", "ለ", "ከ")
-SUFFIXES = ("ዎችን", "ዎቹ", "ዎች", "ው", "ዋ", "ን", "ም")
+PREFIXES = ("የሚ", "በሚ", "ለሚ", "የመ", "እንደ", "ስለ", "እን", "እና", "ስን", "የ", "በ", "ለ", "ከ", "ይ", "ያ", "ት", "ታ", "ሲ", "ሚ", "መ")
+SUFFIXES = ("ላለች", "ዎችን", "ላሉ", "ዎቹ", "ለን", "ላል", "ለሁ", "ዎች", "ው", "ዋ", "ኡ", "ን", "ም")
 SCHEMA = Path(__file__).resolve().parents[1] / "schemas" / "glossary.schema.json"
 
 
@@ -22,26 +22,32 @@ def consonants(text):
     return tuple(out)
 
 
+def related(text, want):
+    got = consonants(text)
+    if got == want:
+        return True
+    return len(want) >= 3 and len(got) >= len(want) and got[:len(want)] == want
+
+
 def peel(token, lemma):
     word = token
     guard = max(2, len(consonants(lemma)))
-    changed = True
-    while changed and len(consonants(word)) > guard:
-        changed = False
+    want = consonants(lemma)
+    while len(consonants(word)) > guard:
+        found = []
         for prefix in PREFIXES:
             rest = word[len(prefix):]
-            if word.startswith(prefix) and len(consonants(rest)) >= guard:
-                word = rest
-                changed = True
+            if word.startswith(prefix) and len(consonants(rest)) >= guard and related(rest, want):
+                found.append(rest)
                 break
-        if changed:
-            continue
         for suffix in SUFFIXES:
             rest = word[:-len(suffix)]
-            if word.endswith(suffix) and len(consonants(rest)) >= guard:
-                word = rest
-                changed = True
+            if word.endswith(suffix) and len(consonants(rest)) >= guard and related(rest, want):
+                found.append(rest)
                 break
+        if not found:
+            break
+        word = next((item for item in found if consonants(item) == want), found[0])
     return word
 
 
@@ -76,8 +82,9 @@ def english_hits(text, word):
     return [match.group(0) for match in en_pattern(word).finditer(text)]
 
 
-def amharic_hits(text, lemma):
-    return [token for token in re.findall(r"[\u1200-\u135A]+", text) if am_match(token, lemma)]
+def amharic_hits(text, lemma, extras=()):
+    extra = {item for item in extras if item}
+    return [token for token in re.findall(r"[\u1200-\u135A]+", text) if token in extra or am_match(token, lemma)]
 
 
 def clip_file(folder, row):
@@ -88,8 +95,10 @@ def clip_file(folder, row):
     return None
 
 
-def clip_bounds(path):
-    start, end, _note, _high, _low = trim_bounds(absolute_motion(read_frames(path)), duration(path))
+def clip_bounds(path, label):
+    start, end, note, _high, _low = trim_bounds(absolute_motion(read_frames(path)), duration(path))
+    if note == "" and abs((end - start) - 0.8) <= 0.02:
+        print(f"MIN_KEEP {label} {end - start:.2f}s is the 0.80 s floor")
     return start, end
 
 
@@ -120,6 +129,7 @@ def build(words, lexicon, am_path, en_path):
     with Path(words).open(encoding="utf-8", newline="") as handle:
         for raw in csv.DictReader(handle):
             row = {"id": raw.get("id") or raw["gloss"], "en": raw["en"], "am": raw["am"], "group": raw["group"]}
+            extras = [part for part in (raw.get("forms_am_extra") or "").split("|") if part]
             forms_en, forms_am, cues = [], [], []
             for cid, text in en_cues:
                 hits = english_hits(text, row["en"])
@@ -129,7 +139,7 @@ def build(words, lexicon, am_path, en_path):
                         if hit.lower() not in [item.lower() for item in forms_en]:
                             forms_en.append(hit)
             for cid, text in am_cues:
-                hits = amharic_hits(text, row["am"])
+                hits = amharic_hits(text, row["am"], extras)
                 if not hits:
                     continue
                 if cid not in cues:
@@ -140,7 +150,7 @@ def build(words, lexicon, am_path, en_path):
             if not keep(row["group"], cues):
                 continue
             path = clip_file(lexicon, row)
-            start, end = clip_bounds(path) if path else (0, 0)
+            start, end = clip_bounds(path, row["id"]) if path else (0, 0)
             start, end = round(float(start), 2), round(float(end), 2)
             sign = f"lexicon/{path.name}" if path else ""
             cues.sort()

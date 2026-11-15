@@ -42,6 +42,15 @@ class SignJsonTests(unittest.TestCase):
         self.assertLessEqual(frm, 2.0)
         self.assertGreaterEqual(to, 2.8)
 
+    def test_faster_return_does_not_hide_the_gesture(self):
+        curve = np.full(40, 1.0)
+        curve[4:14] = 6.0
+        curve[22:30] = 9.0
+        frm, to, note = bounds(curve, 2.0)
+        self.assertNotEqual(note, "flagged")
+        self.assertLess(frm, 0.3)
+        self.assertGreater(to, 1.3)
+
     def test_clip_with_no_rest_keeps_everything(self):
         curve = np.full(100, 12.0)
         curve[10:20] = 6.0
