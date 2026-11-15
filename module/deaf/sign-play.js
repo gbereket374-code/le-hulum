@@ -57,10 +57,14 @@ export function attachSignPlay(win, state, hooks) {
       clearTimeout(state.stall);
       state.stall = setTimeout(() => hooks.fail("stall"), 4000);
       if (hooks.paused()) { show(); return; }
-      video.play().catch(() => {});
+      video.play().catch(() => { if (video === active()) hooks.fail("load"); });
     };
-    if (video.readyState >= 1 && video.getAttribute("src") === url) go();
-    else video.addEventListener("loadedmetadata", go, { once: true });
+    if (video.error) hooks.fail("load");
+    else if (video.readyState >= 1 && video.getAttribute("src") === url) go();
+    else {
+      video.addEventListener("loadedmetadata", go, { once: true });
+      video.addEventListener("error", () => { if (video === active()) hooks.fail("load"); }, { once: true });
+    }
     const next = upcoming();
     if (next) load(other, next);
     else other.preload = "none";

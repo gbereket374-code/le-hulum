@@ -72,23 +72,72 @@ export function boundaryOf(prev, next) {
   return next.start > prev.end + 0.02 ? prev.end : next.start;
 }
 
-export function mediaUntil(cues, started, into, target) {
+export function mediaUntil(cues, started, into, target, skipped) {
   if (!cues?.length || target <= 0) return 0;
   let remain = 0;
   let from = Math.max(0, started + 1);
-  if (started >= 0 && started < target) {
+  if (started >= 0 && started < target && !skipped?.[started]) {
     const span = signSpan(cues[started]);
     if (into < span - 1e-6) remain += Math.max(0, span - into);
     else from = started + 1;
   }
-  for (let index = from; index < target && index < cues.length; index += 1) remain += signSpan(cues[index]);
+  for (let index = from; index < target && index < cues.length; index += 1) {
+    if (!skipped?.[index]) remain += signSpan(cues[index]);
+  }
   return remain;
 }
 
-export function holdDecision({ wait, time, boundary, started, segment }) {
-  if (!wait || boundary == null || time < 3 || boundary < 3) return false;
-  if (time + 1e-3 < boundary || Math.abs(time - boundary) > 0.1) return false;
-  return started < segment;
+export function projectedLag(remain, rate) {
+  const speed = Number(rate) > 0 ? Number(rate) : 1;
+  return Math.max(0, Number(remain) || 0) / speed;
+}
+
+export function inSentence(cues, time) {
+  return (cues || []).some((cue) => time > Number(cue.start) && time < Number(cue.end) - 0.05);
+}
+
+export function gapHold({ remain, signRate, captionIn, lessonRate }) {
+  const lesson = Number(lessonRate) > 0 ? Number(lessonRate) : 1;
+  return projectedLag(remain, signRate) - Math.max(0, Number(captionIn) || 0) / lesson - SCHEDULE.maxLag;
+}
+
+export function openRun(cues, index) {
+  const run = [];
+  for (let i = index; i < (cues || []).length; i += 1) {
+    if (i > index && cues[i].start > cues[i - 1].end + 1e-3) break;
+    run.push(i);
+  }
+  return run;
+}
+
+export function holdDecision({ wait, time, boundary, cues, h, nextStart }) {
+  if (!wait || boundary == null || !(h >= SCHEDULE.minHold - 1e-9)) return false;
+  if (inSentence(cues, time)) return false;
+  if (cues?.[0] && time < Number(cues[0].end) - 0.05) return false;
+  if (time + 0.05 < boundary) return false;
+  if (nextStart != null && time > Number(nextStart) - 1e-3) return false;
+  if (nextStart == null && time > boundary + 0.15) return false;
+  return true;
+}
+
+export function afterFailure(play, cardShown) {
+  const index = play >= 0 ? play : -1;
+  return { skipped: index, done: index, play: -1, next: index + 1, card: index >= 0 && !cardShown };
+}
+
+export function playbackCause({ type, own }) {
+  if (own) return "hold";
+  if (type === "play") return "user-play";
+  if (type === "pause") return "user-pause";
+  return "";
+}
+
+export function resumeSigner({ holding, userPaused, signerPaused }) {
+  return !!(holding && !userPaused && signerPaused);
+}
+
+export function watchHold({ held, remain, quiet }) {
+  return held > Math.max(0, Number(remain) || 0) + 2 || quiet >= 3;
 }
 
 export function pauseAffectsSigner({ holding, userAction }) {

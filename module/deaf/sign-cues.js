@@ -1,4 +1,4 @@
-// FR-DEAF-05, FR-DEAF-06: Play the sign queue. Hold the lesson only at a cue boundary.
+// FR-DEAF-05, FR-DEAF-06: Play each sign line when its caption starts. Hold only between lines.
 import { SCHEDULE, afterSeek, boundaryOf, catchUpRate, endWait, itemsOf, lagSeconds, playableSegments, segmentAt } from "./sign-schedule.js";
 import { attachHold } from "./sign-hold.js";
 import { attachPace } from "./sign-pace.js";
@@ -9,7 +9,7 @@ export function attachCueSync(player, win) {
   const media = player.media;
   const params = new URLSearchParams(location.search);
   const demo = params.get("hold") === "demo";
-  const state = { segments: [], queue: [], base: "", index: -1, item: 0, front: 0, play: -1, done: -1, wait: true, holding: false, ending: false, told: false, hitTo: false, userPaused: false, userIntent: false, seen: -1, row: null, log: [], holds: [], decided: [], token: 0, clock: 0, stall: 0, failed: false, internal: false, snap: false, lag: 0, maxLag: 0, lagSum: 0, lagN: 0, holdTarget: -1, holdAt: 0, holdStart: 0, signAt: 0, endStart: 0, endWait: 0 };
+  const state = { segments: [], queue: [], base: "", index: -1, item: 0, front: 0, play: -1, done: -1, wait: true, holding: false, ending: false, told: false, hitTo: false, userPaused: false, userIntent: false, seen: -1, row: null, log: [], holds: [], decided: [], skipped: [], captions: [], token: 0, clock: 0, stall: 0, failed: false, broken: -1, cardOnce: false, holdWatch: false, internal: false, snap: false, lag: 0, maxLag: 0, lagSum: 0, lagN: 0, holdTarget: -1, holdAt: 0, holdStart: 0, signAt: 0, endStart: 0, endWait: 0 };
   const status = attachStatus(player, win, () => hold.skip());
   const play = attachSignPlay(win, state, {
     items: itemsOf, rate: () => catchUpRate(win.rate, state.lag || 0), paused: () => state.userPaused, started: markStart,
@@ -18,7 +18,7 @@ export function attachCueSync(player, win) {
   });
   const hold = attachHold(player, state, {
     demo, rate: () => catchUpRate(win.rate, state.lag || 0), video: () => play.active(),
-    showPill: () => status.showPill(), hidePill: () => status.hidePill(),
+    showPill: () => status.showPill(), hidePill: () => status.hidePill(), card: () => status.showCard(),
     pauseSign: () => { if (state.play >= 0) play.active().pause(); },
     playSign: () => { if (state.play >= 0 && !state.hitTo) play.active().play().catch(() => {}); },
     busy: () => state.play >= 0 && !state.hitTo,
@@ -28,18 +28,26 @@ export function attachCueSync(player, win) {
     signRate: () => win.rate, mode: () => win.pacing || "smooth", video: () => play.active()
   });
 
+  function noteCaptions(time) {
+    for (let index = 0; index < state.queue.length; index += 1) {
+      if (state.captions[index] == null && time + 1e-3 >= state.queue[index].start) state.captions[index] = performance.now();
+    }
+  }
   function markStart() {
-    if (!state.row || state.row.lag != null) return;
+    if (!state.row || state.row.wallStart != null) return;
+    state.row.wallStart = performance.now();
+    const caption = state.captions[state.play];
+    state.row.captionAt = caption || null;
+    state.row.wallLag = caption ? Math.max(0, (state.row.wallStart - caption) / 1000) : 0;
     state.row.startedAt = media.currentTime || 0;
-    state.row.lag = Math.max(0, state.row.startedAt - state.row.lessonStart);
+    state.row.lag = state.row.wallLag;
+    state.maxLag = Math.max(state.maxLag, state.row.wallLag);
   }
   function fail(why) {
-    if (state.failed) return;
+    if (state.play < 0 || state.broken === state.play) return;
+    state.broken = state.play;
     state.failed = true;
-    console.warn("sign clip failed", why, state.segments[state.index]?.cue || "");
-    state.hitTo = true; state.done = state.play; state.play = -1;
-    status.showCard();
-    if (state.holding) hold.release(false);
+    console.warn("sign clip failed", why, state.queue[state.play]?.cue || "");
   }
   function begin(segment, point) {
     state.failed = false; state.hitTo = false;
@@ -56,10 +64,11 @@ export function attachCueSync(player, win) {
   function tick() {
     if (state.userPaused && !state.holding && !state.ending) return;
     if (media.paused && !state.holding && !state.ending) return;
+    if (!state.holding && !state.ending) hold.consider(media.currentTime || 0);
     const time = media.currentTime || 0;
+    noteCaptions(time);
     const started = state.play >= 0 ? state.play : state.done;
     state.lag = lagSeconds(state.queue, time, started);
-    state.maxLag = Math.max(state.maxLag, state.lag);
     state.lagSum += state.lag; state.lagN += 1;
     const here = segmentAt(state.segments, time);
     if (here && (here.source === "none" || here.cue === params.get("missing"))) status.showCard();
@@ -80,12 +89,11 @@ export function attachCueSync(player, win) {
       if (next && time >= next.start) begin(next, null);
     }
     if (state.holding && !state.userPaused && hold.caughtUp()) hold.release(true);
-    if (state.holding) { hold.pill(); play.applyRate(); return; }
+    if (state.holding) { hold.guard(); if (state.holding) { hold.pill(); play.applyRate(); return; } }
     if (!state.wait && state.lag > SCHEDULE.maxLag && !media.paused) {
       const landed = afterSeek(state.segments, time);
       if (landed.segment && state.queue.indexOf(landed.segment) !== state.play) { begin(landed.segment, landed.point); return; }
     }
-    hold.consider(time);
     pace.enter(time);
     play.applyRate();
   }
@@ -94,7 +102,7 @@ export function attachCueSync(player, win) {
     hold.clear();
     if (!demo) status.hidePill();
     const time = media.currentTime || 0;
-    state.decided = [];
+    state.decided = []; state.skipped = []; state.captions = []; state.broken = -1; state.cardOnce = false;
     state.queue.forEach((segment, index) => {
       if (!index) return;
       const boundary = boundaryOf(state.queue[index - 1], segment);
@@ -125,12 +133,12 @@ export function attachCueSync(player, win) {
       if (mine !== state.token) return;
       state.segments = doc.segments || [];
       state.queue = playableSegments(state.segments).filter((segment) => segment.cue !== params.get("missing"));
-      state.play = -1; state.done = -1; state.decided = []; state.holds = [];
+      state.play = -1; state.done = -1; state.decided = []; state.holds = []; state.skipped = []; state.captions = []; state.broken = -1; state.cardOnce = false;
       const first = itemsOf(state.queue[0])[0];
       if (first) play.load(play.standby(), first);
       if (demo) status.showPill();
       pace.replan({ from: media.currentTime || 0 });
-      state.clock = setInterval(tick, 50);
+      state.clock = setInterval(tick, 20);
       if (opts.at) onSeek();
       else tick();
     }).catch((error) => console.warn("sign json failed", error));

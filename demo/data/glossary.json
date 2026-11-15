@@ -316,7 +316,9 @@
       "forms_am": [
         "ፈጠራችሁ"
       ],
-      "forms_en": [],
+      "forms_en": [
+        "created"
+      ],
       "cues": [
         "A12"
       ]

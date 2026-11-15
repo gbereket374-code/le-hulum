@@ -1,5 +1,32 @@
-# NFR-PRIV-06: Open the SQLite file for lessons, the lexicon and phrase memory.
+# NFR-PRIV-06, INT-05: Open SQLite at DATA_DIR/le-hulum.db.
+from sqlmodel import Session, SQLModel, create_engine
 
-def todo():
-    """TODO"""
-    raise NotImplementedError
+_engine = None
+_path = None
+
+
+def db_path():
+    from api.settings import data_dir
+    return data_dir() / "le-hulum.db"
+
+
+def get_engine():
+    global _engine, _path
+    import api.models  # noqa: F401
+    path = db_path()
+    if _engine is None or path != _path:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        _engine = create_engine(f"sqlite:///{path}", connect_args={"check_same_thread": False})
+        _path = path
+        SQLModel.metadata.create_all(_engine)
+    return _engine
+
+
+def session():
+    return Session(get_engine())
+
+
+def dump(row):
+    if hasattr(row, "model_dump"):
+        return row.model_dump()
+    return row.dict()

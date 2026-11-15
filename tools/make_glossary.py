@@ -63,8 +63,20 @@ def am_match(token, lemma):
     return len(want) >= 3 and len(got) >= len(want) and got[:len(want)] == want
 
 
+def en_forms(word):
+    base = word.lower()
+    stem = base[:-1] if base.endswith("e") else base
+    forms = (base, base + "s", base + "es", base + "ed", base + "d", base + "ing", stem + "ing", stem + "es")
+    seen = []
+    for form in forms:
+        if form not in seen:
+            seen.append(form)
+    return seen
+
+
 def en_pattern(word):
-    return re.compile(rf"\b{re.escape(word)}(?:es|s)?\b", re.I)
+    parts = sorted(en_forms(word), key=len, reverse=True)
+    return re.compile(r"\b(?:" + "|".join(re.escape(part) for part in parts) + r")\b", re.I)
 
 
 def read_cues(path):

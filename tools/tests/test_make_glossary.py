@@ -25,7 +25,9 @@ class GlossaryMatchTests(unittest.TestCase):
         self.assertEqual(gloss.english_hits("we will learn about variables.", "variable"), ["variables"])
         self.assertEqual(gloss.english_hits("the variable name is name", "name"), ["name", "name"])
         self.assertEqual(gloss.english_hits("a database of data", "data"), ["data"])
-        self.assertEqual(gloss.english_hits("created a variable", "create"), [])
+        self.assertEqual(gloss.english_hits("created a variable", "create"), ["created"])
+        self.assertEqual(gloss.english_hits("creating a variable", "create"), ["creating"])
+        self.assertEqual(gloss.english_hits("she saves the file", "save"), ["saves"])
 
     def test_missing_clip_is_kept(self):
         with tempfile.TemporaryDirectory() as folder:

@@ -13,6 +13,7 @@ COPY api/requirements-asr.txt /app/api/requirements-asr.txt
 RUN pip install --no-cache-dir -r /app/api/requirements.txt \
     && if [ "$WITH_ASR" = "1" ]; then pip install --no-cache-dir -r /app/api/requirements-asr.txt; fi
 COPY tools/vtt_align.py /app/tools/vtt_align.py
+COPY tools/sign_motion.py tools/cut_by_pause.py tools/sign_trim_config.json /app/tools/
 COPY api /app/api
 
 EXPOSE 8000

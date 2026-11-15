@@ -4,3 +4,5 @@ uvicorn[standard]
 sqlmodel
 python-dotenv
 python-multipart
+pyyaml
+numpy
