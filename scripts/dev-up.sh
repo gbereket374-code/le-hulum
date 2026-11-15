@@ -51,6 +51,7 @@ check /demo/lesson-text.html
 check /demo/jobs.html
 check /demo/sign-try.html
 check /demo/blank.html
+check /demo/tools/caption-timer.html
 check /pages/concept-with-navigation.html
 check /api/v1/health
 
@@ -99,6 +100,7 @@ Phone (HTTPS): ${url}/demo/index.html
                ${url}/demo/jobs.html
                ${url}/demo/sign-try.html
                ${url}/demo/blank.html
+               ${url}/demo/tools/caption-timer.html
                ${url}/pages/concept-with-navigation.html
 Laptop:        http://localhost:8080/demo/index.html
                http://localhost:8080/demo/lesson-video.html
@@ -106,6 +108,7 @@ Laptop:        http://localhost:8080/demo/index.html
                http://localhost:8080/demo/jobs.html
                http://localhost:8080/demo/sign-try.html
                http://localhost:8080/demo/blank.html
+               http://localhost:8080/demo/tools/caption-timer.html
                http://localhost:8080/pages/concept-with-navigation.html
 API docs:      ${url}/api/docs  (and http://localhost:8080/api/docs)
 EOF

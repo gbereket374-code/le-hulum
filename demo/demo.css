@@ -53,6 +53,8 @@ h1 .am,h2 .am{display:block;margin-top:8px;font-family:var(--lh-font-ethiopic);f
 .card span{color:var(--lh-text-muted);font-size:16px;line-height:1.45}
 .install{display:flex;flex-direction:column;gap:16px;margin-top:40px;padding-top:32px;border-top:1px solid var(--lh-line)}
 .install h2{margin:0;font-size:28px}
+.devtools{margin-top:var(--lh-space-8);padding-top:var(--lh-space-6);border-top:1px solid var(--lh-line)}
+.devtools h2{margin:0 0 var(--lh-space-2);font-size:1.25rem}
 pre{margin:0;padding:16px;background:var(--lh-code-bg);color:var(--lh-code-text);border:1px solid var(--lh-border);border-radius:10px;font:400 15px/1.75 var(--lh-font-code);white-space:pre-wrap;overflow-wrap:anywhere}
 .note{color:var(--lh-text-muted)}
 .crumb{color:var(--lh-text-muted);font-size:16px}

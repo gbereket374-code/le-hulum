@@ -37,5 +37,13 @@
   "key_right_l": "የቀኝ ቀስት ወይም L፦ 10 ሰከንድ ወደፊት",
   "key_m": "M፦ ድምፅ ዝጋ",
   "key_f": "F፦ ሙሉ ማያ",
-  "key_question": "የጥያቄ ምልክት፦ የቁልፍ ሰሌዳ እገዛ"
+  "key_question": "የጥያቄ ምልክት፦ የቁልፍ ሰሌዳ እገዛ",
+  "captions": "ግርጌ ጽሑፍ",
+  "captions_off": "ግርጌ ጽሑፍ ጠፍቷል",
+  "captions_am": "አማርኛ",
+  "captions_en": "እንግሊዝኛ",
+  "captions_state": "ግርጌ ጽሑፍ፦ {lang}",
+  "key_c": "C፦ ግርጌ ጽሑፍ",
+  "lang_am": "አማርኛ",
+  "lang_en": "እንግሊዝኛ"
 }

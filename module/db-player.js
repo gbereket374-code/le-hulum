@@ -1,4 +1,5 @@
 // C-01, C-03, C-04, FR-CORE-01, FR-CORE-03, INT-01, INT-03, INT-04: Define <db-player> and keep src and lang in sync.
+import { attachCaptions } from "./core/captions.js";
 import { loadStrings } from "./core/i18n.js";
 import { Player } from "./core/player.js";
 
@@ -57,7 +58,7 @@ dialog button:focus-visible{outline:3px solid var(--lh-focus,#1C1B18);outline-of
 <dialog class="help" aria-labelledby="help-title"><h2 id="help-title"></h2><ul></ul><button type="button" class="shortcuts"></button><button type="button" class="close"></button></dialog></div>`;
 
 class DbPlayer extends HTMLElement {
-  static get observedAttributes() { return ["src", "lang"]; }
+  static get observedAttributes() { return ["src", "lang", "captions"]; }
 
   constructor() { super(); this.attachShadow({ mode: "open" }); }
 
@@ -73,6 +74,7 @@ class DbPlayer extends HTMLElement {
     if (!this._player || oldValue === value) return;
     if (name === "lang") this._player.setLang(value === "am" ? "am" : "en");
     if (name === "src") this._player.setSource(value || "", this.getAttribute("poster"));
+    if (name === "captions") this._player.captions?.reload();
   }
 
   async _boot() {
@@ -89,6 +91,7 @@ class DbPlayer extends HTMLElement {
     }
     this._player = new Player(this, this.shadowRoot);
     this._player.render(SHELL);
+    attachCaptions(this._player);
     this._player.setSource(this.getAttribute("src") || "", this.getAttribute("poster"));
   }
 }

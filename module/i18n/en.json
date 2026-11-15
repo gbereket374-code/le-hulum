@@ -37,5 +37,13 @@
   "key_right_l": "Right arrow or L: forward 10 seconds",
   "key_m": "M: mute",
   "key_f": "F: full screen",
-  "key_question": "Question mark: keyboard help"
+  "key_question": "Question mark: keyboard help",
+  "captions": "Captions",
+  "captions_off": "Captions off",
+  "captions_am": "Amharic",
+  "captions_en": "English",
+  "captions_state": "Captions: {lang}",
+  "key_c": "C: captions",
+  "lang_am": "Amharic",
+  "lang_en": "English"
 }
