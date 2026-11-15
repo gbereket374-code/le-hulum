@@ -63,13 +63,27 @@ export function attachSign(player) {
     win.frac = { x: Number(saved.signX), y: Number(saved.signY) || 0, w: width };
     win.userPlaced = true;
   }
-  const sync = attachSignSync(player, () => (open && none.hidden && mode !== "cues" ? win.video : null), () => win.rate);
+  const sync = attachSignSync(player, () => (open && none.hidden && mode === "continuous" ? win.video : null), () => win.rate);
   const cues = attachCueSync(player, win);
   function save() {
     store(player, {
       signLayout: win.layout, signOpacity: win.opacity, signRate: win.rate, signPacing: win.pacing, signWait: win.pacing !== "off",
       signX: win.frac?.x, signY: win.frac?.y, signW: win.frac?.w
     });
+  }
+  function wordClip() {
+    if (win.word) return win.word;
+    const video = document.createElement("video");
+    video.muted = true;
+    video.playsInline = true;
+    video.preload = "auto";
+    video.setAttribute("aria-hidden", "true");
+    video.dataset.sign = "1";
+    video.dataset.word = "1";
+    video.style.visibility = "hidden";
+    win.video.after(video);
+    win.word = video;
+    return video;
   }
   function begin(src) {
     mode = signMode(src);
@@ -100,6 +114,7 @@ export function attachSign(player) {
     close() {
       open = false;
       none.hidden = true;
+      if (win.word) win.word.style.visibility = "hidden";
       cues.stop();
       win.hide();
       sync.stop();
@@ -118,8 +133,36 @@ export function attachSign(player) {
     play(src, opts = {}) {
       if (!open) api.open();
       none.hidden = true;
+      if (opts.word) return api.playWord(src, opts);
       if (src) begin(src);
       if (opts.from != null && signMode(src || "") !== "cues") win.video.currentTime = Number(opts.from) || 0;
+      return win.video;
+    },
+    playWord(src, opts = {}) {
+      if (!open) api.open();
+      cues.stop();
+      sync.stop();
+      mode = "word";
+      none.hidden = true;
+      win.show("");
+      const video = wordClip();
+      video.style.visibility = "visible";
+      video.style.zIndex = "2";
+      video.preservesPitch = video.webkitPreservesPitch = true;
+      video.playbackRate = Number(opts.rate) > 0 ? Number(opts.rate) : 1;
+      const from = Number(opts.from) || 0;
+      const go = () => { video.currentTime = from; video.play().catch(() => {}); };
+      if (video.getAttribute("src") !== src) { video.src = src; video.addEventListener("loadedmetadata", go, { once: true }); }
+      else if (video.readyState >= 1) go();
+      else video.addEventListener("loadedmetadata", go, { once: true });
+      return video;
+    },
+    resumeLesson() {
+      if (win.word) { win.word.pause(); win.word.style.visibility = "hidden"; }
+      const src = player.host.getAttribute("sign") || "";
+      mode = signMode(src);
+      if (mode !== "cues") { begin(src); return; }
+      cues.start(src, { at: true });
     },
     on(name, fn) { (bus[name] ||= []).push(fn); }
   };

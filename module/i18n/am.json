@@ -85,5 +85,19 @@
   "pacing_off": "ጠፍቷል",
   "paced_for_signer": "ለተርጓሚው ተስተካክሏል",
   "pacing_changed": "ፍጥነት፦ {mode}",
-  "sign_missing": "ለዚህ መስመር ምልክት እስካሁን የለም"
+  "sign_missing": "ለዚህ መስመር ምልክት እስካሁን የለም",
+  "words": "ቃላት",
+  "words_in_lesson": "በዚህ ትምህርት ያሉ ቃላት",
+  "search_words": "ቃላትን ፈልግ",
+  "results_count": "ውጤቶች፦ {count}",
+  "only_this_line": "በዚህ መስመር ያሉ ብቻ",
+  "show_sign": "ምልክቱን አሳይ",
+  "go_to_line": "ወደ መስመሩ ሂድ",
+  "replay": "እንደገና",
+  "word_label": "ቃል፦ {am} · {en}",
+  "word_slow": "0.75×",
+  "no_word_sign": "ለዚህ ቃል ምልክት እስካሁን የለም",
+  "no_words_line": "በዚህ መስመር የቃላት ዝርዝር የለም",
+  "glossary_word": "የቃላት ዝርዝር ቃል",
+  "key_g": "G፦ ቃላት"
 }

@@ -9,7 +9,7 @@ const STYLE = `<style data-captions>
 .captions[data-pos="below"]{position:static;left:auto;max-width:90%;margin:.5rem auto 0}
 .captions p{margin:0}
 .captions .who{font-weight:700}
-.captions .low{text-decoration:underline dotted 2px;text-underline-offset:.3rem}
+.captions .low,.captions .term{text-decoration:underline dotted 2px;text-underline-offset:.3rem}
 .captions[lang="am"]{font-family:var(--lh-font-ethiopic,"Noto Sans Ethiopic",sans-serif);line-height:1.7;letter-spacing:normal;text-transform:none}
 [data-id="captions"]::before{content:"CC"}
 </style>`;
@@ -102,6 +102,7 @@ export function attachCaptions(player) {
     }
     box.lang = mode;
     box.hidden = false;
+    player.glossary?.mark?.(line);
     box.append(line);
     layoutChip(player, box);
   }

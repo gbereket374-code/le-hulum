@@ -116,7 +116,7 @@ export function attachCueSync(player, win) {
     pace.enter(time, true);
     pace.resync();
   }
-  function start(src) {
+  function start(src, opts = {}) {
     stop();
     const mine = state.token;
     state.base = String(src).replace(/[^/]*$/, "");
@@ -131,7 +131,8 @@ export function attachCueSync(player, win) {
       if (demo) status.showPill();
       pace.replan({ from: media.currentTime || 0 });
       state.clock = setInterval(tick, 50);
-      tick();
+      if (opts.at) onSeek();
+      else tick();
     }).catch((error) => console.warn("sign json failed", error));
   }
   function stop() {

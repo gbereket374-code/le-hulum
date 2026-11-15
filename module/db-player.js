@@ -17,6 +17,12 @@ function toggleSign(player) {
   });
 }
 
+function loadGlossary(player) {
+  if (!player.host.getAttribute("glossary")) return null;
+  player._glossaryLoad ||= import("./deaf/glossary.js").then((mod) => mod.attachGlossary(player));
+  return player._glossaryLoad;
+}
+
 function mountSign(player) {
   player.addControl({
     id: "sign", order: 48, toggle: true, labelKey: "sign",
@@ -68,6 +74,7 @@ video{display:block;width:100%;max-width:100%;height:auto;aspect-ratio:16/9;obje
 [data-id="full"]::before{content:"⤢"}
 [data-id="help"]::before{content:"⌨"}
 [data-id="sign"]::before{content:"✋"}
+[data-id="glossary"]::before{content:"Aa"}
 .controls button[aria-pressed="true"]{box-shadow:inset 0 -3px 0 var(--lh-player-accent,#62D6AA)}
 button:focus-visible,.seek:focus-visible{outline:3px solid var(--lh-player-focus,#FFD54A);outline-offset:2px}
 .below,.panels{max-width:100%}
@@ -85,7 +92,7 @@ dialog button:focus-visible{outline:3px solid var(--lh-focus,#1C1B18);outline-of
 <dialog class="help" aria-labelledby="help-title"><h2 id="help-title"></h2><ul></ul><button type="button" class="shortcuts"></button><button type="button" class="close"></button></dialog></div>`;
 
 class DbPlayer extends HTMLElement {
-  static get observedAttributes() { return ["src", "lang", "captions", "sign"]; }
+  static get observedAttributes() { return ["src", "lang", "captions", "sign", "glossary"]; }
 
   constructor() { super(); this.attachShadow({ mode: "open" }); }
 
@@ -103,6 +110,7 @@ class DbPlayer extends HTMLElement {
     if (name === "src") this._player.setSource(value || "", this.getAttribute("poster"));
     if (name === "captions") this._player.captions?.reload();
     if (name === "sign" && this._player.sign?.isOpen()) this._player.sign.play(value || "", {});
+    if (name === "glossary" && value) loadGlossary(this._player);
   }
 
   async _boot() {
@@ -121,6 +129,7 @@ class DbPlayer extends HTMLElement {
     this._player.render(SHELL);
     attachCaptions(this._player);
     mountSign(this._player);
+    loadGlossary(this._player);
     this._player.setSource(this.getAttribute("src") || "", this.getAttribute("poster"));
     if (new URLSearchParams(location.search).get("sign") === "on") toggleSign(this._player);
   }

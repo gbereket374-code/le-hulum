@@ -85,5 +85,19 @@
   "pacing_off": "Off",
   "paced_for_signer": "Paced for signer",
   "pacing_changed": "Pacing: {mode}",
-  "sign_missing": "No sign for this line yet"
+  "sign_missing": "No sign for this line yet",
+  "words": "Words",
+  "words_in_lesson": "Words in this lesson",
+  "search_words": "Search words",
+  "results_count": "Results: {count}",
+  "only_this_line": "Only words in this line",
+  "show_sign": "Show sign",
+  "go_to_line": "Go to line",
+  "replay": "Replay",
+  "word_label": "Word: {am} · {en}",
+  "word_slow": "0.75×",
+  "no_word_sign": "No sign for this word yet",
+  "no_words_line": "No glossary words in this line",
+  "glossary_word": "glossary word",
+  "key_g": "G: words"
 }
