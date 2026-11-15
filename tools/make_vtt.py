@@ -9,14 +9,13 @@ from pathlib import Path
 
 import numpy as np
 
-from vtt_align import align_cues
+from vtt_align import DP_NOISE, DP_PAUSE, align_cues
 
 ROOT = Path(__file__).resolve().parents[1]
 VIDEO = ROOT / "demo/data/lesson.mp4"
 PHRASES = ROOT / "demo/data/phrases.csv"
 WAV = Path("/tmp/lehulum-lesson.wav")
-# -30 dB finds fewer than 13 pauses. -27 dB / 0.10 s keeps every line inside the hard limits.
-DP_NOISE, DP_PAUSE, PAD = -27, 0.10, 0.1
+PAD = 0.1
 NOISES = list(range(-45, -24))
 PAUSES = [round(0.2 + i * 0.02, 2) for i in range(21)]
 

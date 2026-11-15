@@ -2,6 +2,10 @@
 import math
 import unicodedata
 
+# Permissive silence settings shared with tools/make_vtt.py.
+DP_NOISE = -27
+DP_PAUSE = 0.10
+
 
 def syllables(text):
     fidel = other = 0

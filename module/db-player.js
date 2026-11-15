@@ -4,6 +4,32 @@ import { loadStrings } from "./core/i18n.js";
 import { Player } from "./core/player.js";
 
 const TAG = "db-player";
+
+function loadSign(player) {
+  player._signLoad ||= import("./deaf/sign-boot.js").then((mod) => mod.attachSign(player));
+  return player._signLoad;
+}
+
+function toggleSign(player) {
+  loadSign(player).then(() => {
+    if (player.sign.isOpen()) player.sign.close();
+    else player.sign.open();
+  });
+}
+
+function mountSign(player) {
+  player.addControl({
+    id: "sign", order: 48, toggle: true, labelKey: "sign",
+    pressed: () => !!player.sign?.isOpen(),
+    onClick: () => toggleSign(player)
+  });
+  player.registerShortcut("s", "key_s", () => toggleSign(player));
+  player.registerShortcut("w", "key_w", () => {
+    const sign = player.sign;
+    if (!sign?.isOpen()) return;
+    sign.setLayout(sign.layout === "sign-first" ? "lesson-first" : "sign-first");
+  });
+}
 const SHELL = `<style>
 @font-face{font-family:"Atkinson Hyperlegible";font-weight:400;font-display:swap;src:url("/module/fonts/atkinson-hyperlegible-400.woff2") format("woff2")}
 @font-face{font-family:"Atkinson Hyperlegible";font-weight:700;font-display:swap;src:url("/module/fonts/atkinson-hyperlegible-700.woff2") format("woff2")}
@@ -17,7 +43,7 @@ const SHELL = `<style>
 .player{max-width:100%;background:var(--lh-player-bg,#14130F);border-radius:12px;overflow:hidden}
 .player:fullscreen{width:100%;height:100%;overflow:auto;border-radius:0}
 .stage{position:relative;background:#14130F}
-video{display:block;width:100%;max-width:100%;height:auto;aspect-ratio:16/9;background:#14130F}
+video{display:block;width:100%;max-width:100%;height:auto;aspect-ratio:16/9;object-fit:contain;background:#14130F}
 .overlay{position:absolute;inset:0;pointer-events:none}
 .error{margin:0;padding:.75rem 1rem;color:var(--lh-player-text,#F3F0E8)}
 .controls{display:flex;flex-direction:column;max-width:100%;background:var(--lh-player-bg,#14130F);color:var(--lh-player-text,#F3F0E8)}
@@ -41,6 +67,7 @@ video{display:block;width:100%;max-width:100%;height:auto;aspect-ratio:16/9;back
 [data-id="mute"][aria-pressed="true"]::before{content:"✕"}
 [data-id="full"]::before{content:"⤢"}
 [data-id="help"]::before{content:"⌨"}
+[data-id="sign"]::before{content:"✋"}
 .controls button[aria-pressed="true"]{box-shadow:inset 0 -3px 0 var(--lh-player-accent,#62D6AA)}
 button:focus-visible,.seek:focus-visible{outline:3px solid var(--lh-player-focus,#FFD54A);outline-offset:2px}
 .below,.panels{max-width:100%}
@@ -58,7 +85,7 @@ dialog button:focus-visible{outline:3px solid var(--lh-focus,#1C1B18);outline-of
 <dialog class="help" aria-labelledby="help-title"><h2 id="help-title"></h2><ul></ul><button type="button" class="shortcuts"></button><button type="button" class="close"></button></dialog></div>`;
 
 class DbPlayer extends HTMLElement {
-  static get observedAttributes() { return ["src", "lang", "captions"]; }
+  static get observedAttributes() { return ["src", "lang", "captions", "sign"]; }
 
   constructor() { super(); this.attachShadow({ mode: "open" }); }
 
@@ -75,6 +102,7 @@ class DbPlayer extends HTMLElement {
     if (name === "lang") this._player.setLang(value === "am" ? "am" : "en");
     if (name === "src") this._player.setSource(value || "", this.getAttribute("poster"));
     if (name === "captions") this._player.captions?.reload();
+    if (name === "sign" && this._player.sign?.isOpen()) this._player.sign.play(value || "", {});
   }
 
   async _boot() {
@@ -92,7 +120,9 @@ class DbPlayer extends HTMLElement {
     this._player = new Player(this, this.shadowRoot);
     this._player.render(SHELL);
     attachCaptions(this._player);
+    mountSign(this._player);
     this._player.setSource(this.getAttribute("src") || "", this.getAttribute("poster"));
+    if (new URLSearchParams(location.search).get("sign") === "on") toggleSign(this._player);
   }
 }
 

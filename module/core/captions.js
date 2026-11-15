@@ -1,13 +1,13 @@
 // FR-CAP-01, FR-CAP-03, FR-CAP-04, FR-HOH-10, FR-HOH-11, FR-CORE-11: Draw WebVTT cues ourselves.
+import { layoutChip } from "./caption-place.js";
 import { t } from "./i18n.js";
 
 const ORDER = ["off", "am", "en"];
 const PALETTE = ["#FFE38A", "#9BE7FF", "#C6F6D2", "#FFC7B8"];
 const STYLE = `<style data-captions>
-.captions{position:absolute;left:50%;transform:translateX(-50%);bottom:1.25rem;max-width:min(47.5rem,92%);margin:0;padding:.5rem 1rem;border-radius:6px;text-align:center;pointer-events:none;background:var(--cap-bg,var(--lh-cap-bg,rgb(0 0 0 / .88)));color:var(--cap-color,var(--lh-cap-text,#fff));font-size:max(1.125rem,var(--cap-size,1.625rem));line-height:1.4;font-family:var(--lh-font-latin,"Atkinson Hyperlegible",system-ui,sans-serif)}
-.captions[data-pos="top"]{bottom:auto;top:1.25rem}
-.captions[data-pos="below"]{position:static;transform:none;left:auto;max-width:100%;margin:.5rem 0 0}
-.captions p{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:0}
+.captions{position:absolute;margin:0;padding:.5rem 1rem;border-radius:6px;text-align:center;pointer-events:none;background:var(--cap-bg,var(--lh-cap-bg,rgb(0 0 0 / .88)));color:var(--cap-color,var(--lh-cap-text,#fff));font-size:max(1.125rem,var(--cap-size,1.625rem));line-height:1.4;font-family:var(--lh-font-latin,"Atkinson Hyperlegible",system-ui,sans-serif)}
+.captions[data-pos="below"]{position:static;left:auto;max-width:90%;margin:.5rem auto 0}
+.captions p{margin:0}
 .captions .who{font-weight:700}
 .captions .low{text-decoration:underline dotted 2px;text-underline-offset:.3rem}
 .captions[lang="am"]{font-family:var(--lh-font-ethiopic,"Noto Sans Ethiopic",sans-serif);line-height:1.7;letter-spacing:normal;text-transform:none}
@@ -83,11 +83,6 @@ export function attachCaptions(player) {
   function urls() {
     return (player.host.getAttribute("captions") || "").split(",").map((item) => item.trim()).filter(Boolean);
   }
-  function place() {
-    const home = pos === "below" ? player.slots.below : player.slots.overlay;
-    if (box.parentElement !== home) home.append(box);
-    box.dataset.pos = pos;
-  }
   function paint(cue) {
     box.replaceChildren();
     if (!cue || mode === "off") { box.hidden = true; return; }
@@ -98,7 +93,7 @@ export function attachCaptions(player) {
       who.className = "who";
       if (!speakers.has(parsed.speaker)) speakers.set(parsed.speaker, speakers.size % PALETTE.length);
       who.style.color = PALETTE[speakers.get(parsed.speaker)];
-      who.textContent = parsed.speaker + ":";
+      who.textContent = (/^teacher$/i.test(parsed.speaker) ? t("speaker_teacher") : parsed.speaker) + ":";
       line.append(who, " ");
     }
     const showLow = player.prefs.showUncertain !== false;
@@ -111,6 +106,7 @@ export function attachCaptions(player) {
     box.lang = mode;
     box.hidden = false;
     box.append(line);
+    layoutChip(player, box);
   }
 
   function emitCue(cue) {
@@ -189,11 +185,12 @@ export function attachCaptions(player) {
       return this.getCues(lang).find((cue) => time >= cue.start && time < cue.end) || null;
     },
     currentLang: () => (mode === "off" ? "" : mode),
-    setPosition(next) { pos = next === "top" || next === "below" ? next : "bottom"; place(); },
+    setPosition(next) { pos = next === "below" ? "below" : "bottom"; box.dataset.force = pos === "below" ? "below" : ""; layoutChip(player, box); },
+    relayout() { layoutChip(player, box); },
     reload: mount
   };
   const setSource = player.setSource.bind(player);
   player.setSource = (src, poster) => { setSource(src, poster); mount(); };
-  place();
+  layoutChip(player, box);
   mount();
 }

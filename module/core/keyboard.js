@@ -27,8 +27,10 @@ export function createKeyboard(root, actions) {
     if (tag === "INPUT" && target.type !== "range") return;
     if ((event.key === " " || event.key === "Enter") && target.closest("button")) return;
     if (target.classList.contains("seek") && (event.key === "ArrowLeft" || event.key === "ArrowRight")) return;
+    if (target.closest && target.closest(".sign-window") && (event.key.startsWith("Arrow") || event.key === "+" || event.key === "-" || event.key === "=" || event.key === "Enter" || event.key === "Escape")) return;
     if (!enabled) return;
-    const hit = items.find((item) => item.keys.includes(event.key.toLowerCase()));
+    const hits = items.filter((item) => item.keys.includes(event.key.toLowerCase()));
+    const hit = hits[hits.length - 1];
     if (!hit) return;
     event.preventDefault();
     hit.fn();

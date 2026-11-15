@@ -16,5 +16,15 @@ services:
     build:
       context: .
       dockerfile: api/Dockerfile
+      args:
+        WITH_ASR: ${WITH_ASR:-0}
+    environment:
+      DATA_DIR: /data
+      ASR_AM: ${ASR_AM:-none}
+      ASR_EN: ${ASR_EN:-faster_whisper}
+      ASR_MODEL_AM_WHISPER: ${ASR_MODEL_AM_WHISPER:-waxal-benchmarking/whisper-tiny-waxal-amh}
+      TRANSLATE: ${TRANSLATE:-none}
+    volumes:
+      - ./data:/data
     expose:
       - "8000"
