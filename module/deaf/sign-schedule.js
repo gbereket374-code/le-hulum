@@ -1,5 +1,5 @@
 // FR-DEAF-05, FR-DEAF-06: Queue the signer. Hold the lesson only at a cue boundary.
-export const SCHEDULE = { maxLag: 2, catchUpLag: 0.8, catchUp: 1.1, pillAfter: 0.6, minHold: 0.5 };
+export const SCHEDULE = { maxLag: 3, catchUpLag: 0.8, catchUp: 1.1, pillAfter: 0.6, minHold: 0.5 };
 
 export function signMode(src) {
   return /\.json(?:$|[?#])/i.test(String(src || "")) ? "cues" : "continuous";
@@ -85,15 +85,10 @@ export function mediaUntil(cues, started, into, target) {
   return remain;
 }
 
-export function predictHold(remaining, rate, maxLag = SCHEDULE.maxLag) {
-  const h = remaining / (rate > 0 ? rate : 1) - maxLag;
-  return { h, hold: h >= SCHEDULE.minHold - 1e-9 };
-}
-
-export function holdDecision({ wait, time, boundary, h }) {
-  if (!wait || boundary == null || time + 1e-3 < boundary) return false;
-  if (Math.abs(time - boundary) > 0.1) return false;
-  return h >= SCHEDULE.minHold - 1e-9;
+export function holdDecision({ wait, time, boundary, started, segment }) {
+  if (!wait || boundary == null || time < 3 || boundary < 3) return false;
+  if (time + 1e-3 < boundary || Math.abs(time - boundary) > 0.1) return false;
+  return started < segment;
 }
 
 export function pauseAffectsSigner({ holding, userAction }) {

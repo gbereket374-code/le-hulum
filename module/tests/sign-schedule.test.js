@@ -4,7 +4,7 @@ import test from "node:test";
 import {
   SCHEDULE, afterSeek, afterSkip, boundaryOf, catchUpRate, countsAsHold, dueIndex, endWait,
   holdDecision, lagSeconds, mediaUntil, pauseAffectsSigner, playableSegments, pointInSegment,
-  predictHold, queueStart, signMode, signSpan
+  queueStart, signMode, signSpan
 } from "../deaf/sign-schedule.js";
 
 const queue = [
@@ -24,23 +24,21 @@ test("segments play back to back, never before their cue", () => {
   assert.equal(signSpan(queue[0]), 2.6);
 });
 
-test("a hold is only at a cue boundary, and only when h is at least 0.5 s", () => {
+test("a hold is only when the signer has not started that sentence", () => {
   const boundary = boundaryOf(queue[0], queue[1]);
   assert.equal(boundary, 2.4);
-  assert.equal(holdDecision({ wait: true, time: 1.2, boundary, h: 2 }), false);
-  assert.equal(holdDecision({ wait: true, time: 0.2, boundary: null, h: 3 }), false);
-  assert.equal(predictHold(2.6, 1).hold, true);
-  assert.equal(predictHold(2.49, 1).hold, false);
-  assert.equal(predictHold(2, 1).hold, false);
-  assert.ok(predictHold(1.5, 1).h < 0);
-  assert.equal(holdDecision({ wait: true, time: boundary, boundary, h: 0.49 }), false);
-  assert.equal(holdDecision({ wait: true, time: boundary, boundary, h: 0.5 }), true);
-  assert.equal(holdDecision({ wait: false, time: boundary, boundary, h: 2 }), false);
+  const late = { wait: true, time: 4, boundary: 4, started: -1, segment: 0 };
+  assert.equal(holdDecision(late), true);
+  assert.equal(holdDecision({ ...late, started: 0 }), false);
+  assert.equal(holdDecision({ ...late, started: 1 }), false);
+  assert.equal(holdDecision({ ...late, time: 2.5, boundary: 2.4 }), false);
+  assert.equal(holdDecision({ ...late, time: 1.2, boundary }), false);
+  assert.equal(holdDecision({ ...late, wait: false }), false);
+  assert.equal(holdDecision({ ...late, boundary: null }), false);
   assert.equal(mediaUntil(queue, 0, 1, 1), 1.6);
   assert.equal(dueIndex(queue, 1, -1), 0);
   assert.equal(lagSeconds(queue, 3.5, 0), 3.5 - 2.82);
-  assert.equal(SCHEDULE.minHold, 0.5);
-  assert.equal(SCHEDULE.maxLag, 2);
+  assert.equal(SCHEDULE.maxLag, 3);
 });
 
 test("a hold does not pause the signer, a user pause does, and skip releases", () => {
@@ -79,5 +77,5 @@ test("a line with no sign is skipped and never holds", () => {
   assert.equal(afterSeek(mixed, 2.5).segment, null);
   assert.equal(afterSeek(mixed, 2.5).lag, 0);
   const boundary = boundaryOf(playable[0], playable[1]);
-  assert.equal(holdDecision({ wait: true, time: 2.6, boundary, h: 2 }), false);
+  assert.equal(holdDecision({ wait: true, time: 2.6, boundary, started: -1, segment: 0 }), false);
 });

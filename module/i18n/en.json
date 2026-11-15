@@ -79,5 +79,11 @@
   "sign_waiting_first": "The lesson pauses while the signer finishes",
   "skip_wait": "Skip",
   "wait_for_signer": "Wait for signer",
+  "pacing": "Pacing",
+  "pacing_smooth": "Smooth",
+  "pacing_pause": "Pause at sentence ends",
+  "pacing_off": "Off",
+  "paced_for_signer": "Paced for signer",
+  "pacing_changed": "Pacing: {mode}",
   "sign_missing": "No sign for this line yet"
 }

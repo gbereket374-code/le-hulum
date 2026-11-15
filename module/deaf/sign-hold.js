@@ -1,5 +1,5 @@
 // FR-DEAF-06: Pause the lesson at a cue boundary without pausing the signer.
-import { SCHEDULE, afterSkip, boundaryOf, countsAsHold, holdDecision, itemsOf, mediaUntil, pauseAffectsSigner, predictHold, signSpan } from "./sign-schedule.js";
+import { SCHEDULE, afterSkip, boundaryOf, countsAsHold, holdDecision, pauseAffectsSigner } from "./sign-schedule.js";
 
 export function attachHold(player, state, hooks) {
   const media = player.media;
@@ -8,20 +8,8 @@ export function attachHold(player, state, hooks) {
   const rawToggle = player.toggle.bind(player);
   player.state = player.state || {};
 
-  function intoNow() {
-    if (state.play < 0) return { started: state.done, into: state.done >= 0 ? signSpan(state.queue[state.done]) : 0 };
-    const items = itemsOf(state.queue[state.play]);
-    let into = 0;
-    for (let index = 0; index < state.item; index += 1) into += Math.max(0, items[index].to - items[index].from);
-    const item = items[state.item];
-    const now = hooks.video()?.currentTime || 0;
-    const span = item ? Math.max(0, item.to - item.from) : 0;
-    return { started: state.play, into: into + (item ? Math.max(0, Math.min(span, now - item.from)) : 0) };
-  }
-  function remainWall() {
-    const here = intoNow();
-    return mediaUntil(state.queue, here.started, here.into, state.holdTarget) / (hooks.rate() || 1);
-  }
+  function signerAt() { return state.play >= 0 ? state.play : state.done; }
+  function stillBehind() { return signerAt() < state.holdSegment; }
   function paint(showPlay) {
     const button = player.shadow.querySelector("[data-id=play]");
     if (!button) return;
@@ -34,7 +22,7 @@ export function attachHold(player, state, hooks) {
     if (record && countsAsHold("boundary")) {
       const prev = state.queue[state.holdTarget - 1];
       const next = state.queue[state.holdTarget];
-      state.holds.push({ from: prev?.cue || "", to: next?.cue || "", at: state.holdAt, length: held, signStart: state.signAt, signEnd: hooks.video()?.currentTime || 0 });
+      state.holds.push({ from: prev?.cue || "", to: next?.cue || "", at: state.holdAt, length: held, signer: state.signerCue || "", signStart: state.signAt, signEnd: hooks.video()?.currentTime || 0 });
     }
     const resume = !state.userPaused && media.paused;
     state.ownPlay = !!resume;
@@ -45,6 +33,7 @@ export function attachHold(player, state, hooks) {
     state.internal = false;
     if (!state.ending && !hooks.demo) hooks.hidePill();
     if (resume) paint(false);
+    hooks.after?.();
   }
   function startHold(index, boundary) {
     const over = (media.currentTime || 0) - boundary;
@@ -53,12 +42,17 @@ export function attachHold(player, state, hooks) {
     state.holdAt = media.currentTime || boundary;
     state.holdStart = performance.now();
     state.signAt = hooks.video()?.currentTime || 0;
+    state.pillOn = false;
     player.state.holding = true;
     state.holding = true;
     state.userIntent = false;
     state.internal = true;
     if (!media.paused) rawPause();
     state.internal = false;
+  }
+  function pill() {
+    if (state.pillOn || performance.now() - state.holdStart < SCHEDULE.pillAfter * 1000) return;
+    state.pillOn = true;
     hooks.showPill();
     if (!state.told) { player.announce("sign_waiting_first"); state.told = true; }
   }
@@ -82,19 +76,21 @@ export function attachHold(player, state, hooks) {
     if (tail < 0.05) { state.snap = true; media.currentTime = Math.max(0, media.duration - 0.15); }
     rawPlay().catch(() => {});
     state.internal = false;
+    hooks.after?.();
   }
   function consider(time) {
     if (hooks.demo || !state.wait || state.holding || state.ending || media.paused) return;
-    const here = intoNow();
-    const rate = hooks.rate();
+    const started = signerAt();
     for (let index = 1; index < state.queue.length; index += 1) {
       if (state.decided[index]) continue;
       const boundary = boundaryOf(state.queue[index - 1], state.queue[index]);
       if (boundary == null || time + 0.03 < boundary) break;
-      if (time > boundary + 0.12) { state.decided[index] = true; continue; }
+      if (boundary < 3 || time > boundary + 0.12) { state.decided[index] = true; continue; }
       state.decided[index] = true;
-      const { h } = predictHold(mediaUntil(state.queue, here.started, here.into, index), rate);
-      if (holdDecision({ wait: true, time: boundary, boundary, h })) startHold(index, boundary);
+      if (!holdDecision({ wait: true, time, boundary, started, segment: index - 1 })) break;
+      state.holdSegment = index - 1;
+      state.signerCue = state.queue[started]?.cue || "";
+      startHold(index, boundary);
       break;
     }
   }
@@ -140,7 +136,7 @@ export function attachHold(player, state, hooks) {
     state.userIntent = false;
     state.userPaused = false;
     hooks.playSign();
-    const keep = state.ending ? hooks.busy() : state.holding && remainWall() > SCHEDULE.maxLag + 1e-3;
+    const keep = state.ending ? hooks.busy() : state.holding && stillBehind();
     if ((state.holding || state.ending) && keep) {
       event.stopImmediatePropagation();
       state.internal = true;
@@ -150,5 +146,5 @@ export function attachHold(player, state, hooks) {
       paint(false);
     }
   }, true);
-  return { consider, release, freezeEnd, finishEnd, skip, clear, remainWall };
+  return { consider, release, freezeEnd, finishEnd, skip, clear, pill, caughtUp: () => !stillBehind() };
 }

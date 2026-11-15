@@ -1,7 +1,8 @@
 // FR-DEAF-02, FR-DEAF-04: Sign-window look, icons, and the More menu labels.
 const NS = "http://www.w3.org/2000/svg";
 export const PLACES = [["tl", "move_top_left"], ["tr", "move_top_right"], ["bl", "move_bottom_left"], ["br", "move_bottom_right"]];
-export const ACTS = [...PLACES, ["larger", "larger"], ["smaller", "smaller"], ["opacity", "opacity"], ["speed", "signer_speed"], ["wait", "wait_for_signer"]];
+export const PACES = [["smooth", "pacing_smooth"], ["pause", "pacing_pause"], ["off", "pacing_off"]];
+export const ACTS = [...PLACES, ["larger", "larger"], ["smaller", "smaller"], ["opacity", "opacity"], ["speed", "signer_speed"]];
 
 export const CSS = `.sign-window{position:absolute;z-index:4;border:1px solid rgba(255,255,255,.14);border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,.45);background:#14130F;overflow:visible;touch-action:none;cursor:grab;aspect-ratio:3/4}
 .sign-window:active{cursor:grabbing}.sign-window[hidden]{display:none}
@@ -25,6 +26,8 @@ export const CSS = `.sign-window{position:absolute;z-index:4;border:1px solid rg
 @keyframes sign-fade{from{opacity:0}to{opacity:1}}
 .sign-menu[hidden]{display:none}
 .sign-menu button{min-height:44px;text-align:start;padding:0 .75rem;border:0;border-radius:8px;background:transparent;color:inherit;font:inherit}
+.sign-pace{padding:.35rem .75rem .15rem;font-weight:700}
+[data-pace-note]{align-self:center;padding:0 .35rem;font-size:.75rem;opacity:.8}
 .sign-window:focus-visible,.sign-icon:focus-visible,.sign-grip:focus-visible,.sign-menu button:focus-visible,.sign-wait button:focus-visible{outline:3px solid #FFD54A;outline-offset:2px}
 .stage.sign-first{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(8rem,.72fr);gap:.75rem;align-items:start;padding:.5rem}
 .stage.sign-first>.sign-window{position:relative;left:auto;top:auto;width:min(100%,46.5vh);height:auto;grid-column:1;grid-row:1;justify-self:start;cursor:default}
@@ -109,6 +112,19 @@ export function buildChrome(win) {
     item.addEventListener("click", () => win.act(id));
     win.menu.append(item);
   }
+  win.paceLabel = document.createElement("div");
+  win.paceLabel.className = "sign-pace";
+  win.paceLabel.id = "sign-pace";
+  win.menu.append(win.paceLabel);
+  for (const [id] of PACES) {
+    const item = document.createElement("button");
+    item.type = "button";
+    item.dataset.act = id;
+    item.setAttribute("role", "menuitemradio");
+    item.setAttribute("aria-checked", "false");
+    item.addEventListener("click", () => win.act(id));
+    win.menu.append(item);
+  }
   win.root.append(win.video, win.grip, win.bar, win.menu);
 }
 
@@ -120,6 +136,7 @@ export function paintChrome(win) {
   name(win.closeBtn, t("close_sign"));
   name(win.grip, t("resize_sign"));
   win.menu.setAttribute("aria-label", t("more"));
+  if (win.paceLabel) win.paceLabel.textContent = t("pacing");
   for (const video of win.root.querySelectorAll("video")) video.style.opacity = String(win.opacity);
   for (const item of win.menu.querySelectorAll("[data-act]")) {
     const id = item.dataset.act;
@@ -127,7 +144,7 @@ export function paintChrome(win) {
     if (place) item.textContent = t("move_to_place", { place: t(place[1]) });
     else if (id === "opacity") item.textContent = t("opacity_value", { value: Math.round(win.opacity * 100) + "%" });
     else if (id === "speed") item.textContent = t("signer_speed_value", { value: win.rate + "×" });
-    else if (id === "wait") { item.textContent = t("wait_for_signer"); item.setAttribute("aria-checked", win.wait !== false ? "true" : "false"); }
+    else if (PACES.some((row) => row[0] === id)) { item.textContent = t("pacing_" + id); item.setAttribute("aria-checked", (win.pacing || "smooth") === id ? "true" : "false"); }
     else item.textContent = t(id);
   }
 }

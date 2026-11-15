@@ -41,20 +41,23 @@ export function attachSign(player) {
     layout: (next) => api.setLayout(next),
     save: () => save(),
     moved: () => { player.captions?.relayout?.(); cues?.place(); },
-    wait(on) { win.wait = !!on; save(); cues?.setWait(on); },
+    wait(on) { win.wait = !!on; win.pacing = on ? "pause" : "off"; save(); cues?.setPace(win.pacing); },
+    pace(mode) { win.pacing = mode; win.wait = mode !== "off"; save(); cues?.setPace(mode); },
     speed() {
       win.rate = nextRate(win.rate);
       win.paint();
       player.announce("signer_speed_value", { value: win.rate + "×" });
       save();
-      if (mode === "cues") cues?.applyRate();
+      if (mode === "cues") { cues?.applyRate(); cues?.replan(); }
       else sync.follow();
     }
   });
   win.layout = saved.signLayout || (wants ? "sign-first" : "lesson-first");
   win.opacity = [1, 0.8, 0.6].includes(saved.signOpacity) ? saved.signOpacity : 1;
   win.rate = [1, 0.85, 0.75].includes(saved.signRate) ? saved.signRate : 1;
-  win.wait = saved.signWait !== false;
+  win.pacing = saved.signPacing || (saved.signWait === false ? "off" : saved.signWait === true ? "pause" : "smooth");
+  if (!["smooth", "pause", "off"].includes(win.pacing)) win.pacing = "smooth";
+  win.wait = win.pacing !== "off";
   const width = Number(saved.signW ?? saved.signScale);
   if (saved.signX != null && width >= 0.18 && width <= 0.55) {
     win.frac = { x: Number(saved.signX), y: Number(saved.signY) || 0, w: width };
@@ -64,7 +67,7 @@ export function attachSign(player) {
   const cues = attachCueSync(player, win);
   function save() {
     store(player, {
-      signLayout: win.layout, signOpacity: win.opacity, signRate: win.rate, signWait: win.wait !== false,
+      signLayout: win.layout, signOpacity: win.opacity, signRate: win.rate, signPacing: win.pacing, signWait: win.pacing !== "off",
       signX: win.frac?.x, signY: win.frac?.y, signW: win.frac?.w
     });
   }

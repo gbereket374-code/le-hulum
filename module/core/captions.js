@@ -61,10 +61,7 @@ export function parseCueText(input) {
 function plain(parsed) {
   return parsed.parts.filter((part) => part.type !== "sound").map((part) => part.text).join("").replace(/\s+/g, " ").trim();
 }
-function langOf(url) {
-  const match = /\.([a-z]{2})\.vtt(?:$|\?)/i.exec(url || "");
-  return match ? match[1].toLowerCase() : "";
-}
+function langOf(url) { return (/\.([a-z]{2})\.vtt(?:$|\?)/i.exec(url || "") || [])[1]?.toLowerCase() || ""; }
 
 export function attachCaptions(player) {
   if (!player.shadow.querySelector("style[data-captions]")) player.shadow.append(document.createRange().createContextualFragment(STYLE));
@@ -78,7 +75,7 @@ export function attachCaptions(player) {
   let mode = "off";
   let pos = "bottom";
   let activeId = "";
-  let listening = null;
+  let stamp = 0;
 
   function urls() {
     return (player.host.getAttribute("captions") || "").split(",").map((item) => item.trim()).filter(Boolean);
@@ -108,34 +105,38 @@ export function attachCaptions(player) {
     box.append(line);
     layoutChip(player, box);
   }
-
   function emitCue(cue) {
     const id = cue ? cue.id || String(cue.startTime) : "";
     if (id === activeId) return;
     activeId = id;
     player.emit("cue", { cue: cue ? pack(cue) : null, lang: mode === "off" ? "" : mode });
   }
-
   function pack(cue) {
     const parsed = parseCueText(cue.text);
     return { id: cue.id, start: cue.startTime, end: cue.endTime, text: plain(parsed), speaker: parsed.speaker, sounds: parsed.sounds };
   }
   function onChange() {
-    const cue = listening && listening.track && listening.track.activeCues && listening.track.activeCues[0];
-    paint(mode === "off" ? null : cue || null);
-    emitCue(mode === "off" ? null : cue || null);
+    const time = player.media.currentTime || 0;
+    const list = mode === "off" ? null : tracks.get(mode)?.track?.cues;
+    let cue = null;
+    if (list) for (const item of list) if (time >= item.startTime && time < item.endTime) { cue = item; break; }
+    paint(cue); emitCue(cue);
   }
-
-  function listen(track) {
-    if (listening) listening.removeEventListener("cuechange", onChange);
-    listening = track;
-    if (track) track.addEventListener("cuechange", onChange);
+  function frame() {
+    const mine = ++stamp;
+    onChange();
+    const video = player.media;
+    if (video.paused || video.ended) return;
+    let saw = false;
+    const again = () => { if (saw || mine !== stamp) return; saw = true; frame(); };
+    if (video.requestVideoFrameCallback) video.requestVideoFrameCallback(again);
+    requestAnimationFrame(() => again());
   }
   function apply(next, announce) {
     const usable = ORDER.filter((item) => item === "off" || tracks.has(item));
     mode = usable.includes(next) ? next : "off";
     for (const [code, track] of tracks) track.track.mode = "hidden";
-    listen(mode === "off" ? null : tracks.get(mode));
+    frame();
     if (mode === "off") { paint(null); emitCue(null); }
     else onChange();
     player._paintAll();
@@ -143,11 +144,7 @@ export function attachCaptions(player) {
     if (mode === "off") player.announce("captions_off");
     else player.announce("captions_state", { lang: t(mode === "am" ? "lang_am" : "lang_en") });
   }
-
-  function cycle() {
-    const usable = ORDER.filter((item) => item === "off" || tracks.has(item));
-    apply(usable[(usable.indexOf(mode) + 1) % usable.length], true);
-  }
+  function cycle() { const usable = ORDER.filter((item) => item === "off" || tracks.has(item)); apply(usable[(usable.indexOf(mode) + 1) % usable.length], true); }
   function mount() {
     for (const track of [...player.media.querySelectorAll("track[data-lh]")]) track.remove();
     tracks.clear();
@@ -187,10 +184,13 @@ export function attachCaptions(player) {
     currentLang: () => (mode === "off" ? "" : mode),
     setPosition(next) { pos = next === "below" ? "below" : "bottom"; box.dataset.force = pos === "below" ? "below" : ""; layoutChip(player, box); },
     relayout() { layoutChip(player, box); },
+    refresh: () => frame(),
     reload: mount
   };
   const setSource = player.setSource.bind(player);
   player.setSource = (src, poster) => { setSource(src, poster); mount(); };
+  player.media.addEventListener("play", () => frame(), true);
+  player.media.addEventListener("seeked", () => onChange());
   layoutChip(player, box);
   mount();
 }

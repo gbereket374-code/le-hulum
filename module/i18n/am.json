@@ -79,5 +79,11 @@
   "sign_waiting_first": "የምልክት ተርጓሚው እስኪጨርስ ትምህርቱ ይቆማል",
   "skip_wait": "ዝለል",
   "wait_for_signer": "ምልክቱን ጠብቅ",
+  "pacing": "ፍጥነት",
+  "pacing_smooth": "ለስላሳ",
+  "pacing_pause": "በአረፍተ ነገር መጨረሻ ቆም",
+  "pacing_off": "ጠፍቷል",
+  "paced_for_signer": "ለተርጓሚው ተስተካክሏል",
+  "pacing_changed": "ፍጥነት፦ {mode}",
   "sign_missing": "ለዚህ መስመር ምልክት እስካሁን የለም"
 }

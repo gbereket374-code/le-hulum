@@ -1,6 +1,7 @@
 // FR-DEAF-05, FR-DEAF-06: Play the sign queue. Hold the lesson only at a cue boundary.
 import { SCHEDULE, afterSeek, boundaryOf, catchUpRate, endWait, itemsOf, lagSeconds, playableSegments, segmentAt } from "./sign-schedule.js";
 import { attachHold } from "./sign-hold.js";
+import { attachPace } from "./sign-pace.js";
 import { attachSignPlay } from "./sign-play.js";
 import { attachStatus } from "./sign-status.js";
 
@@ -20,7 +21,11 @@ export function attachCueSync(player, win) {
     showPill: () => status.showPill(), hidePill: () => status.hidePill(),
     pauseSign: () => { if (state.play >= 0) play.active().pause(); },
     playSign: () => { if (state.play >= 0 && !state.hitTo) play.active().play().catch(() => {}); },
-    busy: () => state.play >= 0 && !state.hitTo
+    busy: () => state.play >= 0 && !state.hitTo,
+    after: () => pace.resync()
+  });
+  const pace = attachPace(player, state, {
+    signRate: () => win.rate, mode: () => win.pacing || "smooth", video: () => play.active()
   });
 
   function markStart() {
@@ -70,16 +75,18 @@ export function attachCueSync(player, win) {
       return;
     }
     if (state.wait && endWait(atEnd, busy)) { hold.freezeEnd(); play.applyRate(); return; }
-    if (state.holding && !state.userPaused && hold.remainWall() <= SCHEDULE.maxLag + 1e-3) hold.release(true);
-    if (state.holding) { play.applyRate(); return; }
+    if (state.play < 0 && !state.userPaused && (state.holding || !media.paused)) {
+      const next = state.queue[state.done + 1];
+      if (next && time >= next.start) begin(next, null);
+    }
+    if (state.holding && !state.userPaused && hold.caughtUp()) hold.release(true);
+    if (state.holding) { hold.pill(); play.applyRate(); return; }
     if (!state.wait && state.lag > SCHEDULE.maxLag && !media.paused) {
       const landed = afterSeek(state.segments, time);
       if (landed.segment && state.queue.indexOf(landed.segment) !== state.play) { begin(landed.segment, landed.point); return; }
-    } else if (state.play < 0 && !media.paused) {
-      const next = state.queue[state.done + 1];
-      if (next && time + 0.03 >= next.start) { begin(next, null); return; }
     }
     hold.consider(time);
+    pace.enter(time);
     play.applyRate();
   }
   function onSeek() {
@@ -105,12 +112,15 @@ export function attachCueSync(player, win) {
     }
     if (user) play.active().pause();
     else if (media.paused) { state.internal = true; media.play().catch(() => {}); state.internal = false; }
+    state.paced = "";
+    pace.enter(time, true);
+    pace.resync();
   }
   function start(src) {
     stop();
     const mine = state.token;
     state.base = String(src).replace(/[^/]*$/, "");
-    state.wait = win.wait !== false;
+    state.wait = (win.pacing || "smooth") !== "off";
     fetch(src).then((res) => res.json()).then((doc) => {
       if (mine !== state.token) return;
       state.segments = doc.segments || [];
@@ -119,6 +129,7 @@ export function attachCueSync(player, win) {
       const first = itemsOf(state.queue[0])[0];
       if (first) play.load(play.standby(), first);
       if (demo) status.showPill();
+      pace.replan({ from: media.currentTime || 0 });
       state.clock = setInterval(tick, 50);
       tick();
     }).catch((error) => console.warn("sign json failed", error));
@@ -134,7 +145,8 @@ export function attachCueSync(player, win) {
   media.addEventListener("seeking", () => { if (state.snap) return; state.jump = state.play < 0 || Math.abs((media.currentTime || 0) - state.seen) >= 0.08; });
   media.addEventListener("seeked", () => { if (state.snap) { state.snap = false; state.seen = media.currentTime || 0; return; } if (!state.jump) return; state.jump = false; state.seen = media.currentTime || 0; onSeek(); });
   return {
-    start, stop, setWait(on) { state.wait = on; if (!on) { hold.release(true); if (state.ending) hold.finishEnd(); } },
+    start, stop, replan() { state.paced = ""; pace.enter(media.currentTime || 0, true); },
+    setPace(mode) { state.wait = mode !== "off"; state.paced = ""; if (!state.wait) { hold.release(true); if (state.ending) hold.finishEnd(); } pace.enter(media.currentTime || 0, true); },
     place: () => status.place(), applyRate: () => play.applyRate(), label: () => status.label(),
     get log() { return state.log; }, get holds() { return state.holds; }, get endWait() { return state.endWait; },
     get maxLag() { return state.maxLag; }, get meanLag() { return state.lagN ? state.lagSum / state.lagN : 0; }
