@@ -1,7 +1,12 @@
-// FR-CORE-08: Write a state change into the player's polite live region.
+// FR-CORE-08: One polite live region. Repeating the same words is still spoken.
+const timers = new WeakMap();
+
 export function announce(root, text) {
   const region = root.querySelector("[aria-live]");
   if (!region) return;
+  clearTimeout(timers.get(region));
   region.textContent = "";
-  region.textContent = text;
+  timers.set(region, setTimeout(() => {
+    region.textContent = text;
+  }, 100));
 }

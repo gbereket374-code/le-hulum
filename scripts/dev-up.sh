@@ -45,10 +45,13 @@ check() {
   fi
 }
 
+check /demo/index.html
+check /demo/lesson-video.html
+check /demo/lesson-text.html
+check /demo/jobs.html
+check /demo/sign-try.html
 check /demo/blank.html
 check /pages/concept-with-navigation.html
-check /module/db-player.js
-check /demo/data/lesson.en.vtt
 check /api/v1/health
 
 if [[ "$fail" -ne 0 ]]; then
@@ -90,8 +93,19 @@ fi
 
 cat <<EOF
 LE HULUM is running
-Phone (HTTPS): ${url}/demo/blank.html
+Phone (HTTPS): ${url}/demo/index.html
+               ${url}/demo/lesson-video.html
+               ${url}/demo/lesson-text.html
+               ${url}/demo/jobs.html
+               ${url}/demo/sign-try.html
+               ${url}/demo/blank.html
                ${url}/pages/concept-with-navigation.html
-Laptop:        http://localhost:8080/demo/blank.html
+Laptop:        http://localhost:8080/demo/index.html
+               http://localhost:8080/demo/lesson-video.html
+               http://localhost:8080/demo/lesson-text.html
+               http://localhost:8080/demo/jobs.html
+               http://localhost:8080/demo/sign-try.html
+               http://localhost:8080/demo/blank.html
+               http://localhost:8080/pages/concept-with-navigation.html
 API docs:      ${url}/api/docs  (and http://localhost:8080/api/docs)
 EOF
