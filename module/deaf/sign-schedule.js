@@ -25,7 +25,7 @@ export function pointInSegment(segment, lessonTime) {
   const items = itemsOf(segment);
   if (!items.length) return null;
   const span = Math.max(0.001, segment.end - segment.start);
-  const lengths = items.map((item) => Math.max(0, Number(item.to) - Number(item.from)));
+  const lengths = items.map((item) => itemSpan(item));
   const total = lengths.reduce((sum, length) => sum + length, 0) || 0.001;
   const frac = Math.min(1, Math.max(0, (lessonTime - segment.start) / span));
   let remain = frac * total;
@@ -43,8 +43,20 @@ export function playableSegments(segments) {
   return (segments || []).filter((segment) => segment && segment.source !== "none" && itemsOf(segment).length);
 }
 
+export function itemSpan(item) {
+  if (!item) return 0;
+  if (item.pause != null) return Math.max(0, Number(item.pause) || 0);
+  return Math.max(0, Number(item.to) - Number(item.from));
+}
+
 export function signSpan(segment) {
-  return itemsOf(segment).reduce((sum, item) => sum + Math.max(0, Number(item.to) - Number(item.from)), 0);
+  return itemsOf(segment).reduce((sum, item) => sum + itemSpan(item), 0);
+}
+
+export function playedSpan(items, index, into) {
+  let done = 0;
+  for (let at = 0; at < index && at < (items || []).length; at += 1) done += itemSpan(items[at]);
+  return done + Math.max(0, Number(into) || 0);
 }
 
 export function queueStart(segments, index, previousDoneAt) {

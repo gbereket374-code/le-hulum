@@ -33,6 +33,10 @@ def test_library_seed_routes_and_media(data_root):
         seg = next(row for row in sign["segments"] if row["cue"] == "A01")
         assert a01["source"] == "memory" and a01["from_s"] == seg["from"] and a01["to_s"] == seg["to"]
         assert sum(row["source"] == "phrase" for row in phrases) == 25
+        media = ROOT / "demo" / "data"
+        for row in lexicon + phrases:
+            assert row["to_s"] > row["from_s"]
+            assert (media / row["clip"]).is_file()
         hidden = heldout_items()
         assert len(hidden) == 10
         assert hidden[0]["text_en"] == SECRET

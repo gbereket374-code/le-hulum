@@ -27,12 +27,23 @@ function report(name, snap) {
   return { name, lines, holds, max, inside: snap.holds.some((row) => row.inside), ahead: snap.ahead, same: snap.same, wall: snap.wall, frozen: snap.frozen, ended: snap.ended };
 }
 
-async function run(how, block) {
+async function run(how, block, playlist) {
   const context = await browser.newContext();
   const page = await context.newPage();
   const cdp = await context.newCDPSession(page);
   await cdp.send("Network.setCacheDisabled", { cacheDisabled: true });
   if (block) await page.route("**/*A05.mp4*", (route) => route.abort());
+  if (playlist) {
+    await page.route("**/data/sign.json*", async (route) => {
+      const doc = await (await route.fetch()).json();
+      for (const seg of doc.segments || []) {
+        if (!seg.src || !(seg.to > seg.from)) continue;
+        const hold = Math.min(0.25, Math.max(0.05, (seg.to - seg.from) / 5));
+        seg.playlist = [{ src: seg.src, from: seg.from, to: seg.to - hold }, { pause: hold }];
+      }
+      await route.fulfill({ contentType: "application/json", body: JSON.stringify(doc) });
+    });
+  }
   await page.goto("http://localhost:8080/demo/lesson-video.html?sign=on", { waitUntil: "domcontentloaded" });
   await page.waitForFunction(() => {
     const player = document.querySelector("db-player")?._player;
@@ -120,8 +131,8 @@ async function run(how, block) {
 }
 
 const results = [];
-for (const [name, how, block] of [["Play button", "button", false], ["media.play()", "media", false], ["A05 blocked", "button", true]]) {
-  results.push(report(name, await run(how, block)));
+for (const [name, how, block, playlist] of [["Play button", "button", false, false], ["media.play()", "media", false, false], ["A05 blocked", "button", true, false], ["playlist", "button", false, true]]) {
+  results.push(report(name, await run(how, block, playlist)));
 }
 await browser.close();
 let failed = false;

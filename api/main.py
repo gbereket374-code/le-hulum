@@ -8,6 +8,7 @@ from api.routes.glossary import router as glossary_router
 from api.routes.lessons import router as lessons_router
 from api.routes.lexicon import router as lexicon_router
 from api.routes.phrases import router as phrases_router
+from api.routes.sign import router as sign_router
 
 
 @asynccontextmanager
@@ -34,6 +35,7 @@ app.include_router(lexicon_router)
 app.include_router(phrases_router)
 app.include_router(glossary_router)
 app.include_router(examples_router)
+app.include_router(sign_router)
 
 
 @app.api_route("/api/v1/health", methods=["GET", "HEAD"])

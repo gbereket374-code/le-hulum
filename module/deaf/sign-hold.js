@@ -1,5 +1,5 @@
 // FR-DEAF-06: Pause the lesson at a cue boundary without pausing the signer.
-import { SCHEDULE, afterFailure, afterSkip, countsAsHold, gapHold, holdDecision, inSentence, itemsOf, mediaUntil, openRun, playbackCause, resumeSigner, signSpan, watchHold } from "./sign-schedule.js";
+import { SCHEDULE, afterFailure, afterSkip, countsAsHold, gapHold, holdDecision, inSentence, itemSpan, itemsOf, mediaUntil, openRun, playbackCause, playedSpan, resumeSigner, signSpan, watchHold } from "./sign-schedule.js";
 
 export function attachHold(player, state, hooks) {
   const media = player.media;
@@ -7,13 +7,14 @@ export function attachHold(player, state, hooks) {
   const rawPlay = media.play.bind(media);
   const rawToggle = player.toggle.bind(player);
   player.state = player.state || {};
-
   function signerAt() { return state.play >= 0 ? state.play : state.done; }
   function intoNow() {
     const video = hooks.video();
-    const item = itemsOf(state.queue[state.play] || null)[state.item];
+    const list = itemsOf(state.queue[state.play] || null);
+    const item = list[state.item];
     if (state.play < 0 || !video || !item) return signSpan(state.queue[signerAt()] || null);
-    return Math.max(0, Math.min(signSpan(state.queue[state.play]), (video.currentTime || 0) - Number(item.from)));
+    const into = item.pause == null ? (video.currentTime || 0) - Number(item.from) : Math.min(itemSpan(item), (performance.now() - (state.pauseAt || performance.now())) / 1000);
+    return Math.max(0, Math.min(signSpan(state.queue[state.play]), playedSpan(list, state.item, into)));
   }
   function unfinished() {
     if (state.play >= 0 && state.broken === state.play) return true;
@@ -64,8 +65,7 @@ export function attachHold(player, state, hooks) {
   }
   function pill() {
     if (state.pillOn || performance.now() - state.holdStart < SCHEDULE.pillAfter * 1000) return;
-    state.pillOn = true; hooks.showPill();
-    if (!state.told) { player.announce("sign_waiting_first"); state.told = true; }
+    state.pillOn = true; hooks.showPill(); if (!state.told) { player.announce("sign_waiting_first"); state.told = true; }
   }
   function freezeEnd() {
     if (state.ending || hooks.demo || !state.wait) return;

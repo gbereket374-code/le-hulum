@@ -5,62 +5,15 @@ import re
 import sys
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 from cut_by_pause import duration, read_frames
 from sign_motion import absolute_motion, trim_bounds
+from api.ethsl.morph import PREFIXES, SUFFIXES, am_match, consonants, peel, related
 
-PREFIXES = ("የሚ", "በሚ", "ለሚ", "የመ", "እንደ", "ስለ", "እን", "እና", "ስን", "የ", "በ", "ለ", "ከ", "ይ", "ያ", "ት", "ታ", "ሲ", "ሚ", "መ")
-SUFFIXES = ("ላለች", "ዎችን", "ላሉ", "ዎቹ", "ለን", "ላል", "ለሁ", "ዎች", "ው", "ዋ", "ኡ", "ን", "ም")
 SCHEMA = Path(__file__).resolve().parents[1] / "schemas" / "glossary.schema.json"
-
-
-def consonants(text):
-    out = []
-    for char in text:
-        code = ord(char)
-        if 0x1200 <= code <= 0x135F:
-            out.append(code - (code - 0x1200) % 8)
-    return tuple(out)
-
-
-def related(text, want):
-    got = consonants(text)
-    if got == want:
-        return True
-    return len(want) >= 3 and len(got) >= len(want) and got[:len(want)] == want
-
-
-def peel(token, lemma):
-    word = token
-    guard = max(2, len(consonants(lemma)))
-    want = consonants(lemma)
-    while len(consonants(word)) > guard:
-        found = []
-        for prefix in PREFIXES:
-            rest = word[len(prefix):]
-            if word.startswith(prefix) and len(consonants(rest)) >= guard and related(rest, want):
-                found.append(rest)
-                break
-        for suffix in SUFFIXES:
-            rest = word[:-len(suffix)]
-            if word.endswith(suffix) and len(consonants(rest)) >= guard and related(rest, want):
-                found.append(rest)
-                break
-        if not found:
-            break
-        word = next((item for item in found if consonants(item) == want), found[0])
-    return word
-
-
-def am_match(token, lemma):
-    if not token or not lemma:
-        return False
-    if token == lemma:
-        return True
-    stem = peel(token, lemma)
-    if stem == lemma or consonants(stem) == consonants(lemma):
-        return True
-    got, want = consonants(stem), consonants(lemma)
-    return len(want) >= 3 and len(got) >= len(want) and got[:len(want)] == want
 
 
 def en_forms(word):

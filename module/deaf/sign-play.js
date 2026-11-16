@@ -22,14 +22,16 @@ export function attachSignPlay(win, state, hooks) {
   function current() { return items(state.segments[state.index] || null)[state.item] || null; }
   function upcoming() {
     const list = items(state.segments[state.index] || null);
-    if (state.item + 1 < list.length) return list[state.item + 1];
-    return hooks.next?.() || null;
+    for (let index = state.item + 1; index < list.length; index += 1) if (list[index]?.src) return list[index];
+    const next = hooks.next?.() || null;
+    return next?.src ? next : null;
   }
   function applyRate() {
     const rate = hooks.rate();
     for (const video of pair()) if (Math.abs(video.playbackRate - rate) > 0.01) video.playbackRate = rate;
   }
   function load(video, item, at) {
+    if (!item || !item.src) return;
     const url = state.base + item.src;
     const target = Number(at == null ? item.from : at);
     video.preload = "auto";
@@ -38,6 +40,18 @@ export function attachSignPlay(win, state, hooks) {
     else if (video.readyState >= 1) seek();
   }
   function playItem(item, at) {
+    if (item && item.pause != null) {
+      active().pause();
+      state.pauseAt = performance.now();
+      clearTimeout(state.stall);
+      const wait = Math.max(0, Number(item.pause)) * 1000 / (hooks.rate() || 1);
+      state.stall = setTimeout(() => {
+        const list = items(state.segments[state.index]);
+        if (state.item + 1 < list.length) { state.item += 1; playItem(list[state.item], list[state.item].from); }
+        else hooks.ended();
+      }, wait);
+      return;
+    }
     const nodes = pair();
     const url = state.base + item.src;
     const video = nodes.find((node) => node.getAttribute("src") === url) || active();
