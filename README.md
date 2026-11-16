@@ -9,16 +9,17 @@ Built for the **Digital Bridge Accessibility Hackathon 2026 (ALX)**, Track 2: Ac
 
 | Resource | Link |
 | --- | --- |
-| Live demo (static site) | https://le-hulum.netlify.app/ |
+| **Live demo** | **https://le-hulum.netlify.app/** (must end in `.app` — `.netlify.com` is a dead Netlify URL and shows “Site not found”) |
 | Demo home | https://le-hulum.netlify.app/demo/index.html |
 | Plug-in test page | https://le-hulum.netlify.app/demo/plugin-test.html |
+| API overview (on Netlify) | https://le-hulum.netlify.app/api/docs/ |
+| Requirements (SRS PDF) | https://le-hulum.netlify.app/docs/le-hulum-srs.pdf |
 | Full stack + API (local) | http://localhost:8080 after `scripts/dev-up.sh` |
-| API docs (Swagger) | http://localhost:8080/api/docs |
+| Swagger UI (local only) | http://localhost:8080/api/docs |
 | GitHub | https://github.com/gbereket374-code/le-hulum |
-| Requirements (SRS) | [docs/le-hulum-srs.pdf](docs/le-hulum-srs.pdf) |
 | Integration guide | [docs/INTEGRATION.md](docs/INTEGRATION.md) |
 
-No login is needed anywhere on the demo.
+No login is needed anywhere on the demo. Use **https://le-hulum.netlify.app/** — not `netlify.com`.
 
 ## Contents
 

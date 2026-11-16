@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>API docs — LE HULUM</title>
+<link rel="stylesheet" href="/demo.css">
+<script>!function(){var q=new URLSearchParams(location.search),t=q.get("theme"),s;try{s=localStorage.getItem("db-demo:theme")}catch(e){}if(t==="light"||t==="dark"||t==="contrast")document.documentElement.dataset.theme=t;else if(s==="light"||s==="dark"||s==="contrast")document.documentElement.dataset.theme=s;else document.documentElement.dataset.theme="dark";var l=q.get("lang");try{l=l||localStorage.getItem("db-demo:lang")}catch(e){}document.documentElement.lang=l==="am"?"am":"en";}();</script>
+</head>
+<body data-page="integrate" data-no-pin>
+<main id="main">
+  <header class="ls-head">
+    <div>
+      <nav class="crumb" aria-label="Breadcrumb"><a href="/index.html"><span class="en-only">Home</span><span class="am-only" lang="am">መነሻ</span></a> › <span aria-current="page">/api/docs</span></nav>
+      <h1>API docs</h1>
+      <ul class="meta">
+        <li><span class="en-only">Swagger UI runs with the local stack</span><span class="am-only" lang="am">Swagger UI ከአካባቢያዊ ቁልል ጋር ይሰራል</span></li>
+        <li><span class="en-only">This static host has the demo only</span><span class="am-only" lang="am">ይህ ሆስት ዴሞውን ብቻ ይይዛል</span></li>
+      </ul>
+    </div>
+    <a class="btn" href="/integrate.html"><span class="en-only">Integrate</span><span class="am-only" lang="am">ያገናኙ</span></a>
+  </header>
+  <section class="studio" style="padding:1.5rem">
+    <p><span class="en-only">Interactive OpenAPI / Swagger is available when you run the full stack locally:</span><span class="am-only" lang="am">ሙሉ ቁልሉን በአካባቢ ሲያሄዱ ክፍት API ሰነድ ይገኛል፡</span></p>
+    <pre lang="en" style="white-space:pre-wrap">scripts/dev-up.sh
+open http://localhost:8080/api/docs</pre>
+    <p><span class="en-only">On this Netlify demo, use the integrate guide for the script tag, REST overview, and open standard.</span><span class="am-only" lang="am">በዚህ Netlify ዴሞ ላይ የማገናኘት መመሪያውን ይመልከቱ።</span></p>
+    <p>
+      <a class="btn" href="/integrate.html"><span class="en-only">Open integrate guide</span><span class="am-only" lang="am">የማገናኘት መመሪያ</span></a>
+      <a class="btn alt" href="/docs/le-hulum-srs.pdf">SRS PDF</a>
+      <a class="btn alt" href="https://github.com/gbereket374-code/le-hulum#8-api-reference">GitHub API section</a>
+    </p>
+  </section>
+</main>
+<script type="module" src="/demo.js"></script>
+</body>
+</html>
