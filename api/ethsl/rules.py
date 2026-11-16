@@ -1,5 +1,6 @@
 # FR-SL-05: Apply api/ethsl/rules.yaml in order and record why.
 from api.ethsl.analyze import analyze
+from api.ethsl.order import split, unsaid
 
 
 def _dedupe(items):
@@ -11,8 +12,7 @@ def _dedupe(items):
 
 
 def _walk(body):
-    nps, pending = [], []
-    verb = ads = mods = whs = None
+    nps, pending, verbs = [], [], []
     ads, mods, whs = [], [], []
     neg = imperative = False
     pronoun = None
@@ -23,7 +23,7 @@ def _walk(body):
             nps.append({"head": token, "mods": pending})
             pending = []
         elif token["pos"] in ("verb", "have", "exist"):
-            verb = token
+            verbs.append(token)
             neg = neg or token["neg"]
             pronoun = token["subject"] or pronoun
             imperative = imperative or token["imperative"]
@@ -40,7 +40,8 @@ def _walk(body):
         nps[-1]["mods"].extend(pending)
     elif pending:
         nps.extend({"head": token, "mods": []} for token in pending)
-    return nps, verb, ads, mods, whs, neg, pronoun, imperative
+    verb = verbs[-1] if verbs else None
+    return nps, verb, verbs[:-1], ads, mods, whs, neg, pronoun, imperative
 
 
 def _np(np, number, fired):
@@ -66,15 +67,13 @@ def _clause(tokens):
     if any(token["pos"] == "prep" for token in tokens):
         fired.append("drop-preposition")
     kept = [token for token in tokens if token["pos"] not in ("copula", "prep", "conj", "function")]
-    front = [token for token in kept if token["pos"] == "time" and token["gloss"] not in ("AFTER", "BEFORE")]
-    tail = [token for token in kept if token["pos"] == "time" and token["gloss"] in ("AFTER", "BEFORE")]
+    front, settings, body, tail = split(kept)
     if front or tail:
         fired.append("time-first")
-    body = [token for token in kept if token["pos"] != "time"]
     copula_neg = any(token["pos"] == "copula" and token.get("neg") for token in tokens)
-    nps, verb, ads, mods, whs, neg, pronoun, imperative = _walk(body)
+    nps, verb, earlier, ads, mods, whs, neg, pronoun, imperative = _walk(body)
     neg = neg or copula_neg
-    number = any(token["pos"] == "number" for token in body)
+    number = any(token["pos"] == "number" for token in kept)
     strong = pronoun in ("WE", "YOU-PL", "I", "YOU")
     if imperative:
         fired.append("imperative-no-subject")
@@ -93,19 +92,23 @@ def _clause(tokens):
             subjects, objects = subjects[:1], subjects[1:]
     else:
         subjects, objects = nps, []
-    out = [{"gloss": token["gloss"], "token": token["token"]} for token in front]
+    out = [{"gloss": token["gloss"] or token["token"], "token": token["token"]} for token in front]
+    for demo, unit in settings:
+        out.extend(_np({"head": unit[0], "mods": [demo, *unit[1:]]}, number, fired))
     if verb and not imperative and not subjects and pronoun:
         out.append({"gloss": pronoun, "token": verb["token"]})
         fired.append("pronoun-from-verb")
     for np in subjects:
         out.extend(_np(np, number, fired))
+    for extra in earlier:
+        out.append({"gloss": extra["gloss"] or extra["token"], "token": extra["token"]})
     if verb:
         out.append({"gloss": verb["gloss"] or verb["token"], "token": verb["token"]})
     for np in objects:
         out.extend(_np(np, number, fired))
     if ads or mods:
         fired.append("adverb-after-verb")
-    out.extend({"gloss": token["gloss"], "token": token["token"]} for token in ads + mods + tail)
+    out.extend({"gloss": token["gloss"] or token["token"], "token": token["token"]} for token in ads + mods + tail)
     if neg:
         fired.append("negation-at-end")
         source = verb["token"] if verb else next(token["token"] for token in tokens if token.get("neg"))
@@ -113,6 +116,7 @@ def _clause(tokens):
     if whs:
         fired.append("question-wh")
         out.extend({"gloss": token["gloss"], "token": token["token"]} for token in whs)
+    out.extend(unsaid(tokens, out))
     return out, fired, bool(whs), neg
 
 

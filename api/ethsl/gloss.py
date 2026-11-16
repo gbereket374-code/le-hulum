@@ -3,7 +3,12 @@ from api.ethsl.morph import lexicon
 from api.library import demo_data, lexicon_file, measure, relative
 
 _INDEX = {"I", "YOU", "YOU-PL", "WE", "HE", "SHE", "THEY", "IX"}
+_FAMILY = {"FIRST": "START"}
 _CACHE = {}
+
+
+def _row(gloss):
+    return next((item for item in lexicon() if item["gloss"] == gloss), None)
 
 
 def _ready():
@@ -12,7 +17,7 @@ def _ready():
 
 
 def _bounds(gloss):
-    row = next((item for item in lexicon() if item["gloss"] == gloss), None)
+    row = _row(gloss) or _row(_FAMILY.get(gloss, ""))
     if row and row.get("clip") and row.get("from") is not None:
         return row["clip"], float(row["from"]), float(row["to"])
     path = lexicon_file(gloss, (row or {}).get("en") or gloss)

@@ -11,9 +11,14 @@ from api.models import Example, SignReview
 router = APIRouter()
 
 
-def _segment(cue):
-    result = translate(cue.get("text_am") or "", "am")
-    base = {"cue": cue.get("id"), "start": cue.get("start"), "end": cue.get("end"), "source": result["layer"]}
+def _segment(cue, use_memory=True):
+    result = translate(cue.get("text_am") or "", "am", use_memory=use_memory)
+    gloss = " ".join(item["gloss"] for item in result["gloss"] if item.get("kind") != "pause")
+    base = {
+        "cue": cue.get("id"), "start": cue.get("start"), "end": cue.get("end"), "source": result["layer"],
+        "text_am": result["text"], "gloss": gloss, "nonmanual": result["nonmanual"],
+        "confidence": result["confidence"], "coverage": result["coverage"],
+    }
     if result["layer"] == "memory" and result["playlist"]:
         clip = result["playlist"][0]
         base.update({"src": clip["src"], "from": clip["from"], "to": clip["to"], "duration": round(clip["to"] - clip["from"], 3)})
@@ -30,7 +35,10 @@ def _segment(cue):
 def sign_translate(body: dict, render: str = Query("", alias="format")):
     if not str(body.get("text") or "").strip():
         return JSONResponse({"error": "text is required."}, status_code=400)
-    result = translate(body.get("text") or "", body.get("lang") or "am")
+    use_memory = body.get("use_memory", True)
+    if isinstance(use_memory, str):
+        use_memory = use_memory.strip().lower() not in ("false", "0", "no")
+    result = translate(body.get("text") or "", body.get("lang") or "am", use_memory=bool(use_memory))
     if render == "mp4":
         result = export_mp4(result)
     return result
@@ -41,7 +49,10 @@ def sign_lesson(body: dict):
     cues = body.get("cues") or []
     if not body.get("lesson_id") or not isinstance(cues, list):
         return JSONResponse({"error": "lesson_id and cues are required."}, status_code=400)
-    return {"version": 1, "lesson": body["lesson_id"], "lang": "am", "segments": [_segment(cue) for cue in cues]}
+    use_memory = body.get("use_memory", True)
+    if isinstance(use_memory, str):
+        use_memory = use_memory.strip().lower() not in ("false", "0", "no")
+    return {"version": 1, "lesson": body["lesson_id"], "lang": "am", "segments": [_segment(cue, bool(use_memory)) for cue in cues]}
 
 
 @router.post("/api/v1/sign/review")

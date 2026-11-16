@@ -34,14 +34,45 @@
   </nav>
 </header>
 <main id="main">
-  <h1>Automatic sign <span class="am" lang="am">ራስ-ሰር ምልክት</span></h1>
-  <p class="placeholder">Automatic sign arrives in Step 5</p>
+  <h1>Try automatic sign <span class="am" lang="am">ራስ-ሰር ምልክትን ይሞክሩ</span></h1>
+  <p class="lead"><span class="en-only">Type Amharic, then sign it. Long text is signed one sentence at a time.</span><span class="am-only" lang="am">አማርኛ ይጻፉ፣ ከዚያ ያመልክቱ። ረጅም ጽሑፍ አረፍተ ነገር በአረፍተ ነገር ይመዘገባል።</span></p>
+  <div class="try-grid">
+  <form id="try-form" class="try-form">
+    <label for="am-text"><span class="en-only">Amharic sentence</span><span class="am-only" lang="am">የአማርኛ ዓረፍተ ነገር</span></label>
+    <textarea id="am-text" lang="am" name="text"></textarea>
+    <div class="try-actions">
+      <button type="submit" class="try-go"><span lang="am">አመልክት</span><span lang="en">Sign it</span></button>
+    </div>
+    <div class="try-examples" role="group" aria-labelledby="examples-label">
+      <p id="examples-label"><span class="en-only">Examples</span><span class="am-only" lang="am">ምሳሌዎች</span></p>
+      <div id="example-list"></div>
+    </div>
+  </form>
+  <div id="try-live" class="try-live" aria-live="polite">
+    <h2 id="try-heading" tabindex="-1" hidden>Signed result</h2>
+    <div id="try-empty" class="try-empty">
+      <svg viewBox="0 0 80 100" aria-hidden="true">
+        <circle cx="40" cy="16" r="9"/>
+        <path d="M40 26v26M26 40h28M30 52l-10 30M50 52l10 30M20 38c-8 8-8 18 0 24M60 38c8 8 8 18 0 24"/>
+      </svg>
+      <p id="try-empty-text">Type a sentence or tap an example</p>
+    </div>
+    <div id="try-stage" class="stage try-stage" hidden></div>
+    <div id="try-controls" class="try-controls" hidden>
+      <button type="button" id="replay">Replay</button>
+      <button type="button" id="rate-1" aria-pressed="true">Speed 1</button>
+      <button type="button" id="rate-75" aria-pressed="false">Speed 0.75</button>
+    </div>
+    <div id="try-out"></div>
+  </div>
+  </div>
+  <p id="try-error" role="alert"></p>
 </main>
 <footer>
   <span>Built for the Digital Bridge Accessibility Hackathon (ALX) · first used on Savanna</span>
   <span>Source code</span>
 </footer>
 <script src="demo.js"></script>
-<script type="module" src="/module/db-player.js"></script>
+<script type="module" src="sign-try.js"></script>
 </body>
 </html>

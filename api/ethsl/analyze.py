@@ -11,6 +11,7 @@ _NEG_COPULA = {"አይደለም", "አይደሉም", "አልነበረም"}
 _CONJ = {"እና", "ወይም", "ግን"}
 _WH = {"ምን": "WHAT", "የት": "WHERE", "መቼ": "WHEN", "እንዴት": "HOW", "ለምን": "WHY", "ማን": "WHO"}
 _DEMO = {"ይህ", "ያ", "ይህን", "ያን", "ይህንን", "ያንን"}
+_SETTING = {"በዚህ", "በዚያ"}
 _NUM = {"አንድ": "ONE", "ሁለት": "TWO", "ሶስት": "THREE", "ሦስት": "THREE", "አራት": "FOUR", "አምስት": "FIVE"}
 _HAVE = {"አላቸው", "አላት", "አላችሁ", "አለሁ", "አለሽ", "አለህ", "አለን"}
 _EXIST = {"አለ", "አሉ", "አለው"}
@@ -85,7 +86,7 @@ def _closed(token):
         return _pack(token, None, "conj")
     if token in _WH or folded in _WH:
         return _pack(token, _WH.get(token) or _WH.get(folded), "wh")
-    if token in _DEMO or folded in _DEMO:
+    if token in _DEMO or folded in _DEMO or token in _SETTING or folded in _SETTING:
         return _pack(token, "IX", "demo")
     if token in _NUM or folded in _NUM:
         return _pack(token, _NUM.get(token) or _NUM.get(folded), "number")
@@ -131,7 +132,9 @@ def _feature(token, gloss, group, merged):
         gloss, ambiguous = lemma(token)
         row = next((item for item in lexicon() if item["gloss"] == gloss), None)
         group = row["group"] if row else ""
-    pos = _pos(gloss, group) if gloss and (row or merged) else "missing"
+    if gloss == "START" and token in ("መጀመሪያ", "የመጀመሪያ"):
+        gloss, row, group = "FIRST", None, "time"
+    pos = _pos(gloss, group) if gloss and (row or merged or gloss == "FIRST") else "missing"
     if gloss and not row and not merged and subject_ending(token):
         pos = "verb"
     _bare, neg = strip_neg(fold(token))

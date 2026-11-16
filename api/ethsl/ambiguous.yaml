@@ -1,0 +1,8 @@
+# FR-SL-04: One root, several meanings. The derivational prefix chooses the gloss.
+roots:
+  - root: መለከተ
+    senses:
+      - prefix: ["ተ"]
+        gloss: LOOK
+      - prefix: ["አ", "ማ"]
+        gloss: APPLY

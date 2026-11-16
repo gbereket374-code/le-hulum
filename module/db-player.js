@@ -131,7 +131,8 @@ class DbPlayer extends HTMLElement {
     mountSign(this._player);
     loadGlossary(this._player);
     this._player.setSource(this.getAttribute("src") || "", this.getAttribute("poster"));
-    if (new URLSearchParams(location.search).get("sign") === "on") toggleSign(this._player);
+    const autoSign = !this.getAttribute("sign") && this.getAttribute("api") && this.getAttribute("lesson-id");
+    if (new URLSearchParams(location.search).get("sign") === "on" || autoSign) toggleSign(this._player);
   }
 }
 

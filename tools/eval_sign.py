@@ -54,7 +54,7 @@ def rows_of(items):
     table = []
     exact = f_sum = order_sum = 0
     for item in items:
-        result = translate(item["text_am"])
+        result = translate(item["text_am"], use_memory=False)
         pred, gold = tokens(gloss_text(result)), tokens(item["gloss"])
         match = pred == gold
         score_f, score_o = f1(pred, gold), order_accuracy(pred, gold)
@@ -92,13 +92,23 @@ def main():
     if not os.access(parent, os.W_OK):
         os.environ["DATA_DIR"] = str(ROOT / ".dev" / "eval")
     from api.heldout import ensure_heldout
-    example_table, example_exact, example_f, example_order = rows_of(examples())
-    held_table, held_exact, held_f, held_order = rows_of(ensure_heldout())
+    example_rows, held_rows = examples(), ensure_heldout()
+    example_table, example_exact, example_f, example_order = rows_of(example_rows)
+    held_table, held_exact, held_f, held_order = rows_of(held_rows)
     warning = "H glosses were generated from the same rules; this is a consistency check, not accuracy. Real accuracy = Deaf co-designer rating."
+    hits = ["## Memory hits", "", "Rule scores above use translate(text, use_memory=False). These lines also match a recorded phrase when memory is on:", ""]
+    for item in list(example_rows) + list(held_rows):
+        remembered = translate(item["text_am"], use_memory=True)
+        if remembered["layer"] == "memory":
+            clip = (remembered["playlist"] or [{}])[0].get("src", "")
+            hits.append(f"- {item['id']}: {clip}")
+    if len(hits) == 4:
+        hits.append("- none")
     doc = "\n\n".join([
         "# Sign evaluation",
         markdown("E01–E20", example_table, example_exact, example_f, example_order),
         markdown("H01–H10", held_table, held_exact, held_f, held_order, warning),
+        "\n".join(hits),
         "",
     ])
     path = ROOT / "docs" / "sign-eval.md"

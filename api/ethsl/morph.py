@@ -5,8 +5,8 @@ import json
 from api.library import demo_data
 
 PREFIXES = ("የሚ", "በሚ", "ለሚ", "የመ", "እንደ", "ስለ", "እን", "እና", "ስን", "የ", "በ", "ለ", "ከ", "ይ", "ያ", "ት", "ታ", "ሲ", "ሚ", "መ")
-SUFFIXES = ("ላለች", "ዎችን", "ላሉ", "ዎቹ", "ለን", "ላል", "ለሁ", "ዎች", "ው", "ዋ", "ኡ", "ን", "ም")
-NEG_PREFIX = ("የማይ", "ከማይ", "ካል", "ሳይ", "አያ", "አታ", "አል", "አት", "አይ")
+SUFFIXES = ("አችኋል", "ችኋል", "ላለች", "ላችሁ", "ዎችን", "አችሁ", "ላሉ", "ዎቹ", "አቸው", "ችሁ", "ለን", "ላል", "አል", "ለሁ", "ዎች", "ኦች", "ው", "ዋ", "ኡ", "ን", "ም", "ች", "ል")
+NEG_PREFIX = ("የማይ", "ከማይ", "ካል", "ሳይ", "አያ", "አታ", "አላ", "አል", "አት", "አይ")
 _EXTRA = ("ችሁን", "አችሁን", "ችሁ", "አችሁ", "ዎችን", "ዎቹ", "ኦች", "ዎች", "ውን", "ዋን")
 _BLOCKS = ((0x1210, 0x1200), (0x1280, 0x1200), (0x1220, 0x1230), (0x12D0, 0x12A0), (0x1340, 0x1348))
 _LEX = None
@@ -54,10 +54,7 @@ def am_match(token, lemma):
     if token == lemma:
         return True
     stem = peel(token, lemma)
-    if stem == lemma or consonants(stem) == consonants(lemma):
-        return True
-    got, want = consonants(stem), consonants(lemma)
-    return len(want) >= 3 and len(got) >= len(want) and got[:len(want)] == want
+    return stem == lemma or consonants(stem) == consonants(lemma)
 
 
 def fold(text):
@@ -80,6 +77,9 @@ def strip_neg(token):
             continue
         if marked:
             rest = rest[:-1]
+        if prefix == "አላ":
+            if marked: return "አ" + rest, True
+            continue
         if prefix in ("አያ", "አታ") and rest and not rest.startswith("አ"):
             rest = "አ" + rest
         return rest, True
@@ -87,13 +87,12 @@ def strip_neg(token):
 
 
 def _close(got, want):
+    """One-consonant spelling only. A different first consonant is another word."""
     if got == want:
         return True
-    if len(want) >= 3 and len(got) >= len(want) and got[:len(want)] == want:
-        return True
-    if len(want) >= 5 and len(got) == len(want):
-        return sum(left != right for left, right in zip(got, want)) == 1
-    return False
+    if len(want) < 5 or len(got) != len(want) or not got or got[0] != want[0]:
+        return False
+    return sum(left != right for left, right in zip(got, want)) == 1
 
 
 def lexicon():
@@ -175,6 +174,10 @@ def _alias(token):
 
 
 def lemma(token):
+    from api.ethsl.ambiguous import sense
+    found = sense(token)
+    if found:
+        return found, False
     best = []
     folded = fold(token)
     for row in lexicon():

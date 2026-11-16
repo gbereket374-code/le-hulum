@@ -24,10 +24,10 @@ function report(name, snap) {
     const where = row.inside ? " INSIDE" : "";
     return `${row.wall.toFixed(2)}s wall @ lesson ${row.lesson.toFixed(2)}s caption ${row.caption || "-"} for ${row.length.toFixed(2)}s${where}`;
   });
-  return { name, lines, holds, max, inside: snap.holds.some((row) => row.inside), ahead: snap.ahead, same: snap.same, wall: snap.wall, frozen: snap.frozen, ended: snap.ended };
+  return { name, lines, holds, max, inside: snap.holds.some((row) => row.inside), ahead: snap.ahead, same: snap.same, wall: snap.wall, frozen: snap.frozen, ended: snap.ended, sources: snap.sources };
 }
 
-async function run(how, block, playlist) {
+async function run(how, block, playlist, auto) {
   const context = await browser.newContext();
   const page = await context.newPage();
   const cdp = await context.newCDPSession(page);
@@ -44,10 +44,13 @@ async function run(how, block, playlist) {
       await route.fulfill({ contentType: "application/json", body: JSON.stringify(doc) });
     });
   }
-  await page.goto("http://localhost:8080/demo/lesson-video.html?sign=on", { waitUntil: "domcontentloaded" });
+  const pageUrl = auto ? "http://localhost:8080/demo/lesson-auto.html?sign=on" : "http://localhost:8080/demo/lesson-video.html?sign=on";
+  await page.goto(pageUrl, { waitUntil: "domcontentloaded" });
   await page.waitForFunction(() => {
     const player = document.querySelector("db-player")?._player;
-    return player?.media?.readyState >= 1 && player.sign?.isOpen?.() && player.captions?.getCues?.("am")?.length > 5;
+    const ready = player?.media?.readyState >= 1 && player.sign?.isOpen?.() && player.captions?.getCues?.("am")?.length > 5;
+    if (!ready) return false;
+    return player.host.getAttribute("sign") ? true : (player.sign.plan || []).length > 5;
   });
   await page.evaluate(() => {
     const player = document.querySelector("db-player")._player;
@@ -55,7 +58,8 @@ async function run(how, block, playlist) {
     window.__lh.timer = setInterval(() => {
       const media = player.media;
       const video = player.sign?.video;
-      const sign = (video?.currentSrc || "").match(/A\d+/i)?.[0] || "";
+      const cueId = player.shadow.querySelector(".sign-window")?.dataset.cue || "";
+      const sign = (video?.currentSrc || "").match(/A\d+/i)?.[0] || cueId;
       const sample = {
         w: performance.now(), t: media.currentTime || 0, paused: !!media.paused, ended: !!media.ended,
         dur: media.duration || 0, caption: player.captions.cueAt(media.currentTime || 0)?.id || "",
@@ -90,14 +94,19 @@ async function run(how, block, playlist) {
   const raw = await page.evaluate(async () => {
     const player = document.querySelector("db-player")._player;
     const src = player.host.getAttribute("sign");
-    const doc = await fetch(src).then((res) => res.json());
+    const doc = src ? await fetch(src).then((res) => res.json()) : { segments: player.sign.plan || [] };
     const box = window.__lh;
     clearInterval(box.timer);
     const last = box.samples[box.samples.length - 1] || {};
     return {
       samples: box.samples, t0: box.t0, frozen: !!box.frozen,
       ended: !!last.ended || (!!last.dur && last.t >= last.dur - 0.25),
-      cues: (doc.segments || []).map((cue) => ({ id: cue.cue, start: cue.start, end: cue.end }))
+      cues: (doc.segments || []).map((cue) => ({ id: cue.cue, start: cue.start, end: cue.end, source: cue.source || "" })),
+      sources: {
+        auto: (doc.segments || []).filter((cue) => cue.source === "auto").length,
+        none: (doc.segments || []).filter((cue) => cue.source === "none").length,
+        memory: (doc.segments || []).filter((cue) => cue.source === "memory").length
+      }
     };
   });
   await context.close();
@@ -127,12 +136,12 @@ async function run(how, block, playlist) {
     const signerAt = signer ? (signer.w - raw.t0) / 1000 : null;
     return { id: cue.id, caption: captionAt, signer: signerAt, lag: captionAt == null || signerAt == null ? null : signerAt - captionAt };
   });
-  return { cues: rows, holds, ahead: both ? ahead / both : 0, same: both ? same / both : 0, wall: (Date.now() - started) / 1000, frozen: raw.frozen, ended: raw.ended && !raw.frozen };
+  return { cues: rows, holds, ahead: both ? ahead / both : 0, same: both ? same / both : 0, wall: (Date.now() - started) / 1000, frozen: raw.frozen, ended: raw.ended && !raw.frozen, sources: raw.sources };
 }
 
 const results = [];
-for (const [name, how, block, playlist] of [["Play button", "button", false, false], ["media.play()", "media", false, false], ["A05 blocked", "button", true, false], ["playlist", "button", false, true]]) {
-  results.push(report(name, await run(how, block, playlist)));
+for (const [name, how, block, playlist, auto] of [["Play button", "button", false, false, false], ["media.play()", "media", false, false, false], ["A05 blocked", "button", true, false, false], ["playlist", "button", false, true, false], ["lesson-auto", "button", false, false, true]]) {
+  results.push(report(name, await run(how, block, playlist, auto)));
 }
 await browser.close();
 let failed = false;
@@ -140,6 +149,7 @@ for (const result of results) {
   console.log("\n== " + result.name + " ==");
   console.log(result.holds.length ? result.holds.join("\n") : "(no holds)");
   console.log(result.lines.join("\n"));
+  if (result.sources) console.log("auto " + result.sources.auto + " | none " + result.sources.none + " | memory " + result.sources.memory);
   console.log([
     "ahead " + (result.ahead * 100).toFixed(1) + "%",
     "same " + (result.same * 100).toFixed(1) + "%",

@@ -21,14 +21,14 @@ def _memory_gloss(row):
     return realize([{"gloss": part, "token": part} for part in stored.split()])
 
 
-def run(text, lang="am"):
+def run(text, lang="am", use_memory=True):
     shown = display(text)
     if str(lang or "am").lower().startswith("en") and not any("\u1200" <= char <= "\u135a" for char in shown):
         return _empty(shown, "english needs a translation provider")
     words, reasons, nonmanual, ambiguous = apply(shown)
     items = realize(words)
     layer, value, covered = gate(items, 0.5 if ambiguous else 1.0, 1.0)
-    row, memory_score = lookup(shown)
+    row, memory_score = lookup(shown) if use_memory else (None, 0.0)
     play = playlist(items)
     if row and row.get("clip"):
         layer = "memory"

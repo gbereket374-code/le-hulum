@@ -1,4 +1,5 @@
 // FR-DEAF-01, FR-DEAF-05, FR-DEAF-07, FR-DEAF-08: Open the sign window and keep captions clear.
+import { clipBase, loadAutoSign } from "./sign-auto.js";
 import { attachCueSync } from "./sign-cues.js";
 import { signMode } from "./sign-schedule.js";
 import { attachSignSync, nextRate } from "./sign-sync.js";
@@ -28,6 +29,8 @@ export function attachSign(player) {
   const stage = player.shadow.querySelector(".stage");
   let open = false;
   let mode = "continuous";
+  let plan = null;
+  let token = 0;
   const none = document.createElement("p");
   none.className = "sign-none";
   none.setAttribute("role", "status");
@@ -85,10 +88,12 @@ export function attachSign(player) {
     win.word = video;
     return video;
   }
-  function begin(src) {
-    mode = signMode(src);
-    if (!src) { cues.stop(); sync.stop(); win.hide(); return; }
-    if (mode === "cues") { sync.stop(); win.show(""); cues.start(src); }
+  function begin(src, opts = {}) {
+    const doc = opts.doc || null;
+    if (doc) plan = doc;
+    mode = signMode(doc ? "lesson.json" : src);
+    if (!src && !doc) { cues.stop(); sync.stop(); win.hide(); return; }
+    if (mode === "cues") { sync.stop(); win.show(""); cues.start(doc || src, { base: opts.base, doc }); }
     else { cues.stop(); win.show(src); sync.start(); }
   }
   function emit(name) { for (const fn of bus[name] || []) fn(); }
@@ -96,6 +101,8 @@ export function attachSign(player) {
     get layout() { return win.layout; },
     get video() { return open && none.hidden ? (win.videoB && mode === "cues" ? [win.video, win.videoB].find((video) => video.style.visibility !== "hidden") || win.video : win.video) : null; },
     get log() { return cues.log; },
+    get plan() { return cues.plan; },
+    get cue() { return cues.cue; },
     get holds() { return cues.holds; },
     get endWait() { return cues.endWait; },
     get maxLag() { return cues.maxLag; },
@@ -103,15 +110,28 @@ export function attachSign(player) {
     isOpen: () => open,
     open() {
       const src = player.host.getAttribute("sign") || "";
+      const mine = ++token;
       open = true;
       none.textContent = player.t("sign_none");
-      none.hidden = !!src;
-      begin(src);
-      player.captions?.relayout?.();
-      player._paintAll();
-      emit("open");
+      none.hidden = true;
+      const ready = src ? Promise.resolve(begin(src)) : loadAutoSign(player).then((doc) => {
+        if (mine !== token || !open) return;
+        if (!doc) { none.hidden = false; begin(""); return; }
+        begin(doc, { doc, base: clipBase(player) });
+      });
+      ready.then(() => {
+        if (mine !== token) return;
+        player.captions?.relayout?.();
+        player._paintAll();
+        emit("open");
+      }).catch(() => {
+        if (mine !== token) return;
+        none.hidden = false;
+        none.textContent = player.t("sign_failed");
+      });
     },
     close() {
+      token += 1;
       open = false;
       none.hidden = true;
       if (win.word) win.word.style.visibility = "hidden";
@@ -160,6 +180,7 @@ export function attachSign(player) {
     resumeLesson() {
       if (win.word) { win.word.pause(); win.word.style.visibility = "hidden"; }
       const src = player.host.getAttribute("sign") || "";
+      if (!src && plan) { begin(plan, { doc: plan, base: clipBase(player) }); return; }
       mode = signMode(src);
       if (mode !== "cues") { begin(src); return; }
       cues.start(src, { at: true });

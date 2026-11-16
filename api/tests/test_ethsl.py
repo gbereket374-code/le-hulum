@@ -14,8 +14,8 @@ SAVANNA = [
 ]
 
 
-def glosses(text):
-    result = translate(text)
+def glosses(text, use_memory=True):
+    result = translate(text, use_memory=use_memory)
     return [item["gloss"] for item in result["gloss"] if item.get("kind") != "pause"], result
 
 
@@ -54,6 +54,13 @@ def test_savanna_paragraph_is_fully_signed():
     assert not any("pause" in item for item in listed["playlist"])
 
 
+def test_past_negative_merges_al_a():
+    words, result = glosses("ስክሪኑ ስህተቱን አላሳየም።")
+    assert words == ["SCREEN", "SHOW", "ERROR", "NOT"] and "neg" in result["nonmanual"]
+    plain = translate("ፋይሉን አስቀምጡ።", use_memory=False)
+    assert [item["gloss"] for item in plain["gloss"] if item.get("kind") != "pause"] == ["SAVE", "FILE"]
+
+
 def test_list_comma_negation_and_number():
     assert glosses("ቀጥሎ ተለዋዋጭ፣ መረጃ እና ድግግሞሽ ተማሩ።")[0] == ["NEXT", "LEARN", "VARIABLE", "DATA", "LOOP"]
     words, result = glosses("መምህሩ ኮዱን አያሳይም።")
@@ -64,6 +71,33 @@ def test_list_comma_negation_and_number():
     words, result = glosses("ሁለት ተለዋዋጮችን ፍጠሩ።")
     assert words == ["CREATE", "VARIABLE", "TWO"] and result["layer"] == "none"
     assert any(item["gloss"] == "TWO" and item["kind"] == "missing" for item in result["gloss"])
+
+
+def test_look_time_setting_and_no_silent_drop():
+    import re
+    words, result = glosses("ስክሪኑን ተመልከቱ።", use_memory=False)
+    assert "APPLY" not in words
+    assert any(item["gloss"] == "LOOK" and item["kind"] == "missing" and item["token"] == "ተመልከቱ" for item in result["gloss"])
+    assert glosses("በሚቀጥለው ትምህርት ስለ ድግግሞሽ እንማራለን።", False)[0] == ["NEXT", "LESSON", "WE", "LEARN", "LOOP"]
+    assert glosses("በዚህ ትምህርት ስለ ተለዋዋጮች እንማራለን።", False)[0] == ["LESSON", "IX", "WE", "LEARN", "VARIABLE"]
+    assert glosses("ዛሬ ጠዋት ኮዱን ክፈቱ።", False)[0][:2] == ["TODAY", "MORNING"]
+    assert glosses("ነገ ማታ እንማራለን።", False)[0][:2] == ["TOMORROW", "ማታ"]
+    assert "APPLY" in glosses("ለሥራ ማመልከት ትችላላችሁ።", False)[0]
+    first = translate("የመጀመሪያ ተለዋዋጫችሁን ፈጠራችሁ።", use_memory=False)
+    item = next(row for row in first["gloss"] if row["gloss"] == "FIRST")
+    content = [row for row in first["gloss"] if row["kind"] in ("sign", "missing", "fingerspell")]
+    assert item["kind"] == "sign" and item in content
+    assert first["coverage"] == round(sum(row["kind"] == "sign" for row in content) / len(content), 4)
+    drops = {"ስለ", "ከ", "በ", "ለ", "ላይ", "ውስጥ", "ነው", "ናቸው", "ነበር", "ናት", "ነበሩ", "እና", "ወይም", "ግን"}
+    samples = SAVANNA + [
+        "ስክሪኑን ተመልከቱ።", "በዚህ ትምህርት ስለ ተለዋዋጮች እንማራለን።",
+        "ጥሩ ሥራ! የመጀመሪያ ተለዋዋጫችሁን ፈጠራችሁ።", "መጀመሪያ የኮድ ኤዲተራችሁን ክፈቱ።",
+    ]
+    for text in samples:
+        rows = translate(text, use_memory=False)["gloss"]
+        seen = [row["token"] for row in rows]
+        for token in re.findall(r"[\u1200-\u135A]+", text):
+            assert token in drops or token in seen or any(len(token) >= 3 and token in item for item in seen), (text, token, seen)
 
 
 def test_sign_routes(data_root, monkeypatch):

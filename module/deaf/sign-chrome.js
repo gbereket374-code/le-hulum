@@ -28,13 +28,20 @@ export const CSS = `.sign-window{position:absolute;z-index:4;border:1px solid rg
 .sign-menu button{min-height:44px;text-align:start;padding:0 .75rem;border:0;border-radius:8px;background:transparent;color:inherit;font:inherit}
 .sign-pace{padding:.35rem .75rem .15rem;font-weight:700}
 [data-pace-note]{align-self:center;padding:0 .35rem;font-size:.75rem;opacity:.8}
-.sign-window:focus-visible,.sign-icon:focus-visible,.sign-grip:focus-visible,.sign-menu button:focus-visible,.sign-wait button:focus-visible{outline:3px solid #FFD54A;outline-offset:2px}
+.sign-beta{position:absolute;left:.35rem;right:.35rem;bottom:.35rem;z-index:4;display:flex;flex-direction:column;gap:.25rem;padding:.35rem;border-radius:8px;background:rgba(20,19,15,.92);color:#fff}
+.sign-beta[hidden],.sign-face[hidden]{display:none}
+.sign-beta p{margin:0;font-size:.8rem;line-height:1.3}
+.sign-beta .sign-votes{display:flex;gap:.25rem}
+.sign-beta button{flex:1;min-height:2.75rem;border:1px solid #fff;border-radius:8px;background:transparent;color:#fff;font:inherit}
+.sign-beta button[aria-pressed="true"]{background:#fff;color:#14130F}
+.sign-face{position:absolute;top:2.6rem;left:.4rem;z-index:4;max-width:calc(100% - .8rem);margin:0;padding:.15rem .4rem;border:1px solid #fff;border-radius:8px;background:#14130F;color:#fff;font-size:.8rem}
+.sign-window:focus-visible,.sign-icon:focus-visible,.sign-grip:focus-visible,.sign-menu button:focus-visible,.sign-wait button:focus-visible,.sign-beta button:focus-visible{outline:3px solid #FFD54A;outline-offset:2px}
 .stage.sign-first{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(8rem,.72fr);gap:.75rem;align-items:start;padding:.5rem}
 .stage.sign-first>.sign-window{position:relative;left:auto;top:auto;width:min(100%,46.5vh);height:auto;grid-column:1;grid-row:1;justify-self:start;cursor:default}
 .stage.sign-first>video:not([data-sign]){grid-column:2;grid-row:1;width:100%;min-width:0}
 @media (max-width:520px){.stage.sign-first{grid-template-columns:minmax(0,1fr)}.stage.sign-first>.sign-window{grid-column:1;grid-row:1}.stage.sign-first>video:not([data-sign]){grid-column:1;grid-row:2}}
 @media (prefers-reduced-motion:reduce){.sign-bar,.sign-wait{transition:none;animation:none}}
-@media (prefers-contrast:more){.sign-window,.sign-menu,.sign-none,.sign-missing,.sign-wait{border-color:#fff;background:#000;color:#fff}.sign-wait button{background:#fff;color:#000}}`;
+@media (prefers-contrast:more){.sign-window,.sign-menu,.sign-none,.sign-missing,.sign-wait,.sign-beta,.sign-face{border-color:#fff;background:#000;color:#fff}.sign-wait button,.sign-beta button{background:#000;color:#fff}.sign-beta button[aria-pressed="true"]{background:#fff;color:#000}}`;
 
 function svg(kind) {
   const node = document.createElementNS(NS, "svg");

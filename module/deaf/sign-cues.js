@@ -58,6 +58,8 @@ export function attachCueSync(player, win) {
     state.row = { cue: segment.cue, lessonStart: segment.start, startedAt: null, lag: null, hold: 0, reached: false };
     state.log.push(state.row);
     status.hideCard();
+    status.showSegment(segment);
+    win.root.dataset.cue = segment.cue || "";
     const item = itemsOf(segment)[state.item];
     play.playItem(item, point ? point.time : item.from);
   }
@@ -71,7 +73,7 @@ export function attachCueSync(player, win) {
     state.lag = lagSeconds(state.queue, time, started);
     state.lagSum += state.lag; state.lagN += 1;
     const here = segmentAt(state.segments, time);
-    if (here && (here.source === "none" || here.cue === params.get("missing"))) status.showCard();
+    if (here && (here.source === "none" || here.cue === params.get("missing"))) { status.showCard(); status.showSegment(null); }
     const busy = state.play >= 0 && !state.hitTo;
     const atEnd = Number.isFinite(media.duration) && time >= media.duration - 0.08;
     if (state.ending) {
@@ -116,7 +118,7 @@ export function attachCueSync(player, win) {
       state.queue.forEach((segment, index) => { if (segment.start <= time + 1e-3) prev = index; });
       state.done = prev;
       const place = segmentAt(state.segments, time);
-      if (place && (place.source === "none" || place.cue === params.get("missing"))) status.showCard();
+      if (place && (place.source === "none" || place.cue === params.get("missing"))) { status.showCard(); status.showSegment(null); }
     }
     if (user) play.active().pause();
     else if (media.paused) { state.internal = true; media.play().catch(() => {}); state.internal = false; }
@@ -127,9 +129,11 @@ export function attachCueSync(player, win) {
   function start(src, opts = {}) {
     stop();
     const mine = state.token;
-    state.base = String(src).replace(/[^/]*$/, "");
+    const doc = opts.doc || null;
+    state.base = opts.base || String(doc ? "" : src || "").replace(/[^/]*$/, "");
     state.wait = (win.pacing || "smooth") !== "off";
-    fetch(src).then((res) => res.json()).then((doc) => {
+    const ready = doc ? Promise.resolve(doc) : fetch(src).then((res) => res.json());
+    ready.then((doc) => {
       if (mine !== state.token) return;
       state.segments = doc.segments || [];
       state.queue = playableSegments(state.segments).filter((segment) => segment.cue !== params.get("missing"));
@@ -145,7 +149,8 @@ export function attachCueSync(player, win) {
   }
   function stop() {
     state.token += 1; clearInterval(state.clock); clearTimeout(state.stall);
-    hold.clear(); status.hideCard();
+    hold.clear(); status.hideCard(); status.showSegment(null);
+    if (win.root) win.root.dataset.cue = "";
     if (!demo) status.hidePill();
     for (const video of [win.video, win.videoB]) video?.pause();
     state.play = -1; state.index = -1;
@@ -158,6 +163,7 @@ export function attachCueSync(player, win) {
     setPace(mode) { state.wait = mode !== "off"; state.paced = ""; if (!state.wait) { hold.release(true); if (state.ending) hold.finishEnd(); } pace.enter(media.currentTime || 0, true); },
     place: () => status.place(), applyRate: () => play.applyRate(), label: () => status.label(),
     get log() { return state.log; }, get holds() { return state.holds; }, get endWait() { return state.endWait; },
-    get maxLag() { return state.maxLag; }, get meanLag() { return state.lagN ? state.lagSum / state.lagN : 0; }
+    get maxLag() { return state.maxLag; }, get meanLag() { return state.lagN ? state.lagSum / state.lagN : 0; },
+    get plan() { return state.segments; }, get cue() { return state.queue[state.play]?.cue || win.root?.dataset.cue || ""; }
   };
 }
