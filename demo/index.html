@@ -3,93 +3,163 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LE HULUM</title>
+<title>LE HULUM — ለሁሉም</title>
 <link rel="stylesheet" href="demo.css">
-<script>var t=new URLSearchParams(location.search).get("theme");if(t==="light"||t==="dark"||t==="contrast")document.documentElement.dataset.theme=t;</script>
+<script>!function(){var q=new URLSearchParams(location.search),t=q.get("theme"),s;try{s=localStorage.getItem("db-demo:theme")}catch(e){}if(t==="light"||t==="dark"||t==="contrast")document.documentElement.dataset.theme=t;else if(s==="light"||s==="dark"||s==="contrast")document.documentElement.dataset.theme=s;else document.documentElement.dataset.theme="dark";var l=q.get("lang");try{l=l||localStorage.getItem("db-demo:lang")}catch(e){}document.documentElement.lang=l==="am"?"am":"en";}();</script>
 </head>
-<body>
-<a class="skip" href="#main"><span class="en-only">Skip to content</span><span class="am-only" lang="am">ወደ ይዘቱ ዝለል</span></a>
-<header>
-  <div class="bar">
-    <a class="logo" href="index.html"><span class="mark" aria-hidden="true"><i></i></span><span class="brand"><b>LE HULUM</b><span lang="am">ለሁሉም</span></span></a>
-    <nav class="desk" aria-label="Main">
-      <a href="index.html" aria-current="page"><span class="en-only">Home</span><span class="am-only" lang="am">መነሻ</span></a>
-      <a href="lesson-video.html"><span class="en-only">Video lesson</span><span class="am-only" lang="am">የቪዲዮ ትምህርት</span></a>
-      <a href="lesson-text.html"><span class="en-only">Text lesson</span><span class="am-only" lang="am">የጽሑፍ ትምህርት</span></a>
-      <a href="jobs.html"><span class="en-only">Jobs</span><span class="am-only" lang="am">ሥራዎች</span></a>
-      <a href="sign-try.html"><span class="en-only">Try sign</span><span class="am-only" lang="am">ምልክት ይሞክሩ</span></a>
-      <a href="lesson-auto.html"><span class="en-only">Automatic lesson</span><span class="am-only" lang="am">ራስ-ሰር ትምህርት</span></a>
-      <a href="/api/docs"><span class="en-only">API docs</span><span class="am-only" lang="am">API ሰነዶች</span></a>
-    </nav>
-    <div class="tools">
-      <button type="button" id="lang"><span class="en-only" lang="am">አማርኛ</span><span class="am-only">English</span></button>
-      <button type="button" id="theme">Light</button>
-      <button type="button" id="menu" class="menu" aria-expanded="false" aria-controls="nav-menu"><span class="closed en-only">☰ Menu</span><span class="closed am-only" lang="am">☰ ምናሌ</span><span class="opened en-only">✕ Close</span><span class="opened am-only" lang="am">✕ ዝጋ</span></button>
-    </div>
-  </div>
-  <nav id="nav-menu" class="mobile" hidden aria-label="Main">
-    <a href="index.html"><span class="en-only">Home</span><span class="am-only" lang="am">መነሻ</span><span aria-hidden="true">→</span></a>
-    <a href="lesson-video.html"><span class="en-only">Video lesson</span><span class="am-only" lang="am">የቪዲዮ ትምህርት</span><span aria-hidden="true">→</span></a>
-    <a href="lesson-text.html"><span class="en-only">Text lesson</span><span class="am-only" lang="am">የጽሑፍ ትምህርት</span><span aria-hidden="true">→</span></a>
-    <a href="jobs.html"><span class="en-only">Jobs</span><span class="am-only" lang="am">ሥራዎች</span><span aria-hidden="true">→</span></a>
-    <a href="sign-try.html"><span class="en-only">Try sign</span><span class="am-only" lang="am">ምልክት ይሞክሩ</span><span aria-hidden="true">→</span></a>
-    <a href="lesson-auto.html"><span class="en-only">Automatic lesson</span><span class="am-only" lang="am">ራስ-ሰር ትምህርት</span><span aria-hidden="true">→</span></a>
-    <a href="/api/docs"><span class="en-only">API docs</span><span class="am-only" lang="am">API ሰነዶች</span><span aria-hidden="true">→</span></a>
-  </nav>
-</header>
+<body data-page="home">
 <main id="main">
-  <div class="hero">
-    <div>
-      <p class="kicker"><span class="en-only">A player for every learner</span><span class="am-only" lang="am">ለእያንዳንዱ ተማሪ ማጫወቻ</span></p>
-      <h1>Ear to the deaf. Eye for the blind. <span class="am" lang="am">ለመስማት ለተሳናቸው ጆሮ፣ ለማየት ለተሳናቸው ዓይን።</span></h1>
-    </div>
-    <div>
-      <p class="lead"><span class="en-only">LE HULUM adds Ethiopian Sign Language, captions, and a transcript to a lesson. It works on Savanna and on any site that can add one tag.</span><span class="am-only" lang="am">ለሁሉም የኢትዮጵያ ምልክት ቋንቋን፣ የግርጌ ጽሑፍን እና ግልባጭን ወደ ትምህርት ይጨምራል። በሳቫና እና ማንኛውም ጣቢያ ላይ በአንድ መለያ ይሠራል።</span></p>
+  <section class="hero-wrap" aria-labelledby="hero-t">
+    <div class="hero-blob" aria-hidden="true"></div>
+    <div class="hero-center">
+      <div class="hero-ring-wrap"><div class="hero-ring" aria-hidden="true"></div>
+        <div class="hero-frame">
+          <div class="head" aria-hidden="true"></div>
+          <div class="body" aria-hidden="true"></div>
+          <p class="state" id="hero-state"><span class="en-only">Signing</span><span class="am-only" lang="am">በምልክት ላይ</span></p>
+          <p class="gloss" id="hero-word">WELCOME</p>
+          <button type="button" class="hero-pause" id="hero-play" aria-pressed="true" aria-label="Pause">❚❚</button>
+        </div>
+      </div>
+      <p class="hero-cap" id="hero-cap"><span class="en-only">Welcome to LE HULUM. Let us learn together.</span><span class="am-only" lang="am">እንኳን ወደ ለሁሉም በደህና መጡ። አብረን እንማር።</span></p>
+      <p class="hint"><span class="en-only">Hover, tap or press Enter on any text to see it signed</span><span class="am-only" lang="am">ማንኛውንም ጽሑፍ በምልክት ለማየት ያንዣብቡ፣ ይንኩ ወይም Enter ይጫኑ</span></p>
+      <h1 id="hero-t"><span class="en-only">Ear to the deaf. Eye for the blind.</span><span class="am-only" lang="am">ለመስማት ለተሳናቸው ጆሮ፣ ለማየት ለተሳናቸው ዓይን።</span></h1>
+      <p class="tag-other"><span class="en-only" lang="am">ለመስማት ለተሳናቸው ጆሮ፣ ለማየት ለተሳናቸው ዓይን።</span><span class="am-only">Ear to the deaf. Eye for the blind.</span></p>
+      <p class="sub"><span class="en-only">One script tag makes any online lesson usable by Deaf, blind, low-vision and hard-of-hearing learners, and by learners on slow connections, in Amharic and English.</span><span class="am-only" lang="am">አንድ የስክሪፕት መለያ ማንኛውንም የኦንላይን ትምህርት ለመስማት ለተሳናቸው፣ ለማየት ለተሳናቸው፣ ዝቅተኛ እይታ ላላቸው እና በዝግተኛ ግንኙነት ላሉ ተማሪዎች በአማርኛ እና በእንግሊዝኛ ተደራሽ ያደርጋል።</span></p>
       <div class="cta">
-        <a class="go" href="lesson-video.html">▶ <span class="en-only">Try the video lesson</span><span class="am-only" lang="am">የቪዲዮ ትምህርቱን ይሞክሩ</span></a>
-        <a class="alt second-cta" href="/api/docs"><span class="en-only">Read the API docs</span><span class="am-only" lang="am">የ API ሰነዶችን ያንብቡ</span></a>
+        <a class="go" href="lesson-video.html"><span class="en-only">Watch the signed lesson</span><span class="am-only" lang="am">በምልክት የቀረበውን ትምህርት ይመልከቱ</span></a>
+        <a class="btn alt" href="integrate.html"><span class="en-only">Add it to your site</span><span class="am-only" lang="am">ወደ ድረ ገጽዎ ያክሉ</span></a>
       </div>
     </div>
-  </div>
-  <nav class="stack" aria-label="Demo pages">
-    <a href="lesson-video.html"><span class="en-only">Video lesson</span><span class="am-only" lang="am">የቪዲዮ ትምህርት</span><span aria-hidden="true">→</span></a>
-    <a href="lesson-text.html"><span class="en-only">Text lesson</span><span class="am-only" lang="am">የጽሑፍ ትምህርት</span><span aria-hidden="true">→</span></a>
-    <a href="jobs.html"><span class="en-only">Jobs</span><span class="am-only" lang="am">ሥራዎች</span><span aria-hidden="true">→</span></a>
-    <a href="sign-try.html"><span class="en-only">Try sign</span><span class="am-only" lang="am">ምልክት ይሞክሩ</span><span aria-hidden="true">→</span></a>
-    <a href="lesson-auto.html"><span class="en-only">Automatic lesson</span><span class="am-only" lang="am">ራስ-ሰር ትምህርት</span><span aria-hidden="true">→</span></a>
-    <a href="/api/docs"><span class="en-only">API docs</span><span class="am-only" lang="am">API ሰነዶች</span><span aria-hidden="true">→</span></a>
-  </nav>
-  <nav class="cards" aria-label="Demo pages">
-    <a class="card" href="lesson-video.html"><span class="n">01</span><strong>Video lesson →</strong><span class="am" lang="am">የቪዲዮ ትምህርት</span><span>Captions, sign, and a transcript beside the video.</span></a>
-    <a class="card" href="lesson-text.html"><span class="n">02</span><strong>Text lesson →</strong><span class="am" lang="am">የጽሑፍ ትምህርት</span><span>The same lesson as sentences you can sign and hear.</span></a>
-    <a class="card" href="jobs.html"><span class="n">03</span><strong>Jobs →</strong><span class="am" lang="am">ሥራዎች</span><span>Roles written so a screen reader can read them.</span></a>
-    <a class="card" href="/api/docs"><span class="n">04</span><strong>API docs →</strong><span class="am" lang="am">API ሰነዶች</span><span>Install the player with one script tag.</span></a>
-    <a class="card" href="sign-try.html"><span class="n">05</span><strong>Try sign →</strong><span class="am" lang="am">ምልክት ይሞክሩ</span><span>Type an Amharic sentence and watch the automatic gloss.</span></a>
-    <a class="card" href="lesson-auto.html"><span class="n">06</span><strong>Automatic lesson →</strong><span class="am" lang="am">ራስ-ሰር ትምህርት</span><span>The same video, signed from the captions.</span></a>
-  </nav>
-  <section class="install">
-    <div>
-      <h2><span class="en-only">Install</span><span class="am-only" lang="am">ጫን</span></h2>
-      <p class="note"><span class="en-only">One script tag. Then put the player where the lesson is.</span><span class="am-only" lang="am">አንድ የስክሪፕት መለያ። ከዚያ ማጫወቻውን ትምህርቱ ባለበት ያስቀምጡ።</span></p>
-    </div>
-    <div>
-      <pre id="install">&lt;script type="module" src="https://cdn.lehulum.org/db-player.js"&gt;&lt;/script&gt;
-
-&lt;db-player src="lesson.mp4" lang="am" sign="auto"&gt;&lt;/db-player&gt;</pre>
-      <p><button type="button" class="copy" id="copy"><span class="en-only">Copy code</span><span class="am-only" lang="am">ኮዱን ቅዳ</span></button> <span id="copied" role="status"></span> <span class="note">MIT licence · works on any site</span></p>
-    </div>
+    <dl class="stats">
+      <div data-lift><dt><span class="en-only">lesson lines signed in sync</span><span class="am-only" lang="am">የትምህርት መስመሮች በምልክት ተመሳስለዋል</span></dt><dd>9 / 9</dd></div>
+      <div data-lift><dt><span class="en-only">words in the sign library</span><span class="am-only" lang="am">ቃላት በምልክት ቤተ መጻሕፍት</span></dt><dd>— <span class="ph"><span class="en-only">placeholder</span><span class="am-only" lang="am">ጊዜያዊ</span></span></dd></div>
+      <div data-lift><dt><span class="en-only">sentences signed automatically</span><span class="am-only" lang="am">ዓረፍተ ነገሮች በራስ-ሰር ተተርጉመዋል</span></dt><dd>— <span class="ph"><span class="en-only">placeholder</span><span class="am-only" lang="am">ጊዜያዊ</span></span></dd></div>
+      <div data-lift><dt><span class="en-only">Deaf co-designer rating</span><span class="am-only" lang="am">የመስማት የተሳነው ተባባሪ ዲዛይነር ደረጃ</span></dt><dd>— / 5 <span class="ph"><span class="en-only">placeholder</span><span class="am-only" lang="am">ጊዜያዊ</span></span></dd></div>
+    </dl>
   </section>
-  <section class="devtools" aria-labelledby="dev-tools">
-    <h2 id="dev-tools"><span class="en-only">Tools</span><span class="am-only" lang="am">መሣሪያዎች</span></h2>
-    <p><a href="tools/caption-timer.html"><span class="en-only">Caption timer</span><span class="am-only" lang="am">የግርጌ ጽሑፍ ሰዓት</span></a></p>
+  <section class="sec" aria-labelledby="who">
+    <div><p class="kicker"><span class="en-only">Who it is for</span><span class="am-only" lang="am">ለማን ነው</span></p><h2 id="who"><span class="en-only">Four barriers, one plug-in</span><span class="am-only" lang="am">አራት እንቅፋቶች፣ አንድ ተሰኪ</span></h2></div>
+    <ul class="cards">
+      <li data-lift><h3><span class="en-only">Deaf learners</span><span class="am-only" lang="am">መስማት የተሳናቸው ተማሪዎች</span></h3><p><strong><span class="en-only">The barrier:</span><span class="am-only" lang="am">እንቅፋቱ፦</span></strong> <span class="en-only">Lessons are spoken or written in a second language.</span><span class="am-only" lang="am">ትምህርቶች በሁለተኛ ቋንቋ ይቀርባሉ።</span></p><ul class="fix"><li><span class="en-only">EthSL signer window, synced line by line</span><span class="am-only" lang="am">በመስመር የተመሳሰለ የምልክት መስኮት</span></li><li><span class="en-only">Glossary of technical signs</span><span class="am-only" lang="am">የቴክኒክ ምልክቶች መዝገበ ቃላት</span></li><li><span class="en-only">“Sign this page” on any text</span><span class="am-only" lang="am">በማንኛውም ጽሑፍ ላይ “ይህን ገጽ በምልክት”</span></li></ul></li>
+      <li data-lift><h3><span class="en-only">Blind and low-vision</span><span class="am-only" lang="am">ማየት የተሳናቸው</span></h3><p><strong><span class="en-only">The barrier:</span><span class="am-only" lang="am">እንቅፋቱ፦</span></strong> <span class="en-only">Code and slides are images a screen reader cannot read.</span><span class="am-only" lang="am">ኮድ እና ስላይዶች ስክሪን አንባቢ የማያነባቸው ምስሎች ናቸው።</span></p><ul class="fix"><li><span class="en-only">Screen-reader player and audio description</span><span class="am-only" lang="am">ለስክሪን አንባቢ የተዘጋጀ ማጫወቻ</span></li><li><span class="en-only">Exact on-screen code as text</span><span class="am-only" lang="am">በማያ ላይ ያለው ኮድ እንደ ጽሑፍ</span></li></ul></li>
+      <li data-lift><h3><span class="en-only">Hard of hearing</span><span class="am-only" lang="am">የመስማት ችግር ያለባቸው</span></h3><p><strong><span class="en-only">The barrier:</span><span class="am-only" lang="am">እንቅፋቱ፦</span></strong> <span class="en-only">Captions are small, fixed, or missing in Amharic.</span><span class="am-only" lang="am">ግርጌ ጽሑፎች ትንሽ ወይም በአማርኛ የሉም።</span></p><ul class="fix"><li><span class="en-only">Amharic and English captions you can resize</span><span class="am-only" lang="am">መጠናቸው የሚቀየር ግርጌ ጽሑፎች</span></li><li><span class="en-only">“Say that again” replay</span><span class="am-only" lang="am">“እንደገና በል” መድገሚያ</span></li></ul></li>
+      <li data-lift><h3><span class="en-only">Slow connections</span><span class="am-only" lang="am">ዝግተኛ ግንኙነት</span></h3><p><strong><span class="en-only">The barrier:</span><span class="am-only" lang="am">እንቅፋቱ፦</span></strong> <span class="en-only">A 15 MB video costs a day of mobile data.</span><span class="am-only" lang="am">15 ሜባ ቪዲዮ የአንድ ቀን ዳታ ይፈጃል።</span></p><ul class="fix"><li><span class="en-only">Light lesson under 3 MB</span><span class="am-only" lang="am">ከ3 ሜባ በታች ቀላል ትምህርት</span></li><li><span class="en-only">Offline download</span><span class="am-only" lang="am">ከመስመር ውጭ ማውረድ</span></li></ul></li>
+    </ul>
+  </section>
+  <div class="sec alt">
+    <section aria-labelledby="how">
+      <p class="kicker"><span class="en-only">How automatic sign works</span><span class="am-only" lang="am">ራስ-ሰር ምልክት እንዴት ይሠራል</span></p>
+      <h2 id="how"><span class="en-only">Text in, Ethiopian Sign Language out</span><span class="am-only" lang="am">ጽሑፍ ገብቶ የኢትዮጵያ ምልክት ቋንቋ ይወጣል</span></h2>
+      <ol class="cards">
+        <li data-lift><span><span class="num">1</span> <strong><span class="en-only">Text</span><span class="am-only" lang="am">ጽሑፍ</span></strong></span><p><span class="en-only">An Amharic sentence comes in.</span><span class="am-only" lang="am">የአማርኛ ዓረፍተ ነገር ይገባል።</span></p><div class="ex" lang="am">ስምህ ማን ነው?</div></li>
+        <li data-lift><span><span class="num">2</span> <strong><span class="en-only">Grammar rules</span><span class="am-only" lang="am">የሰዋስው ሕጎች</span></strong></span><p><span class="en-only">Words are reordered. The question word moves last.</span><span class="am-only" lang="am">ቃላት ይታዘዛሉ፣ የጥያቄ ቃል ወደ መጨረሻ።</span></p><div class="ex" lang="am">ስም ያንተ ማን?</div></li>
+        <li data-lift><span><span class="num">3</span> <strong><span class="en-only">Sign clips</span><span class="am-only" lang="am">የምልክት ክሊፖች</span></strong></span><p><span class="en-only">Recorded clips are joined. Gaps are marked missing.</span><span class="am-only" lang="am">የተቀረጹ ክሊፖች ይገናኛሉ።</span></p><div class="ex">▶ NAME ▶ IX-you ▶ WHO?</div></li>
+      </ol>
+      <div class="cover">
+        <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><strong><span class="en-only">Honest coverage on the Python lesson</span><span class="am-only" lang="am">በፓይተን ትምህርቱ ላይ ያለው ትክክለኛ ሽፋን</span></strong><span class="ph"><span class="en-only">placeholder</span><span class="am-only" lang="am">ጊዜያዊ</span></span></div>
+        <div class="bar" role="img" aria-label="About 68% signed, 20% fingerspelled, 12% missing. Placeholder."><i class="s"></i><i class="f"></i><i class="m"></i></div>
+        <p class="legend"><span class="en-only">Signed ~68% · Fingerspelled ~20% · No sign yet ~12%</span><span class="am-only" lang="am">በምልክት ~68% · በፊደል ~20% · ምልክት የለም ~12%</span></p>
+      </div>
+    </section>
+  </div>
+  <section class="sec" aria-labelledby="ways">
+    <div><p class="kicker"><span class="en-only">Product</span><span class="am-only" lang="am">ምርት</span></p><h2 id="ways"><span class="en-only">Four ways to use it</span><span class="am-only" lang="am">አራት የአጠቃቀም መንገዶች</span></h2></div>
+    <ul class="cards">
+      <li data-lift><h3><span class="en-only">Player</span><span class="am-only" lang="am">ማጫወቻ</span></h3><p><span class="en-only">Video, signer, captions and transcript in one accessible player.</span><span class="am-only" lang="am">ቪዲዮ፣ ምልክት ሰጪ፣ ግርጌ ጽሑፍ እና ግልባጭ በአንድ ቦታ።</span></p><a href="lesson-video.html"><span class="en-only">Watch the lesson</span><span class="am-only" lang="am">ትምህርቱን ይመልከቱ</span></a></li>
+      <li data-lift><h3><span class="en-only">Sign this page</span><span class="am-only" lang="am">ይህን ገጽ በምልክት</span></h3><p><span class="en-only">Pin a signer to any written lesson, sentence by sentence.</span><span class="am-only" lang="am">ማንኛውንም የጽሑፍ ትምህርት በምልክት ያቅርቡ።</span></p><a href="lesson-text.html"><span class="en-only">Open the text lesson</span><span class="am-only" lang="am">የጽሑፍ ትምህርቱን ይክፈቱ</span></a></li>
+      <li data-lift><h3><span class="en-only">Try automatic sign</span><span class="am-only" lang="am">ራስ-ሰር ምልክት</span></h3><p><span class="en-only">Type Amharic and see it signed, with honest coverage.</span><span class="am-only" lang="am">አማርኛ ጽሑፍ በራስ-ሰር ወደ ምልክት።</span></p><a href="sign-try.html"><span class="en-only">Try it now</span><span class="am-only" lang="am">ይሞክሩት</span></a></li>
+      <li data-lift><h3>API</h3><p><span class="en-only">Script tag, REST API and an open lesson standard.</span><span class="am-only" lang="am">ከራስዎ መድረክ ጋር ያገናኙ።</span></p><a href="integrate.html"><span class="en-only">Read the docs</span><span class="am-only" lang="am">ሰነዶቹን ያንብቡ</span></a></li>
+    </ul>
+  </section>
+  <div class="sec alt">
+    <section aria-labelledby="action">
+      <p class="kicker"><span class="en-only">See it in action</span><span class="am-only" lang="am">በሥራ ላይ ይመልከቱ</span></p>
+      <h2 id="action"><span class="en-only">Real lesson, real signer</span><span class="am-only" lang="am">እውነተኛ ትምህርት፣ እውነተኛ ምልክት ሰጪ</span></h2>
+      <ul class="clips">
+        <li><a class="poster-link" href="lesson-video.html"><b>poster: lesson + signer</b><i aria-hidden="true">▶</i><em>1:00</em></a><strong><span class="en-only">Human-signed lesson</span><span class="am-only" lang="am">በሰው የተተረጎመ ትምህርት</span></strong><span><span class="en-only">Every line of the teacher is matched by an interpreter.</span><span class="am-only" lang="am">የመምህሩ እያንዳንዱ መስመር በምልክት ይመሳሰላል።</span></span></li>
+        <li><a class="poster-link" href="lesson-text.html"><b>poster: article + pin</b><i aria-hidden="true">▶</i><em>0:42</em></a><strong><span class="en-only">Sign this page</span><span class="am-only" lang="am">ይህን ገጽ በምልክት</span></strong><span><span class="en-only">Drag the pin onto a paragraph.</span><span class="am-only" lang="am">ፒኑን ይጎትቱ።</span></span></li>
+        <li><a class="poster-link" href="sign-try.html"><b>poster: try page</b><i aria-hidden="true">▶</i><em>0:35</em></a><strong><span class="en-only">Automatic sign</span><span class="am-only" lang="am">ራስ-ሰር ምልክት</span></strong><span><span class="en-only">“ስምህ ማን ነው?” step by step.</span><span class="am-only" lang="am">“ስምህ ማን ነው?” ደረጃ በደረጃ።</span></span></li>
+      </ul>
+    </section>
+  </div>
+  <section class="sec" aria-labelledby="values">
+    <h2 id="values" class="sr-only"><span class="en-only">What we stand for</span><span class="am-only" lang="am">አቋማችን</span></h2>
+    <ul class="cards">
+      <li data-lift><h3><span class="en-only">Ethiopian Sign Language first</span><span class="am-only" lang="am">የኢትዮጵያ ምልክት ቋንቋ ቅድሚያ</span></h3><p><span class="en-only">Interpreters record the signs. The engine follows their grammar.</span><span class="am-only" lang="am">የተረጋገጡ አስተርጓሚዎች ይቀርጻሉ።</span></p></li>
+      <li data-lift><h3><span class="en-only">Built with Deaf people</span><span class="am-only" lang="am">ከመስማት የተሳናቸው ጋር የተሠራ</span></h3><p><span class="en-only">A Deaf co-designer reviews every screen and every sign.</span><span class="am-only" lang="am">መስማት የተሳነው ተባባሪ ዲዛይነር እያንዳንዱን ውሳኔ ይገመግማል።</span></p></li>
+      <li data-lift><h3><span class="en-only">Private by design</span><span class="am-only" lang="am">ግላዊነት በንድፍ</span></h3><p><span class="en-only">Settings stay on your device. Nothing is sent to a server.</span><span class="am-only" lang="am">ቅንብሮች በመሣሪያዎ ላይ ይቆያሉ።</span></p></li>
+    </ul>
+  </section>
+  <div class="sec alt">
+    <section class="split-home" aria-labelledby="dev">
+      <div><p class="kicker"><span class="en-only">For developers</span><span class="am-only" lang="am">ለገንቢዎች</span></p><h2 id="dev"><span class="en-only">Add it to your site in one line</span><span class="am-only" lang="am">በአንድ መስመር ወደ ድረ ገጽዎ ያክሉ</span></h2><p class="sub"><span class="en-only">Works with Savanna, Moodle or any HTML page.</span><span class="am-only" lang="am">ከሳቫና፣ ከሙድል ወይም ከማንኛውም HTML ገጽ ጋር ይሠራል።</span></p><a href="integrate.html"><span class="en-only">Read the integration guide</span><span class="am-only" lang="am">የማገናኛ መመሪያውን ያንብቡ</span></a></div>
+      <div class="codebox"><header><span>index.html</span><button type="button" class="copy" id="copy"><span class="en-only">Copy</span><span class="am-only" lang="am">ቅዳ</span></button></header><pre id="install">&lt;script type="module" src="/module/db-player.js"&gt;&lt;/script&gt;
+&lt;db-player src="lesson.mp4" poster="lesson-poster.webp" captions="lesson.am.vtt,lesson.en.vtt" sign="sign.json" lang="am"&gt;&lt;/db-player&gt;</pre></div>
+      <p id="copied" class="sr-only" role="status"></p>
+    </section>
+  </div>
+  <section class="sec" aria-label="Partners">
+    <div class="partners"><span class="en-only" style="border:0;padding:0;color:var(--lh-mu)">Built for and first used on</span><span class="am-only" lang="am" style="border:0;padding:0">የተሠራውና መጀመሪያ ጥቅም ላይ የዋለው በ</span><span>ALX</span><span>Savanna</span></div>
+  </section>
+  <section class="sec faq" id="faq" aria-labelledby="fq">
+    <h2 id="fq"><span class="en-only">Questions</span><span class="am-only" lang="am">ጥያቄዎች</span></h2>
+    <details><summary><span class="en-only">How does automatic sign work?</span><span class="am-only" lang="am">ራስ-ሰር ምልክት እንዴት ይሠራል?</span></summary><p><span class="en-only">Rules written with Deaf signers turn the sentence into EthSL order, then recorded clips are joined. A missing sign is labelled, never invented.</span><span class="am-only" lang="am">ከመስማት የተሳናቸው ጋር የተጻፉ ሕጎች ዓረፍተ ነገሩን ወደ ምልክት ቋንቋ ሰዋስው ያዞራሉ።</span></p></details>
+    <details><summary><span class="en-only">Which languages?</span><span class="am-only" lang="am">የትኞቹ ቋንቋዎች?</span></summary><p><span class="en-only">Input in Amharic and English. Output in Ethiopian Sign Language, with Amharic and English captions.</span><span class="am-only" lang="am">ግብዓት አማርኛ እና እንግሊዝኛ። ውጤት የኢትዮጵያ ምልክት ቋንቋ።</span></p></details>
+    <details><summary><span class="en-only">Is my data private?</span><span class="am-only" lang="am">ውሂቤ የግል ነው?</span></summary><p><span class="en-only">Yes. Settings stay on this device. We do not send them anywhere.</span><span class="am-only" lang="am">አዎ። ቅንብሮች በዚህ መሣሪያ ላይ ብቻ ይቀመጣሉ።</span></p></details>
+    <details><summary><span class="en-only">Does it work on a cheap phone?</span><span class="am-only" lang="am">በርካሽ ስልክ ይሠራል?</span></summary><p><span class="en-only">Yes. The light lesson is under 3 MB and the pages reflow at 360 px.</span><span class="am-only" lang="am">አዎ። ቀላል ትምህርት ከ3 ሜባ በታች ነው።</span></p></details>
+  </section>
+  <section class="sec" id="contact" aria-labelledby="ct">
+    <div class="contact">
+      <div><h2 id="ct"><span class="en-only">Bring signed lessons to your learners</span><span class="am-only" lang="am">በምልክት የቀረቡ ትምህርቶችን ለተማሪዎችዎ ያድርሱ</span></h2><p class="sub"><span class="en-only">Tell us about your platform. This form stays on your device.</span><span class="am-only" lang="am">ስለ መድረክዎ ይንገሩን። ይህ ቅጽ በመሣሪያዎ ላይ ይቆያል።</span></p></div>
+      <form id="contact-form">
+        <div class="row"><label for="cname"><span class="en-only">Your name</span><span class="am-only" lang="am">ስምዎ</span></label><input id="cname" name="name" autocomplete="name" required></div>
+        <div class="row"><label for="cemail"><span class="en-only">Email</span><span class="am-only" lang="am">ኢሜይል</span></label><input id="cemail" name="email" type="email" autocomplete="email" required></div>
+        <div class="row"><label for="corg"><span class="en-only">Organization (optional)</span><span class="am-only" lang="am">ድርጅት (አማራጭ)</span></label><input id="corg" name="org" autocomplete="organization"></div>
+        <p id="contact-err" class="err" role="alert"></p>
+        <p id="contact-ok" class="ok" hidden><span class="en-only">Thank you. We will reply within two working days.</span><span class="am-only" lang="am">እናመሰግናለን። በሁለት የሥራ ቀናት ውስጥ እንመልሳለን።</span></p>
+        <button class="go" type="submit"><span class="en-only">Send message</span><span class="am-only" lang="am">መልእክት ላክ</span></button>
+      </form>
+    </div>
   </section>
 </main>
-<footer>
-  <span>Built for the Digital Bridge Accessibility Hackathon (ALX) · first used on Savanna</span>
-  <span>Source code</span>
-</footer>
-<script src="demo.js"></script>
-<db-sign-pin api="/api/v1" lang="am" scope="main"></db-sign-pin>
-<script type="module" src="/module/db-player.js"></script>
+<script>
+(function () {
+  const words = { en: ["WELCOME", "L-E H-U-L-U-M", "TOGETHER", "LEARN"], am: ["እንኳን-ደህና-መጡ", "ለሁሉም", "አብረን", "መማር"] };
+  const word = document.getElementById("hero-word");
+  const btn = document.getElementById("hero-play");
+  let i = 1, timer = 0, on = true;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches || document.documentElement.dataset.motion === "reduce";
+  function tick() {
+    const list = document.documentElement.lang === "am" ? words.am : words.en;
+    word.textContent = list[i % list.length];
+    word.lang = document.documentElement.lang === "am" ? "am" : "en";
+    i += 1;
+  }
+  function start() { if (reduce || timer) return; timer = setInterval(tick, 800); }
+  function stop() { clearInterval(timer); timer = 0; }
+  if (reduce) { on = false; btn.setAttribute("aria-pressed", "false"); btn.textContent = "▶"; btn.setAttribute("aria-label", "Play"); }
+  else start();
+  btn.addEventListener("click", () => {
+    on = !on;
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+    btn.textContent = on ? "❚❚" : "▶";
+    btn.setAttribute("aria-label", on ? "Pause" : "Play");
+    if (on) start(); else stop();
+  });
+  document.getElementById("contact-form").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const name = document.getElementById("cname").value.trim();
+    const email = document.getElementById("cemail").value.trim();
+    const err = document.getElementById("contact-err");
+    const am = document.documentElement.lang === "am";
+    if (name.length < 2) { err.textContent = am ? "ስምዎን ያስገቡ።" : "Enter your name."; return; }
+    if (!/^\S+@\S+\.\S+$/.test(email)) { err.textContent = am ? "ትክክለኛ ኢሜይል ያስገቡ።" : "Enter a valid email address."; return; }
+    err.textContent = "";
+    document.getElementById("contact-ok").hidden = false;
+  });
+})();
+</script>
+<script type="module" src="demo.js"></script>
 </body>
 </html>

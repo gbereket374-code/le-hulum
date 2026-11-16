@@ -3,7 +3,7 @@ import { attachSignPlay } from "../sign-play.js";
 
 export function createPlayback(win) {
   const state = {
-    segments: [], index: 0, item: 0, front: 0, base: "/demo/data/", stall: 0, pauseAt: 0,
+    segments: [], index: 0, item: 0, front: 0, base: new URL("/demo/data/", import.meta.url).href, stall: 0, pauseAt: 0,
     armed: false, want: 0, hitTo: false, playId: 0
   };
   let paused = false;

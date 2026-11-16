@@ -12,6 +12,7 @@ docker compose up --build
 
 Then open:
 
+- [Plug the player into another site](docs/INTEGRATION.md)
 - http://localhost:8080/demo/blank.html
 - http://localhost:8080/pages/concept-with-navigation.html
 - http://localhost:8080/api/v1/health

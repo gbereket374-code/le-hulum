@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>LE HULUM</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LE HULUM</title>
+<link rel="stylesheet" href="demo.css">
+<script>!function(){var q=new URLSearchParams(location.search),t=q.get("theme"),s;try{s=localStorage.getItem("db-demo:theme")}catch(e){}if(t==="light"||t==="dark"||t==="contrast")document.documentElement.dataset.theme=t;else document.documentElement.dataset.theme=s==="light"||s==="dark"||s==="contrast"?s:"dark";document.documentElement.lang=q.get("lang")==="am"?"am":"en";}();</script>
 </head>
-<body>
-  <main>
-    <db-player src="data/lesson.mp4" lang="am"></db-player>
-  </main>
-  <script type="module" src="../module/db-player.js"></script>
+<body data-page="home">
+<main id="main"><h1>LE HULUM</h1></main>
+<script type="module" src="demo.js"></script>
 </body>
 </html>

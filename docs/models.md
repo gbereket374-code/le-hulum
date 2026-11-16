@@ -51,6 +51,19 @@ The tiny WAXAL weights are PyTorch safetensors (151 MB), not a CTranslate2 model
 | Licence | Apache-2.0 |
 | Note | Left off. The 3B checkpoint is slow on CPU and too large for this disk. |
 
+## Fonts — self-hosted, open licence
+
+The demo and the player do not load fonts from a third-party host.
+
+| Face | Files | Licence |
+| --- | --- | --- |
+| Atkinson Hyperlegible | `demo/fonts/atkinson-hyperlegible-400.woff2`, `atkinson-hyperlegible-700.woff2` (copies in `module/fonts/`) | SIL Open Font License 1.1 |
+| Noto Sans Ethiopic | `demo/fonts/noto-sans-ethiopic-400.woff2`, `600`, `700` (copies in `module/fonts/`) | SIL Open Font License 1.1 |
+| JetBrains Mono | `demo/fonts/jetbrains-mono-400.woff2`, `jetbrains-mono-600.woff2` | SIL Open Font License 1.1 |
+| Bricolage Grotesque | `demo/fonts/bricolage-grotesque-700.woff2`, `bricolage-grotesque-800.woff2` (copies in `module/fonts/`) | SIL Open Font License 1.1. Latin subset, weights 700 and 800. |
+
+Amharic (`lang="am"`) uses Noto Sans Ethiopic at 112.5% of the page size and a line height of 1.75. It is never letter-spaced or set in capitals.
+
 ## Not used
 
 MMS-TTS and NLLB stay out, as the requirements ask. The forced aligner does not load an MMS checkpoint.

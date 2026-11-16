@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div aria-hidden="true" style="position:relative;width:100%;height:100%;display:flex;align-items:flex-end;justify-content:center;overflow:hidden">
+  <sc-if value="{{ isVideo }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.07) 0 12px,rgba(255,255,255,0) 12px 24px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px">
+      <span style="font:600 13px/1.3 'JetBrains Mono',monospace;color:#FFFFFF;background:rgba(0,0,0,.55);padding:6px 10px;border-radius:6px">human signer video</span>
+      <span style="font:700 15px/1.3 'JetBrains Mono',monospace;color:#1B1714;background:#F5C25B;padding:4px 10px;border-radius:6px">{{ wordShown }}</span>
+    </div>
+  </sc-if>
+  <sc-if value="{{ isFigure }}" hint-placeholder-val="{{ true }}">
+    <div style="position:relative;height:100%;aspect-ratio:3/4;max-width:100%;container-type:size;flex:none">
+      <div style="position:absolute;left:30cqh;top:96cqh;width:15cqh;height:3cqh;border-radius:50%;background:rgba(0,0,0,.25)"></div>
+      <div style="{{ hairBack }}"></div>
+      <div style="position:absolute;left:12cqh;top:60cqh;width:51cqh;height:50cqh;border-radius:22cqh 22cqh 0 0;background:{{ top }}"></div>
+      <div style="{{ neckline }}"></div>
+      <div style="position:absolute;left:32.5cqh;top:50cqh;width:10cqh;height:11cqh;border-radius:0 0 4cqh 4cqh;background:{{ skin }}"></div>
+      <div style="position:absolute;left:25cqh;top:26cqh;width:25cqh;height:29cqh;border-radius:50% 50% 46% 46%;background:{{ skin }}"></div>
+      <div style="{{ hairTop }}"></div>
+      <div style="{{ browL }}"></div>
+      <div style="{{ browR }}"></div>
+      <div style="position:absolute;left:31.2cqh;top:39cqh;width:2.4cqh;height:2.8cqh;border-radius:50%;background:#1A1210"></div>
+      <div style="position:absolute;left:41.4cqh;top:39cqh;width:2.4cqh;height:2.8cqh;border-radius:50%;background:#1A1210"></div>
+      <div style="{{ mouth }}"></div>
+      <div style="{{ armLU }}"></div>
+      <div style="{{ armLF }}"></div>
+      <div style="{{ armRU }}"></div>
+      <div style="{{ armRF }}"></div>
+      <div style="{{ handL }}"><span style="{{ thumbL }}"></span></div>
+      <div style="{{ handR }}"><span style="{{ thumbR }}"></span></div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:300,&quot;height&quot;:400},&quot;word&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;HELLO&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;kind&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;selam&quot;,&quot;dawit&quot;,&quot;video&quot;],&quot;default&quot;:&quot;selam&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;q&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;reduced&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;rest&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;speed&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:1,&quot;tsType&quot;:&quot;number&quot;}}">
+const POSES = [
+  { l:[20,95,-8,'flat'], r:[55,95,8,'flat'] },
+  { l:[27,50,-20,'flat'], r:[48,50,20,'flat'] },
+  { l:[21,74,10,'fist'], r:[51,57,-15,'point'] },
+  { l:[32,67,-40,'flat'], r:[43,67,40,'flat'] },
+  { l:[11,60,-30,'flat'], r:[64,60,30,'flat'] },
+  { l:[28,43,-10,'point'], r:[54,80,0,'fist'] },
+  { l:[19,82,0,'fist'], r:[46,47,25,'flat'] },
+  { l:[33,57,-60,'flat'], r:[42,73,70,'fist'] },
+  { l:[16,50,-15,'point'], r:[59,50,15,'point'] }
+];
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props, kind = p.kind || 'selam', word = String(p.word || '');
+    const rest = !word || p.rest;
+    let h = 0; for (const c of word) h = (h * 31 + c.codePointAt(0)) >>> 0;
+    const pose = POSES[rest ? 0 : 1 + (h % (POSES.length - 1))];
+    const q = !!p.q || /\?$/.test(word);
+    const tr = p.reduced ? 'none' : `all ${(0.28 / (p.speed || 1)).toFixed(2)}s cubic-bezier(.3,.7,.2,1)`;
+    const dawit = kind === 'dawit';
+    const skin = dawit ? '#7A4A2E' : '#9A6240', top = dawit ? '#DCE3F0' : '#F1E8DA', hair = '#1A1210';
+    const U = 17, F = 18;
+    const arm = (S, H, side) => {
+      let dx = H[0] - S[0], dy = H[1] - S[1], d = Math.hypot(dx, dy);
+      const maxD = U + F - 0.5, minD = Math.abs(U - F) + 2;
+      if (d > maxD) { H = [S[0] + dx / d * maxD, S[1] + dy / d * maxD]; d = maxD; }
+      if (d < minD) d = minD;
+      const base = Math.atan2(H[1] - S[1], H[0] - S[0]);
+      const a = Math.acos(Math.max(-1, Math.min(1, (U * U + d * d - F * F) / (2 * U * d))));
+      const c1 = [S[0] + U * Math.cos(base + a), S[1] + U * Math.sin(base + a)];
+      const c2 = [S[0] + U * Math.cos(base - a), S[1] + U * Math.sin(base - a)];
+      const out = side === 'l' ? (c1[0] < c2[0] ? c1 : c2) : (c1[0] > c2[0] ? c1 : c2);
+      const E = Math.abs(c1[1] - c2[1]) > 3 ? (c1[1] > c2[1] ? c1 : c2) : out;
+      return { E, H };
+    };
+    const seg = (A, B, w) => {
+      const len = Math.hypot(B[0] - A[0], B[1] - A[1]), ang = Math.atan2(B[1] - A[1], B[0] - A[0]) * 180 / Math.PI;
+      return `position:absolute;left:${A[0].toFixed(2)}cqh;top:${(A[1] - w / 2).toFixed(2)}cqh;width:${(len + w / 2).toFixed(2)}cqh;height:${w}cqh;border-radius:${w / 2}cqh;background:${dawit ? '#C9D3E6' : '#E2D3BD'};transform-origin:0 50%;transform:rotate(${ang.toFixed(1)}deg);transition:${tr};z-index:3;box-shadow:0 0 0 0.35cqh rgba(0,0,0,.14)`;
+    };
+    const SL = [18, 65], SR = [57, 65];
+    const L = arm(SL, [pose.l[0], pose.l[1]], 'l'), R = arm(SR, [pose.r[0], pose.r[1]], 'r');
+    const hand = (H, rot, shape) => {
+      const w = shape === 'point' ? 7 : 9, hh = shape === 'fist' ? 8 : shape === 'point' ? 12.5 : 11;
+      return `position:absolute;left:${(H[0] - w / 2).toFixed(2)}cqh;top:${(H[1] - hh / 2).toFixed(2)}cqh;width:${w}cqh;height:${hh}cqh;border-radius:${shape === 'fist' ? '45%' : '4cqh 4cqh 3.5cqh 3.5cqh'};background:${skin};transform:rotate(${rot}deg);transition:${tr};z-index:4;box-shadow:inset 0 -0.7cqh 0 rgba(0,0,0,.18)`;
+    };
+    const thumb = side => `position:absolute;${side}:-1.6cqh;top:3cqh;width:3.2cqh;height:5cqh;border-radius:2cqh;background:${skin}`;
+    return {
+      isVideo: kind === 'video', isFigure: kind !== 'video', wordShown: word || '…', skin, top,
+      hairBack: dawit ? 'display:none' : `position:absolute;left:21cqh;top:18cqh;width:33cqh;height:36cqh;border-radius:50% 50% 40% 40%;background:${hair}`,
+      hairTop: dawit ? `position:absolute;left:24.6cqh;top:24.5cqh;width:25.8cqh;height:10cqh;border-radius:13cqh 13cqh 3cqh 3cqh;background:${hair}` : `position:absolute;left:24cqh;top:22cqh;width:27cqh;height:9cqh;border-radius:14cqh 14cqh 4cqh 4cqh;background:${hair};box-shadow:0 2.6cqh 0 -1.6cqh #F5C25B`,
+      neckline: dawit ? `position:absolute;left:30cqh;top:59.5cqh;width:15cqh;height:4cqh;border-radius:0 0 8cqh 8cqh;background:#B9C4DA` : `position:absolute;left:29cqh;top:59.5cqh;width:17cqh;height:5cqh;border-radius:0 0 9cqh 9cqh;background:linear-gradient(135deg,#1F6B4F 25%,transparent 25%) -1cqh 0/2cqh 2cqh,linear-gradient(225deg,#1F6B4F 25%,transparent 25%) -1cqh 0/2cqh 2cqh,linear-gradient(315deg,#1F6B4F 25%,transparent 25%) 0 0/2cqh 2cqh,linear-gradient(45deg,#1F6B4F 25%,transparent 25%) 0 0/2cqh 2cqh,#F5C25B`,
+      browL: `position:absolute;left:30.4cqh;top:${q ? 34.6 : 36.4}cqh;width:4.4cqh;height:1.1cqh;border-radius:1cqh;background:${hair};transform:rotate(${q ? -8 : 0}deg);transition:${tr}`,
+      browR: `position:absolute;left:40.6cqh;top:${q ? 34.6 : 36.4}cqh;width:4.4cqh;height:1.1cqh;border-radius:1cqh;background:${hair};transform:rotate(${q ? 8 : 0}deg);transition:${tr}`,
+      mouth: `position:absolute;left:${q ? 35.8 : 34.5}cqh;top:${q ? 46.2 : 47}cqh;width:${q ? 3.4 : 6}cqh;height:${q ? 3 : 1.4}cqh;border-radius:3cqh;background:#4A2216;transition:${tr}`,
+      armLU: seg(SL, L.E, 7.5), armLF: seg(L.E, L.H, 7), armRU: seg(SR, R.E, 7.5), armRF: seg(R.E, R.H, 7),
+      handL: hand(L.H, pose.l[2], pose.l[3]), handR: hand(R.H, pose.r[2], pose.r[3]), thumbL: thumb('right'), thumbR: thumb('left')
+    };
+  }
+}
+</script>
+</body>
+</html>

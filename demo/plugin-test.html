@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="data:,">
+<title>LE HULUM plugin test</title>
+</head>
+<body>
+<script type="module" src="http://localhost:8080/module/db-player.js"></script>
+<db-player src="http://localhost:8080/demo/data/lesson.mp4" poster="http://localhost:8080/demo/data/lesson-poster.webp" captions="http://localhost:8080/demo/data/lesson.am.vtt,http://localhost:8080/demo/data/lesson.en.vtt" sign="http://localhost:8080/demo/data/sign.json" glossary="http://localhost:8080/demo/data/glossary.json" lang="am"></db-player>
+<article id="line"><p>ኮዱ ካልሰራ፣ ስህተቱን አረጋግጡ።</p></article>
+<db-sign-pin api="http://localhost:8080/api/v1" lang="am" scope="#line"></db-sign-pin>
+</body>
+</html>

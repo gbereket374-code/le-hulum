@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible+Next:wght@400;500;700&family=Atkinson+Hyperlegible:wght@400;700&family=Noto+Sans+Ethiopic:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0..1,0&display=block" rel="stylesheet">
+<script src="./lehulum-platform.js"></script>
+<style>*{box-sizing:border-box}body{margin:0;background:#E9E3D8}button,input,select{font:inherit;color:inherit}:focus-visible{outline:3px solid var(--fc,#2B3990);outline-offset:2px}a{color:var(--in,#2B3990)}a:hover{color:var(--tx,#1B1714)}</style>
+</helmet>
+<sc-if value="{{ ready }}" hint-placeholder-val="{{ false }}">
+<div style="{{ rootStyle }}">
+  <header style="display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:flex-end">
+    <div style="display:flex;flex-direction:column;gap:8px;max-width:820px">
+      <span style="font:600 14px 'JetBrains Mono',monospace;color:var(--mu)">LE HULUM · design system v1.0 · tokens map to --lh-* custom properties</span>
+      <h1 style="margin:0;font-family:var(--fd);font-size:52px;line-height:1.02;font-weight:800;letter-spacing:-0.02em">Warm, dignified, built for signing</h1>
+      <p style="margin:0;font-size:18px;line-height:1.55;color:var(--mu)">Ember (berbere) is the brand; Abay indigo is the signing stage; tibeb gold marks the word being signed. Every text pair passes WCAG 2.2 AA, most pass AAA. Switch the theme to see each token set.</p>
+    </div>
+    <div role="group" aria-label="Theme" style="display:flex;gap:6px;flex-wrap:wrap"><sc-for list="{{ themeBtns }}" as="o" hint-placeholder-count="4"><button aria-pressed="{{ o.pressed }}" onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for></div>
+  </header>
+
+  <section aria-labelledby="c-t" style="display:flex;flex-direction:column;gap:16px">
+    <h2 id="c-t" style="margin:0;font-family:var(--fd);font-size:28px;font-weight:800">Colour · {{ themeName }}</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px">
+      <sc-for list="{{ colors }}" as="c" hint-placeholder-count="16">
+        <div style="display:flex;flex-direction:column;border-radius:16px;overflow:hidden;border:1px solid var(--ln);background:var(--sf)">
+          <div style="{{ c.sw }}"><span style="{{ c.sample }}">Aa ለሁሉም</span></div>
+          <div style="padding:10px 12px;display:flex;flex-direction:column;gap:2px"><strong style="font:600 14px 'JetBrains Mono',monospace">--lh-{{ c.name }}</strong><span style="font-size:13px;color:var(--mu)">{{ c.role }}</span><span style="font:500 13px 'JetBrains Mono',monospace">{{ c.hex }} · {{ c.ratio }}</span></div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section aria-labelledby="ty-t" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:20px">
+    <div style="display:flex;flex-direction:column;gap:4px;padding:24px;border-radius:20px;background:var(--sf);border:1px solid var(--ln)">
+      <h2 id="ty-t" style="margin:0 0 10px;font-family:var(--fd);font-size:28px;font-weight:800">Type</h2>
+      <sc-for list="{{ type }}" as="x" hint-placeholder-count="7"><div style="display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px;align-items:baseline;padding:10px 0;border-top:1px solid var(--ln)"><span style="font:500 13px 'JetBrains Mono',monospace;color:var(--mu)">{{ x.spec }}</span><span style="display:flex;flex-direction:column;gap:2px"><span style="{{ x.st }}">{{ x.en }}</span><span lang="am" style="{{ x.am }}">{{ x.amText }}</span></span></div></sc-for>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;padding:24px;border-radius:20px;background:var(--sf);border:1px solid var(--ln);font-size:15px;line-height:1.55">
+      <h3 style="margin:0;font-size:18px">Families</h3>
+      <p style="margin:0"><strong style="font-family:'Bricolage Grotesque'">Bricolage Grotesque</strong> for display: warm, slightly hand-made, readable at size. <strong>Atkinson Hyperlegible Next</strong> for UI and body: designed for low-vision readers. <strong lang="am" style="font-family:'Noto Sans Ethiopic'">Noto Sans Ethiopic</strong> for all Ge'ez text, auto-fallback in every stack. <strong>Lexend</strong> replaces body Latin in dyslexia mode. <span style="font-family:'JetBrains Mono'">JetBrains Mono</span> for gloss, code and numbers.</p>
+      <h3 style="margin:0;font-size:18px">Ethiopic rules</h3>
+      <ul style="margin:0;padding-left:18px"><li>Never uppercase or letter-space Ge'ez (enforced by :lang(am)).</li><li>Line height +0.2 over Latin (body 1.7–1.8).</li><li>Body never below 16 px; captions 18–32 px.</li><li>Gloss is not uppercased for Amharic input.</li></ul>
+      <h3 style="margin:0;font-size:18px">Spacing · radius · elevation</h3>
+      <div style="display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap"><sc-for list="{{ space }}" as="x" hint-placeholder-count="9"><span style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 12px 'JetBrains Mono',monospace"><span style="{{ x.st }}"></span>{{ x.v }}</span></sc-for></div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap"><sc-for list="{{ radii }}" as="x" hint-placeholder-count="5"><span style="display:flex;flex-direction:column;align-items:center;gap:4px;font:500 12px 'JetBrains Mono',monospace"><span style="{{ x.st }}"></span>{{ x.v }}</span></sc-for></div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap"><span style="width:120px;height:64px;border-radius:16px;background:var(--sf);border:1px solid var(--ln);display:flex;align-items:center;justify-content:center;font:500 12px 'JetBrains Mono',monospace">e0 · border</span><span style="width:120px;height:64px;border-radius:16px;background:var(--sf);border:1px solid var(--ln);box-shadow:var(--sh);display:flex;align-items:center;justify-content:center;font:500 12px 'JetBrains Mono',monospace">e1 · card</span><span style="width:120px;height:64px;border-radius:16px;background:var(--sf);box-shadow:0 24px 64px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font:500 12px 'JetBrains Mono',monospace">e2 · dialog</span></div>
+      <h3 style="margin:0;font-size:18px">Focus</h3>
+      <p style="margin:0">3 px outline, 2 px offset, in --lh-fc (indigo on light, gold on dark, cyan in high contrast). Always :focus-visible; never removed.</p>
+      <h3 style="margin:0;font-size:18px">Motif</h3>
+      <div aria-hidden="true" style="height:14px;border-top:3px solid var(--in);border-bottom:3px solid var(--in);background:linear-gradient(135deg,var(--gd) 25%,transparent 25%) -7px 0/14px 14px,linear-gradient(225deg,var(--gd) 25%,transparent 25%) -7px 0/14px 14px,linear-gradient(315deg,var(--gd) 25%,transparent 25%) 0 0/14px 14px,linear-gradient(45deg,var(--gd) 25%,transparent 25%) 0 0/14px 14px,var(--pr)"></div>
+      <p style="margin:0">Tibeb band: maximum two per page, never behind text. Hands are the motif; the avatar is the hero.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="cp-t" style="display:flex;flex-direction:column;gap:16px">
+    <h2 id="cp-t" style="margin:0;font-family:var(--fd);font-size:28px;font-weight:800">Components</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:16px">
+      <div style="display:flex;flex-direction:column;gap:14px;padding:22px;border-radius:20px;background:var(--sf);border:1px solid var(--ln)">
+        <h3 style="margin:0;font-size:18px">Buttons · 44 / 48 / 56 px</h3>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+          <button style="min-height:56px;padding:0 24px;border-radius:14px;background:var(--pr);color:var(--op);border:0;font-weight:700;font-size:17px;display:inline-flex;align-items:center;gap:8px;white-space:nowrap"><span aria-hidden="true" style="font:normal 22px/1 'Material Symbols Rounded';letter-spacing:0">sign_language</span>Primary</button>
+          <button style="min-height:48px;padding:0 18px;border-radius:12px;background:var(--sf);color:var(--tx);border:1px solid var(--bd);font-weight:600;white-space:nowrap">Secondary</button>
+          <button style="min-height:44px;padding:0 12px;border-radius:12px;background:transparent;color:var(--tx);border:1px solid transparent;font-weight:600;white-space:nowrap">Ghost</button>
+          <button style="min-height:48px;padding:0 18px;border-radius:12px;background:var(--er);color:var(--bg);border:0;font-weight:700;white-space:nowrap">Destructive</button>
+          <button style="min-height:48px;padding:0 18px;border-radius:12px;background:var(--pr);color:var(--op);border:0;font-weight:700;outline:3px solid var(--fc);outline-offset:2px;white-space:nowrap">Focused</button>
+        </div>
+        <h3 style="margin:6px 0 0;font-size:18px">Inputs</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <label style="display:flex;flex-direction:column;gap:6px;font-weight:700">Email or phone<input value="0911 234 567" style="min-height:52px;padding:0 14px;border-radius:12px;border:1px solid var(--bd);background:var(--sf);font-size:17px;font-weight:400"></label>
+          <div style="display:flex;flex-direction:column;gap:6px"><label for="ds-e" style="font-weight:700">Password</label><input id="ds-e" aria-invalid="true" value="abc" style="min-height:52px;padding:0 14px;border-radius:12px;border:2px solid var(--er);background:var(--sf);font-size:17px"><span style="display:flex;gap:6px;align-items:center;color:var(--er);font-weight:600;font-size:14px"><span aria-hidden="true" style="font:normal 18px/1 'Material Symbols Rounded';letter-spacing:0">error</span>At least 8 characters.</span></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;padding:22px;border-radius:20px;background:var(--sf);border:1px solid var(--ln)">
+        <h3 style="margin:0;font-size:18px">Tabs, segmented, switch, chips</h3>
+        <div role="tablist" style="display:flex;gap:2px;border-bottom:1px solid var(--ln)"><button role="tab" aria-selected="true" style="min-height:50px;padding:0 14px;border:0;background:transparent;font-weight:700;box-shadow:inset 0 -3px 0 var(--pr)">Text</button><button role="tab" aria-selected="false" style="min-height:50px;padding:0 14px;border:0;background:transparent;color:var(--mu);font-weight:600">Upload video</button><button role="tab" aria-selected="false" style="min-height:50px;padding:0 14px;border:0;background:transparent;color:var(--mu);font-weight:600">Paste link</button></div>
+        <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center">
+          <div style="display:flex;padding:3px;border-radius:12px;background:var(--s2);border:1px solid var(--bd)"><button aria-pressed="true" style="min-height:38px;padding:0 12px;border-radius:9px;border:2px solid var(--tx);background:var(--sf);font-weight:700">አማርኛ</button><button aria-pressed="false" style="min-height:38px;padding:0 12px;border-radius:9px;border:2px solid transparent;background:transparent;font-weight:700">English</button></div>
+          <button role="switch" aria-checked="true" style="min-height:44px;display:flex;align-items:center;gap:10px;background:transparent;border:0;font-weight:700"><span style="width:56px;height:34px;border-radius:999px;padding:3px;display:flex;justify-content:flex-end;align-items:center;background:var(--pr);border:2px solid var(--pr)"><span style="width:24px;height:24px;border-radius:50%;background:var(--op);display:flex;align-items:center;justify-content:center;color:var(--pr);font-size:14px;font-weight:700">✓</span></span>On</button>
+          <button aria-pressed="true" style="min-height:44px;padding:0 14px;border-radius:999px;border:2px solid var(--pr);background:var(--prs);color:var(--prt);font-weight:600">✓ Published</button><button aria-pressed="false" style="min-height:44px;padding:0 14px;border-radius:999px;border:1px solid var(--bd);background:var(--sf);font-weight:600">Draft</button>
+        </div>
+        <h3 style="margin:6px 0 0;font-size:18px">Badges · icon + label, never colour alone</h3>
+        <div style="display:flex;flex-wrap:wrap;gap:8px"><sc-for list="{{ badges }}" as="b" hint-placeholder-count="4"><span style="{{ b.style }}"><span aria-hidden="true" style="font:normal 16px/1 'Material Symbols Rounded';letter-spacing:0">{{ b.icon }}</span>{{ b.label }}</span></sc-for></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;padding:22px;border-radius:20px;background:var(--sf);border:1px solid var(--ln)">
+        <h3 style="margin:0;font-size:18px">Player</h3>
+        <div style="border-radius:16px;overflow:hidden;border:1px solid var(--ln)">
+          <div style="position:relative;aspect-ratio:16/8;background:var(--stg)"><dc-import name="SignAvatar" word="HELLO" kind="selam" reduced="{{ true }}" hint-size="100%,100%" style="position:absolute;left:0;right:0;top:6%;bottom:44px"></dc-import><div style="position:absolute;left:0;right:0;bottom:10px;display:flex;gap:6px;justify-content:center"><span style="font:700 13px 'JetBrains Mono',monospace;padding:4px 8px;border-radius:6px;background:#F5C25B;color:#1B1714">HELLO</span><span style="font:700 13px 'JetBrains Mono',monospace;padding:4px 8px;border-radius:6px;background:rgba(0,0,0,.6);color:#FFFFFF">WELCOME</span></div></div>
+          <div style="background:#0E0F1F;color:#FFFFFF;padding:10px 16px;font-size:20px;text-align:center"><span style="background:#F5C25B;color:#1B1714;border-radius:4px;padding:0 3px">Hello,</span> welcome to class.</div>
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;padding:8px"><sc-for list="{{ ctl }}" as="b" hint-placeholder-count="5"><button style="{{ b.style }}"><span aria-hidden="true" style="font:normal 24px/1 'Material Symbols Rounded';letter-spacing:0">{{ b.icon }}</span><span style="font-size:13px">{{ b.label }}</span></button></sc-for></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;padding:22px;border-radius:20px;background:var(--sf);border:1px solid var(--ln)">
+        <h3 style="margin:0;font-size:18px">Modal, toast, table row</h3>
+        <div style="padding:18px;border-radius:16px;background:var(--scrim);display:flex;justify-content:center"><div role="dialog" aria-label="Example" style="width:100%;max-width:360px;background:var(--bg);border:1px solid var(--bd);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:10px"><div style="display:flex;justify-content:space-between;align-items:center"><strong style="font-size:18px">Revoke this key?</strong><span aria-hidden="true" style="width:40px;height:40px;border-radius:10px;border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font:normal 20px/1 'Material Symbols Rounded'">close</span></div><span style="font-size:14px;color:var(--mu)">Apps using it stop working immediately.</span><div style="display:flex;gap:8px;justify-content:flex-end"><span style="min-height:44px;padding:0 14px;border-radius:12px;border:1px solid var(--bd);display:inline-flex;align-items:center;font-weight:700">Cancel</span><span style="min-height:44px;padding:0 14px;border-radius:12px;background:var(--er);color:var(--bg);display:inline-flex;align-items:center;font-weight:700">Revoke</span></div></div></div>
+        <div role="status" style="display:flex;gap:12px;align-items:center;padding:14px 16px;border-radius:16px;background:var(--tx);color:var(--bg)"><span aria-hidden="true" style="font:normal 24px/1 'Material Symbols Rounded';letter-spacing:0;color:#F5C25B">check_circle</span><span style="flex:1"><strong>Translation ready</strong><br><span style="font-size:14px;opacity:.9">Toast + screen-edge flash. Never sound alone.</span></span></div>
+        <div style="display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;border:1px solid var(--ln)"><span aria-hidden="true" style="width:40px;height:40px;border-radius:50%;background:var(--in);color:var(--sf);display:flex;align-items:center;justify-content:center;font-weight:700">MA</span><span style="flex:1;display:flex;flex-direction:column"><strong>Meron Alemu</strong><span style="font-size:13px;color:var(--mu)">Sign reviewer · Today</span></span><span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px 3px 6px;border-radius:999px;font-size:13px;font-weight:700;background:var(--okb);border:1px solid var(--ok)"><span aria-hidden="true" style="font:normal 16px/1 'Material Symbols Rounded'">check_circle</span>Active</span></div>
+      </div>
+    </div>
+  </section>
+  <section aria-labelledby="css-t" style="display:flex;flex-direction:column;gap:10px">
+    <h2 id="css-t" style="margin:0;font-family:var(--fd);font-size:28px;font-weight:800">CSS custom properties</h2>
+    <pre style="margin:0;padding:22px;border-radius:20px;background:#14130F;color:#F5EFE6;font:400 13px/1.7 'JetBrains Mono',monospace;white-space:pre-wrap;overflow-wrap:anywhere">{{ css }}</pre>
+  </section>
+</div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const ROLES = { bg:'Page background', sf:'Surface / card', s2:'Subtle surface', s3:'Skeleton / track', tx:'Text', mu:'Muted text', bd:'Control border (≥3:1)', ln:'Divider (decorative)', pr:'Primary · Ember', op:'Text on primary', prh:'Primary hover', prs:'Primary soft', prt:'Primary text on soft', in:'Indigo · links, info', stg:'Signing stage', gd:'Tibeb gold · active sign', ok:'Success', wn:'Warning', er:'Error', fc:'Focus ring' };
+const PAIR = { bg:'tx', sf:'tx', s2:'tx', s3:'tx', tx:'bg', mu:'sf', bd:'sf', ln:'sf', pr:'op', op:'pr', prh:'op', prs:'prt', prt:'prs', in:'sf', stg:'#FFFFFF', gd:'#1B1714', ok:'sf', wn:'sf', er:'sf', fc:'bg' };
+const lum = h => { const c = [1,3,5].map(i => parseInt(h.substr(i,2),16)/255).map(v => v <= .03928 ? v/12.92 : Math.pow((v+.055)/1.055, 2.4)); return .2126*c[0] + .7152*c[1] + .0722*c[2]; };
+const cr = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x,y)+.05)/(Math.min(x,y)+.05); };
+class Component extends DCLogic {
+  state = { th: 'light' };
+  componentDidMount() { if (!window.LHP) this.iv = setInterval(() => { if (window.LHP) { clearInterval(this.iv); this.forceUpdate(); } }, 40); }
+  componentWillUnmount() { clearInterval(this.iv); }
+  renderVals() {
+    const L = window.LHP; if (!L) return { ready: false };
+    const T = L.THEMES[this.state.th];
+    const vars = Object.keys(T).map(k => `--${k}:${T[k]}`).join(';');
+    const names = { light:'Light', dark:'Dark', hcLight:'High contrast light', hcDark:'High contrast dark' };
+    const colors = Object.keys(ROLES).map(k => { const hex = T[k], p = PAIR[k], ph = p[0] === '#' ? p : T[p]; const r = cr(hex, ph); const need = ['bd','fc','ln'].includes(k) ? 3 : 4.5;
+      return { name: k, role: ROLES[k], hex, ratio: `${r.toFixed(1)}:1 ${k === 'ln' ? '· decorative' : r >= 7 ? 'AAA' : r >= need ? 'AA' : '—'}`, sw: `height:88px;background:${hex};display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--ln)`, sample: `font-weight:700;font-size:20px;color:${ph}` }; });
+    const type = [['Display · 80/1.02 · 800', 'font-family:var(--fd);font-size:56px;line-height:1.02;font-weight:800;letter-spacing:-0.02em', 'Ear to the deaf.', 'ለሁሉም'],
+      ['H1 · 40/1.1 · 800', 'font-family:var(--fd);font-size:40px;line-height:1.1;font-weight:800;letter-spacing:-0.02em', 'Translate to sign', 'ወደ ምልክት ቋንቋ'],
+      ['H2 · 28/1.15 · 800', 'font-family:var(--fd);font-size:28px;line-height:1.15;font-weight:800', 'Sentence timeline', 'የዓረፍተ ነገሮች ቅደም ተከተል'],
+      ['Body L · 19/1.6', 'font-size:19px;line-height:1.6', 'Plants use sunlight, water and air.', 'ዕፅዋት የፀሐይ ብርሃንን ይጠቀማሉ።'],
+      ['Body · 16/1.5', 'font-size:16px;line-height:1.5', 'Changes save automatically.', 'ለውጦች በራስ-ሰር ይቀመጣሉ።'],
+      ['Label · 13/1.2 · 700', 'font-size:13px;line-height:1.2;font-weight:700', 'Replay sentence', 'ዓረፍተ ነገሩን ድገም'],
+      ['Gloss · mono 14 · 700', "font:700 14px/1.3 'JetBrains Mono',monospace", 'GOOD MORNING ALL', 'ጥሩ ጠዋት ሁሉም']]
+      .map(([spec, st, en, amText]) => ({ spec, st, en, amText, am: st.replace(/letter-spacing:[^;]+/, 'letter-spacing:0').replace(/'JetBrains Mono',monospace/, "'Noto Sans Ethiopic',sans-serif").replace(/var\(--fd\)/, "'Noto Sans Ethiopic',sans-serif") + ';line-height:1.6;font-size:' + ((st.match(/font-size:(\d+)/) || [0, 14])[1] * 0.78).toFixed(0) + 'px' }));
+    const badge = (bg, bd, icon, label) => ({ icon, label, style: `display:inline-flex;align-items:center;gap:4px;padding:3px 10px 3px 6px;border-radius:999px;font-size:13px;font-weight:700;background:var(--${bg});border:1px solid var(--${bd});color:var(--tx)` });
+    const css = ':root, [data-lh-theme="light"] {\n' + Object.keys(L.THEMES.light).map(k => `  --lh-${k}: ${L.THEMES.light[k]};`).join('\n') + '\n}\n[data-lh-theme="dark"] {\n' + Object.keys(L.THEMES.dark).map(k => `  --lh-${k}: ${L.THEMES.dark[k]};`).join('\n') + '\n}\n:root {\n  --lh-font-display: "Bricolage Grotesque", "Noto Sans Ethiopic", sans-serif;\n  --lh-font-body: "Atkinson Hyperlegible Next", "Noto Sans Ethiopic", sans-serif;\n  --lh-font-dyslexia: "Lexend", "Noto Sans Ethiopic", sans-serif;\n  --lh-space: 4px 8px 12px 16px 20px 24px 32px 48px 64px;\n  --lh-radius-sm: 8px; --lh-radius-md: 12px; --lh-radius-lg: 20px; --lh-radius-xl: 28px; --lh-radius-pill: 999px;\n  --lh-target-min: 44px; --lh-target: 48px; --lh-target-lg: 56px;\n  --lh-focus: 3px solid var(--lh-fc); --lh-focus-offset: 2px;\n}\n:lang(am) { letter-spacing: 0; text-transform: none; line-height: calc(var(--lh-lh, 1.5) + .2); }';
+    return {
+      ready: true, themeName: names[this.state.th],
+      rootStyle: `${vars};padding:48px;display:flex;flex-direction:column;gap:40px;background:var(--bg);color:var(--tx);font-family:'Atkinson Hyperlegible Next','Atkinson Hyperlegible','Noto Sans Ethiopic',sans-serif;--fd:'Bricolage Grotesque','Noto Sans Ethiopic',sans-serif;min-height:100vh`,
+      themeBtns: Object.keys(names).map(k => { const on = this.state.th === k; return { label: (on ? '✓ ' : '') + names[k], pressed: String(on), onClick: () => this.setState({ th: k }), style: `min-height:44px;padding:0 14px;border-radius:12px;font-weight:700;border:${on ? '2px solid var(--tx)' : '1px solid var(--bd)'};background:${on ? 'var(--tx)' : 'var(--sf)'};color:${on ? 'var(--bg)' : 'var(--tx)'}` }; }),
+      colors, type,
+      space: [4,8,12,16,20,24,32,48,64].map(v => ({ v, st: `width:${v}px;height:${v}px;background:var(--pr);border-radius:3px` })),
+      radii: [8,12,20,28,999].map(v => ({ v: v === 999 ? 'pill' : v, st: `width:56px;height:40px;border:2px solid var(--tx);border-radius:${Math.min(v, 20)}px` })),
+      badges: [badge('okb','ok','check_circle','Published'), badge('wnb','wn','edit_note','Draft'), badge('s2','in','progress_activity','Processing'), badge('erb','er','error','Failed')],
+      ctl: [['play_arrow','Play',1],['replay','Replay',0],['skip_next','Next',0],['repeat_one','Loop',2],['fullscreen','Full screen',0]].map(([icon, label, k]) => ({ icon, label, style: `min-height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-radius:12px;border:${k === 2 ? '2px solid var(--pr)' : '1px solid transparent'};background:${k === 1 ? 'var(--pr)' : k === 2 ? 'var(--prs)' : 'transparent'};color:${k === 1 ? 'var(--op)' : k === 2 ? 'var(--prt)' : 'var(--tx)'}` })),
+      css
+    };
+  }
+}
+</script>
+</body>
+</html>

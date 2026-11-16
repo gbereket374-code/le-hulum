@@ -4,9 +4,9 @@ export const PLACES = [["tl", "move_top_left"], ["tr", "move_top_right"], ["bl",
 export const PACES = [["smooth", "pacing_smooth"], ["pause", "pacing_pause"], ["off", "pacing_off"]];
 export const ACTS = [...PLACES, ["larger", "larger"], ["smaller", "smaller"], ["opacity", "opacity"], ["speed", "signer_speed"]];
 
-export const CSS = `.sign-window{position:absolute;z-index:4;border:1px solid rgba(255,255,255,.14);border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,.45);background:#14130F;overflow:visible;touch-action:none;cursor:grab;aspect-ratio:3/4}
+export const CSS = `.sign-window{position:absolute;z-index:4;border:1px solid rgba(255,255,255,.14);border-radius:20px;box-shadow:0 8px 28px rgba(0,0,0,.45);background:radial-gradient(90% 70% at 50% 18%,#6B5039,#17120E 72%);overflow:visible;touch-action:none;cursor:grab;aspect-ratio:3/4}
 .sign-window:active{cursor:grabbing}.sign-window[hidden]{display:none}
-.sign-window video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;border-radius:13px;background:#14130F;pointer-events:none}
+.sign-window video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;border-radius:18px;background:transparent;pointer-events:none}
 .sign-bar{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;justify-content:flex-end;background:linear-gradient(rgba(0,0,0,.6),transparent);opacity:0;pointer-events:none;transition:opacity 150ms}
 .sign-window:hover>.sign-bar,.sign-window:focus-within>.sign-bar,.sign-window.show-ui>.sign-bar{opacity:1;pointer-events:auto}
 .sign-icon{width:44px;height:44px;display:grid;place-items:center;border:0;background:transparent;color:#fff;padding:0}

@@ -1,16 +1,17 @@
 // FR-IN-02, FR-DEAF-01, NFR-A11Y: Pin UI. Nothing here touches the host page.
+const font = (file) => new URL("../../fonts/" + file, import.meta.url).href;
 export const PIN_CSS = `
-@font-face{font-family:"LH Pin";src:url("/module/fonts/noto-sans-ethiopic-400.woff2") format("woff2");unicode-range:U+1200-139F,U+2D80-2DDF,U+AB00-AB2F;font-display:swap}
-@font-face{font-family:"LH Pin";src:url("/module/fonts/atkinson-hyperlegible-700.woff2") format("woff2");font-weight:700;unicode-range:U+0000-00FF;font-display:swap}
-@font-face{font-family:"LH Pin";src:url("/module/fonts/atkinson-hyperlegible-400.woff2") format("woff2");unicode-range:U+0000-00FF;font-display:swap}
+@font-face{font-family:"LH Pin";src:url("${font("noto-sans-ethiopic-400.woff2")}") format("woff2");unicode-range:U+1200-139F,U+2D80-2DDF,U+AB00-AB2F;font-display:swap}
+@font-face{font-family:"LH Pin";src:url("${font("atkinson-hyperlegible-700.woff2")}") format("woff2");font-weight:700;unicode-range:U+0000-00FF;font-display:swap}
+@font-face{font-family:"LH Pin";src:url("${font("atkinson-hyperlegible-400.woff2")}") format("woff2");unicode-range:U+0000-00FF;font-display:swap}
 :host{position:fixed;left:0;top:0;width:0;height:0;overflow:visible;z-index:2147483000;pointer-events:none;display:block;font-family:"LH Pin",var(--bs-body-font-family,system-ui),sans-serif;font-size:1rem;line-height:1.5;--pin:var(--lh-accent,#0A6B4E);--pin-ink:var(--lh-on-accent,#fff);--pin-text:var(--bs-body-color,var(--lh-text,#1c1b18));--pin-surface:var(--bs-body-bg,var(--lh-surface,#fff));--pin-focus:var(--lh-focus,#1c1b18);color:var(--pin-text)}
 :host,:host *{box-sizing:border-box}
 :host :focus-visible{outline:3px solid var(--pin-focus);outline-offset:2px}
 [hidden]{display:none !important}
 .launch,.panel,.pin,.pick,.tray{pointer-events:auto}
-.launch{position:fixed;right:1rem;bottom:1rem;z-index:6;min-width:48px;min-height:48px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:0;padding:.35rem .8rem;border:0;border-radius:8px;background:var(--pin);color:var(--pin-ink);font:inherit;font-weight:700;text-align:start}
+.launch{position:fixed;left:1rem;bottom:1rem;z-index:6;min-width:48px;min-height:48px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:0;padding:.35rem .8rem;border:0;border-radius:999px;background:var(--pin);color:var(--pin-ink);font:inherit;font-weight:700;text-align:start}
 .launch [lang=am]{line-height:1.7;letter-spacing:0}
-.panel{position:fixed;inset:auto 1rem 5.5rem auto;z-index:6;width:min(22rem,calc(100vw - 2rem));max-height:min(50vh,24rem);margin:0;padding:.75rem;overflow:auto;border:1px solid var(--pin-text);border-radius:12px;background:var(--pin-surface);color:var(--pin-text);box-shadow:0 12px 32px rgba(0,0,0,.25)}
+.panel{position:fixed;left:1rem;bottom:5.5rem;z-index:6;width:min(22rem,calc(100vw - 2rem));max-height:min(50vh,24rem);margin:0;padding:.75rem;overflow:auto;border:1px solid var(--pin-text);border-radius:20px;background:var(--pin-surface);color:var(--pin-text);box-shadow:0 12px 32px rgba(0,0,0,.25)}
 .panel::backdrop{background:transparent}
 .title{margin:0 0 .5rem;font-weight:700;line-height:1.7}
 .list{display:flex;flex-direction:column;gap:.5rem}

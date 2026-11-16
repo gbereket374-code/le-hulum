@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verify a certificate — LE HULUM</title>
+<link rel="stylesheet" href="demo.css">
+<script>!function(){var q=new URLSearchParams(location.search),t=q.get("theme"),s;try{s=localStorage.getItem("db-demo:theme")}catch(e){}if(t==="light"||t==="dark"||t==="contrast")document.documentElement.dataset.theme=t;else if(s==="light"||s==="dark"||s==="contrast")document.documentElement.dataset.theme=s;else document.documentElement.dataset.theme="dark";var l=q.get("lang");try{l=l||localStorage.getItem("db-demo:lang")}catch(e){}document.documentElement.lang=l==="am"?"am":"en";}();</script>
+</head>
+<body data-page="verify">
+<main id="main">
+  <h1><span class="en-only">Certificate</span><span class="am-only" lang="am">ሰርተፍኬት</span></h1>
+  <div class="split">
+    <article class="cert">
+      <p class="kicker"><span class="en-only">Certificate of completion</span><span class="am-only" lang="am">የማጠናቀቂያ ሰርተፍኬት</span></p>
+      <h2><span class="en-only">Awarded to</span><span class="am-only" lang="am">የተሰጠው ለ</span> Test Learner <span lang="am">የሙከራ ተማሪ</span></h2>
+      <p><span class="en-only">for completing “Python: Your first variable” with sign, caption and audio access.</span><span class="am-only" lang="am">“ፓይተን፡ የመጀመሪያ ተለዋዋጭዎ”ን በምልክት፣ በግርጌ ጽሑፍ እና በድምፅ ስላጠናቀቁ።</span></p>
+      <p><span class="en-only">Issued</span><span class="am-only" lang="am">የተሰጠበት</span> 15 November 2026 · LH-2026-0417-K9</p>
+      <p class="qr" role="img" aria-label="Placeholder mark for certificate LH-2026-0417-K9. This is not a scannable code."></p>
+      <p><button type="button" class="copy" id="copy-link"><span class="en-only">Copy verify link</span><span class="am-only" lang="am">የማረጋገጫ ሊንክ ቅዳ</span></button> <span id="copied" role="status"></span></p>
+    </article>
+    <form id="verify-form" class="panel">
+      <h2><span class="en-only">Verify a certificate</span><span class="am-only" lang="am">ሰርተፍኬት ያረጋግጡ</span></h2>
+      <label for="cert-id"><span class="en-only">Certificate ID</span><span class="am-only" lang="am">የሰርተፍኬት መለያ</span></label>
+      <input id="cert-id" name="id" value="LH-2026-0417-K9" autocomplete="off">
+      <p><span class="en-only">Try:</span><span class="am-only" lang="am">ይሞክሩ፦</span> <button type="button" class="chip" id="try-valid">LH-2026-0417-K9</button> <button type="button" class="chip" id="try-bad">LH-2026-9999-X0</button></p>
+      <button class="btn go" type="submit"><span class="en-only">Verify</span><span class="am-only" lang="am">አረጋግጥ</span></button>
+      <p id="verify-out" role="status"></p>
+    </form>
+  </div>
+</main>
+<script>
+const out = document.getElementById("verify-out");
+function check(id) {
+  const am = document.documentElement.lang === "am";
+  const ok = id.trim() === "LH-2026-0417-K9";
+  out.className = ok ? "ok" : "bad";
+  if (ok) out.innerHTML = am ? "<strong>ትክክለኛ።</strong> ለየሙከራ ተማሪ በኅዳር 6, 2019 ዓ.ም. ተሰጥቷል።" : "<strong>Valid.</strong> Issued to Test Learner on 15 November 2026. Not changed since it was issued.";
+  else out.innerHTML = am ? "<strong>ትክክል ያልሆነ።</strong>" : "<strong>Not valid.</strong>";
+}
+document.getElementById("verify-form").addEventListener("submit", (event) => { event.preventDefault(); check(document.getElementById("cert-id").value); });
+document.getElementById("try-valid").addEventListener("click", () => { document.getElementById("cert-id").value = "LH-2026-0417-K9"; check("LH-2026-0417-K9"); });
+document.getElementById("try-bad").addEventListener("click", () => { document.getElementById("cert-id").value = "LH-2026-9999-X0"; check("LH-2026-9999-X0"); });
+document.getElementById("copy-link").addEventListener("click", async () => {
+  const link = location.origin + location.pathname + "?id=LH-2026-0417-K9";
+  try { await navigator.clipboard.writeText(link); } catch (error) {}
+  document.getElementById("copied").textContent = document.documentElement.lang === "am" ? "ተቀድቷል" : "Copied";
+});
+</script>
+<script type="module" src="demo.js"></script>
+</body>
+</html>

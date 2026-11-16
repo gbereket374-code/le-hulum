@@ -5,43 +5,49 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Jobs — LE HULUM</title>
 <link rel="stylesheet" href="demo.css">
-<script>var t=new URLSearchParams(location.search).get("theme");if(t==="light"||t==="dark"||t==="contrast")document.documentElement.dataset.theme=t;</script>
+<script>!function(){var q=new URLSearchParams(location.search),t=q.get("theme"),s;try{s=localStorage.getItem("db-demo:theme")}catch(e){}if(t==="light"||t==="dark"||t==="contrast")document.documentElement.dataset.theme=t;else if(s==="light"||s==="dark"||s==="contrast")document.documentElement.dataset.theme=s;else document.documentElement.dataset.theme="dark";var l=q.get("lang");try{l=l||localStorage.getItem("db-demo:lang")}catch(e){}document.documentElement.lang=l==="am"?"am":"en";}();</script>
 </head>
-<body>
-<a class="skip" href="#main"><span class="en-only">Skip to content</span><span class="am-only" lang="am">ወደ ይዘቱ ዝለል</span></a>
-<header>
-  <div class="bar">
-    <a class="logo" href="index.html"><span class="mark" aria-hidden="true"><i></i></span><span class="brand"><b>LE HULUM</b><span lang="am">ለሁሉም</span></span></a>
-    <nav class="desk" aria-label="Main">
-      <a href="index.html"><span class="en-only">Home</span><span class="am-only" lang="am">መነሻ</span></a>
-      <a href="lesson-video.html"><span class="en-only">Video lesson</span><span class="am-only" lang="am">የቪዲዮ ትምህርት</span></a>
-      <a href="lesson-text.html"><span class="en-only">Text lesson</span><span class="am-only" lang="am">የጽሑፍ ትምህርት</span></a>
-      <a href="jobs.html" aria-current="page"><span class="en-only">Jobs</span><span class="am-only" lang="am">ሥራዎች</span></a>
-      <a href="/api/docs"><span class="en-only">API docs</span><span class="am-only" lang="am">API ሰነዶች</span></a>
-    </nav>
-    <div class="tools">
-      <button type="button" id="lang"><span class="en-only" lang="am">አማርኛ</span><span class="am-only">English</span></button>
-      <button type="button" id="theme">Light</button>
-      <button type="button" id="menu" class="menu" aria-expanded="false" aria-controls="nav-menu"><span class="closed en-only">☰ Menu</span><span class="closed am-only" lang="am">☰ ምናሌ</span><span class="opened en-only">✕ Close</span><span class="opened am-only" lang="am">✕ ዝጋ</span></button>
-    </div>
-  </div>
-  <nav id="nav-menu" class="mobile" hidden aria-label="Main">
-    <a href="index.html"><span class="en-only">Home</span><span class="am-only" lang="am">መነሻ</span><span aria-hidden="true">→</span></a>
-    <a href="lesson-video.html"><span class="en-only">Video lesson</span><span class="am-only" lang="am">የቪዲዮ ትምህርት</span><span aria-hidden="true">→</span></a>
-    <a href="lesson-text.html"><span class="en-only">Text lesson</span><span class="am-only" lang="am">የጽሑፍ ትምህርት</span><span aria-hidden="true">→</span></a>
-    <a href="jobs.html"><span class="en-only">Jobs</span><span class="am-only" lang="am">ሥራዎች</span><span aria-hidden="true">→</span></a>
-    <a href="/api/docs"><span class="en-only">API docs</span><span class="am-only" lang="am">API ሰነዶች</span><span aria-hidden="true">→</span></a>
-  </nav>
-</header>
+<body data-page="jobs">
 <main id="main">
-  <h1>Jobs <span class="am" lang="am">ሥራዎች</span></h1>
-  <p class="placeholder">Job cards arrive in a later step</p>
+  <header class="ls-head">
+    <div>
+      <nav class="crumb" aria-label="Breadcrumb"><a href="index.html"><span class="en-only">Home</span><span class="am-only" lang="am">መነሻ</span></a> › <span aria-current="page"><span class="en-only">Jobs</span><span class="am-only" lang="am">ሥራዎች</span></span></nav>
+      <h1><span class="en-only">Jobs</span><span class="am-only" lang="am">ሥራዎች</span><span class="tag-other"><span class="am-only">Jobs</span><span class="en-only" lang="am">ሥራዎች</span></span></h1>
+      <ul class="meta">
+        <li><span class="en-only">3 test listings</span><span class="am-only" lang="am">3 የሙከራ ማስታወቂያዎች</span></li>
+        <li><span class="en-only">Ethiopian + Gregorian dates</span><span class="am-only" lang="am">ኢትዮጵያ + ግሪጎሪያን ቀን</span></li>
+        <li><span class="en-only">Listen to every summary</span><span class="am-only" lang="am">ማጠቃለያ ያዳምጡ</span></li>
+        <li class="ok"><span class="en-only">Access needs labelled</span><span class="am-only" lang="am">የተደራሽነት መለያዎች</span></li>
+      </ul>
+    </div>
+    <a class="btn alt" href="verify.html"><span class="en-only">Certificates</span><span class="am-only" lang="am">ሰርተፍኬቶች</span></a>
+  </header>
+  <section class="board" aria-labelledby="feat-title">
+    <div class="board-grid">
+      <div class="feat" id="feat" role="tabpanel"></div>
+      <div class="signer-pane" role="region" aria-label="Show in sign"><span class="head"></span><span class="body"></span><span class="state" id="feat-state" hidden>Signing</span><span class="gloss" id="feat-gloss">JOB</span></div>
+    </div>
+    <div class="job-tabs" id="job-tabs" role="tablist" aria-label="Jobs"></div>
+  </section>
+  <h2><span class="en-only">All jobs</span><span class="am-only" lang="am">ሁሉም ሥራዎች</span></h2>
+  <ul class="jobs" id="job-list"></ul>
+  <p id="heard" class="sr-only" role="status"></p>
+  <dialog class="sheet" id="apply" aria-labelledby="apply-title">
+    <h2 id="apply-title"><span class="en-only">Apply</span><span class="am-only" lang="am">አመልክት</span></h2>
+    <form id="apply-form" method="dialog">
+      <div class="row"><label for="aname"><span class="en-only">Full name</span><span class="am-only" lang="am">ሙሉ ስም</span></label><input id="aname" name="name" autocomplete="name" required></div>
+      <div class="row"><label for="aphone"><span class="en-only">Phone number</span><span class="am-only" lang="am">ስልክ ቁጥር</span></label><input id="aphone" name="phone" inputmode="tel" autocomplete="tel" required></div>
+      <fieldset><legend><span class="en-only">How should the employer contact you?</span><span class="am-only" lang="am">አሠሪው እንዴት ያግኝዎት?</span></legend>
+        <label><input type="radio" name="by" value="sms" checked> SMS</label>
+        <label><input type="radio" name="by" value="call"> <span class="en-only">Call</span><span class="am-only" lang="am">ጥሪ</span></label>
+      </fieldset>
+      <p id="apply-err" class="err" role="alert"></p>
+      <p id="apply-ok" class="ok" hidden><span class="en-only">Application noted on this device. It was not sent.</span><span class="am-only" lang="am">ማመልከቻው በዚህ መሣሪያ ላይ ተመዝግቧል። አልተላከም።</span></p>
+      <div class="row"><button class="btn go" type="submit"><span class="en-only">Send application</span><span class="am-only" lang="am">ማመልከቻ ላክ</span></button><button type="button" id="apply-close"><span class="en-only">Close</span><span class="am-only" lang="am">ዝጋ</span></button></div>
+    </form>
+  </dialog>
 </main>
-<footer>
-  <span>Built for the Digital Bridge Accessibility Hackathon (ALX) · first used on Savanna</span>
-  <span>Source code</span>
-</footer>
-<script src="demo.js"></script>
-<script type="module" src="/module/db-player.js"></script>
+<script type="module" src="demo.js"></script>
+<script type="module" src="jobs.js"></script>
 </body>
 </html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#E9E3D8}a{color:#2B3990}a:hover{color:#1B1714}:focus-visible{outline:3px solid #2B3990;outline-offset:2px}</style>
+</helmet>
+<div style="padding:48px;display:flex;flex-direction:column;gap:28px;font-family:'Atkinson Hyperlegible',sans-serif;color:#1B1714">
+  <header style="display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:flex-end">
+    <div style="display:flex;flex-direction:column;gap:8px;max-width:820px">
+      <span style="font:600 14px 'JetBrains Mono',monospace;color:#5C534A">LE HULUM · screens at 1440 / 768 / 390</span>
+      <h1 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-size:44px;line-height:1.05;font-weight:800;letter-spacing:-0.02em">Every screen, three breakpoints</h1>
+      <p style="margin:0;font-size:18px;line-height:1.55;color:#5C534A">Each frame is the live prototype, so you can click inside it. Pick a screen; notes on UX and accessibility sit beside the frames. Open <a href="LE HULUM Platform.dc.html">the full prototype</a> or <a href="LE HULUM Design System.dc.html">the design system</a>.</p>
+    </div>
+    <div role="group" aria-label="Frame scale" style="display:flex;gap:6px;align-items:center"><span style="font-weight:700;margin-right:4px">Scale</span>
+      <sc-for list="{{ scales }}" as="o" hint-placeholder-count="3"><button aria-pressed="{{ o.pressed }}" onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+    </div>
+  </header>
+  <nav aria-label="Screens" style="display:flex;flex-wrap:wrap;gap:8px">
+    <sc-for list="{{ tabs }}" as="o" hint-placeholder-count="14"><button aria-pressed="{{ o.pressed }}" onClick="{{ o.onClick }}" style="{{ o.style }}"><span style="font:600 13px 'JetBrains Mono',monospace;opacity:.8">{{ o.n }}</span>{{ o.label }}</button></sc-for>
+  </nav>
+  <section aria-labelledby="sc-t" style="display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start">
+    <sc-for list="{{ frames }}" as="f" hint-placeholder-count="3">
+      <figure style="margin:0;display:flex;flex-direction:column;gap:10px">
+        <figcaption style="display:flex;justify-content:space-between;gap:12px;font-size:15px"><strong>{{ f.label }}</strong><a href="{{ f.src }}" target="_blank" style="font-size:14px">Open ↗</a></figcaption>
+        <div style="{{ f.box }}"><iframe title="{{ f.title }}" src="{{ f.src }}" loading="lazy" style="{{ f.iframe }}"></iframe></div>
+      </figure>
+    </sc-for>
+    <aside style="flex:1 1 300px;max-width:420px;display:flex;flex-direction:column;gap:14px;padding:24px;border-radius:20px;background:#FFFFFF;border:1px solid #D9D0C2">
+      <span style="font:600 13px 'JetBrains Mono',monospace;color:#5C534A">{{ cur.n }} · {{ cur.hash }}</span>
+      <h2 id="sc-t" style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-size:28px;line-height:1.1;font-weight:800">{{ cur.label }}</h2>
+      <h3 style="margin:6px 0 0;font-size:15px;color:#8E2E0E">UX decisions</h3>
+      <ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:15px;line-height:1.5"><sc-for list="{{ cur.ux }}" as="x" hint-placeholder-count="3"><li>{{ x }}</li></sc-for></ul>
+      <h3 style="margin:6px 0 0;font-size:15px;color:#2B3990">Accessibility</h3>
+      <ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:15px;line-height:1.5"><sc-for list="{{ cur.a11y }}" as="x" hint-placeholder-count="3"><li>{{ x }}</li></sc-for></ul>
+    </aside>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const FILE = 'LE%20HULUM%20Platform.dc.html';
+const SCREENS = [
+  ['Landing', '#/', ['Live avatar demo is the hero: real product, not a stock photo. Phrases switch language in place.', 'One primary CTA per band; pricing teaser routes to full pricing.', 'Tibeb-inspired diamond band used twice only, as structure, never decoration on text.', 'Goals are labelled as 2027 targets so the investor story stays honest.'], ['Demo autoplay stops when reduced motion is on; Play/Pause is always visible.', 'Gloss and captions shown together, so meaning never depends on the animation alone.', 'Amharic tagline carries lang="am" with no letter-spacing or case transforms.']],
+  ['Sign up', '#/auth/signup', ['Single field accepts email or Ethiopian phone, since many users have no email.', 'SMS code path for low-literacy and shared-phone users.', 'Brand panel hides below 1024 px so the form is first on phones.'], ['Error summary receives focus and links to each field; inline errors use icon + text.', 'Password show/hide is a labelled toggle button with aria-pressed.', 'Tabs follow the ARIA tabs pattern with arrow-key navigation.']],
+  ['Choose role', '#/auth/role', ['Role tunes the landing screen after sign-up: learners go to Library, educators to Translate, orgs to Admin.', 'Can be changed later; no medical or disability questions.'], ['Cards are a radiogroup with roving tabindex and visible radio dots, not colour alone.']],
+  ['Translator · output', '#/translate/output', ['Input left, output right on wide screens; stacked on tablet and phone with auto-scroll to the result.', 'Sentence timeline under the player: click any line to jump to its signs.', 'Replay sentence and Loop are first-class: learners rewatch hard signs.', 'Save to library sits with the title field so naming happens in context.'], ['Seek bar is a slider by sentence: arrow keys move one sentence.', 'Every control has an icon and a text label; toggles expose aria-pressed.', 'Captions are capped at two lines and highlight the current word with a shape, not just colour.']],
+  ['Translator · processing', '#/translate/processing', ['Three named steps with time estimate; Cancel always available.', 'Completion triggers a visual alert (screen-edge flash) plus a toast, never sound alone.'], ['Progress is a role="progressbar" with value; step state is text (Done / In progress / Waiting).', 'Spinner stops under reduced motion; text status remains.']],
+  ['Translator · upload', '#/translate/video', ['Drag-and-drop plus a real button; sample video for first-run demos.', 'Unsupported files name the file and the accepted formats.'], ['Hidden file input is triggered by a focusable button; errors use role="alert".']],
+  ['Video lesson', '#/lesson/l3', ['Sign window is picture-in-picture: drag, cycle corners, resize, or hide.', 'Captions shrink their width when the sign window sits at the bottom so they never overlap.', 'Transcript follows along and can be paused (Follow along).'], ['Move handle works with arrow keys, not just drag.', 'Transcript lines are buttons that seek; current line has aria-current.']],
+  ['Library', '#/library', ['Grid for browsing, list/table for managing. Filters collapse behind one button below 900 px.', 'Status uses icon + label badges; processing shows a progress bar.', 'Low-data mode drops thumbnails entirely.'], ['Search has a label; result count is a live status.', 'Whole card is clickable via one link, so screen readers hear one name per card.']],
+  ['Educator dashboard', '#/dashboard', ['Stats are limited to four that drive action. Each row in Translation status has exactly one next step.', 'Quick upload accepts a dropped file and jumps into the translator.'], ['Trends use arrow icons + words, not red/green.']],
+  ['Organization admin', '#/org/usage', ['Tabs: Members, Usage, Billing, API keys. Quota meter shows a marker at 80% and a plain-language forecast.', 'Billing is Telebirr-first, then Chapa and card. Invoices in ETB.', 'API keys show once, then masked. Revoke needs confirmation.'], ['Meters use role="meter" with value text. Current month bar is hatched and starred, not just recoloured.', 'Destructive actions use text labels and a confirm dialog with focus trap.']],
+  ['Pricing', '#/pricing', ['Free tier for Deaf learners is permanent. Monthly/annual toggle with savings label.', 'Telebirr and Chapa named up front; discount line for Deaf associations and public schools.'], ['FAQ uses native details/summary; recommended plan marked with a text badge and border.']],
+  ['Settings & accessibility', '#/settings', ['Live preview shows the signer and caption with current choices, sticky on desktop.', 'Every preference applies instantly across the app and is saved automatically.'], ['High contrast, reduced motion, dyslexia font, text size up to 150%, audio-first mode, visual alerts, low-data mode.', 'Switches are role="switch" with On/Off text.']],
+  ['UI states', '#/states', ['One index of loading, empty, error, offline and low-bandwidth states, each linking to the state in context.'], ['Skeletons pulse only when motion is allowed; offline banner is a persistent status, not a toast.']],
+  ['404', '#/missing-page', ['The signer asks “where?”; four useful destinations instead of a dead end.'], ['Page heading states the problem in plain language; links are full-width 56 px targets.']]
+];
+class Component extends DCLogic {
+  state = { i: 3, scale: 0.5 };
+  renderVals() {
+    const s = this.state, cur = SCREENS[s.i], sc = s.scale;
+    const frame = (label, w, h) => ({ label: `${label} · ${w}`, title: `${cur[0]} at ${w}px`, src: `${FILE}${cur[1]}`,
+      box: `width:${Math.round(w * sc)}px;height:${Math.round(h * sc)}px;overflow:hidden;border-radius:${Math.round(18 * sc + 6)}px;border:1px solid #BFB4A3;background:#FFFFFF;box-shadow:0 12px 32px rgba(27,23,20,.12)`,
+      iframe: `width:${w}px;height:${h}px;border:0;transform:scale(${sc});transform-origin:0 0;display:block` });
+    return {
+      cur: { n: String(s.i + 1).padStart(2, '0'), label: cur[0], hash: cur[1], ux: cur[2], a11y: cur[3] },
+      frames: [frame('Desktop', 1440, 900), frame('Tablet', 768, 1024), frame('Mobile', 390, 844)],
+      tabs: SCREENS.map((x, i) => { const on = i === s.i; return { n: String(i + 1).padStart(2, '0'), label: x[0], pressed: String(on), onClick: () => this.setState({ i }),
+        style: `min-height:44px;padding:0 14px;border-radius:999px;display:inline-flex;align-items:center;gap:8px;font:${on ? 700 : 500} 15px 'Atkinson Hyperlegible',sans-serif;border:${on ? '2px solid #1B1714' : '1px solid #8A8076'};background:${on ? '#1B1714' : '#FFFFFF'};color:${on ? '#FFFFFF' : '#1B1714'}` }; }),
+      scales: [[0.4, '40%'], [0.5, '50%'], [0.75, '75%']].map(([v, l]) => { const on = s.scale === v; return { label: l, pressed: String(on), onClick: () => this.setState({ scale: v }),
+        style: `min-height:44px;padding:0 14px;border-radius:12px;font-weight:700;border:${on ? '2px solid #1B1714' : '1px solid #8A8076'};background:${on ? '#1B1714' : '#FFFFFF'};color:${on ? '#FFFFFF' : '#1B1714'}` }; })
+    };
+  }
+}
+</script>
+</body>
+</html>
