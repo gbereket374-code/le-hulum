@@ -36,6 +36,10 @@ export function buildPin(root) {
   tray.hidden = true;
   const live = el("p", "live");
   live.setAttribute("aria-live", "polite");
+  const source = el("p", "source");
+  source.hidden = true;
+  const translation = el("p", "translation");
+  translation.hidden = true;
   const chips = document.createElement("div");
   chips.className = "chips";
   const coverage = el("p", "coverage");
@@ -65,14 +69,14 @@ export function buildPin(root) {
   const stop = button("stop");
   pause.setAttribute("aria-pressed", "false");
   row.append(pause, prev, next, stop);
-  tray.append(live, chips, coverage, face, beta, none, request, votes, thanks, row);
+  tray.append(live, source, translation, chips, coverage, face, beta, none, request, votes, thanks, row);
   const box = document.createElement("div");
   box.className = "box";
   box.hidden = true;
   root.append(launch, panel, pin, pick, stage, tray, box);
   return {
-    launch, am, en, panel, title, close, list, pin, tip, pick, stage, tray, live, chips,
-    coverage, face, beta, none, request, votes, yes, no, thanks, pause, prev, next, stop, box
+    launch, am, en, panel, title, close, list, pin, tip, pick, stage, tray, live, source, translation,
+    chips, coverage, face, beta, none, request, votes, yes, no, thanks, pause, prev, next, stop, box
   };
 }
 

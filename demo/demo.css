@@ -17,6 +17,7 @@ body{margin:0;font-family:var(--lh-font-latin);font-size:1rem;line-height:1.5;ba
 html[lang="am"] body{line-height:1.75}
 :lang(am){font-family:var(--lh-font-ethiopic);line-height:1.75;letter-spacing:0;text-transform:none}
 h1,h2{letter-spacing:var(--lh-ls)}
+main :is(h1,h2,h3,h4,h5,h6,p,li){cursor:help}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 a{color:var(--lh-lk);text-underline-offset:3px}
 a:hover{color:var(--lh-tx)}

@@ -1,5 +1,15 @@
-// NFR-A11Y-01: Language, theme, menu, and the learner settings sheet.
+// NFR-A11Y-01: Language, theme, menu, the learner settings sheet, and Sign this page on every screen.
 import { mountShell } from "./shell.js";
+import "/module/sign-pin.js";
+
+function mountSignPin() {
+  if (document.querySelector("db-sign-pin") || document.body.dataset.noPin === "1") return;
+  const pin = document.createElement("db-sign-pin");
+  pin.setAttribute("api", "/api/v1");
+  pin.setAttribute("lang", document.documentElement.lang === "en" ? "en" : "am");
+  pin.setAttribute("scope", "main");
+  document.body.append(pin);
+}
 
 const NEEDS = [["sign", "Sign language", "ምልክት ቋንቋ"], ["cap", "Captions", "ግርጌ ጽሑፍ"], ["ad", "Audio description", "የድምፅ መግለጫ"], ["hear", "Hearing support", "የመስማት ድጋፍ"], ["data", "Data saver", "ዳታ ቆጣቢ"]];
 const SIZES = [["100", "Text 100%", "ጽሑፍ 100%"], ["125", "Text 125%", "ጽሑፍ 125%"], ["150", "Text 150%", "ጽሑፍ 150%"]];
@@ -23,6 +33,7 @@ function apply(stored) {
 }
 
 mountShell();
+mountSignPin();
 const stored = prefs();
 apply(stored);
 paintTheme();

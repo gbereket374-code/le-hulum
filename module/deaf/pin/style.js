@@ -25,6 +25,8 @@ export const PIN_CSS = `
 .stage .sign-window{pointer-events:auto}
 .tray{position:fixed;z-index:5;max-height:42vh;overflow:auto;padding:.75rem;border:1px solid var(--pin-text);border-radius:12px;background:var(--pin-surface);color:var(--pin-text);line-height:1.7;box-shadow:0 12px 32px rgba(0,0,0,.25)}
 .tray p{margin:.35rem 0}
+.source{font-weight:700;line-height:1.7}
+.translation{color:color-mix(in srgb,var(--pin-text) 72%,transparent);font-size:.95rem}
 .chips{display:flex;flex-wrap:wrap;gap:.35rem}
 .chip{display:inline-flex;align-items:center;gap:.25rem;padding:0 .65rem;border:1px solid var(--pin-text);border-radius:999px;background:transparent}
 .chip svg{width:1rem;height:1rem}

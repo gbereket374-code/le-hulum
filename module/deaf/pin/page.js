@@ -63,6 +63,18 @@ function caretFrom(x, y) {
   return { node: range.startContainer, offset: range.startOffset };
 }
 
+function textNear(x, y, scope) {
+  const hit = caretFrom(x, y);
+  if (hit?.node?.nodeType === 3 && scope.contains(hit.node) && !skipped(hit.node)) return hit;
+  const el = document.elementFromPoint(x, y);
+  if (!el || !scope.contains(el) || skipped(el)) return null;
+  const block = el.closest(BLOCKS);
+  if (!block || !scope.contains(block)) return null;
+  const map = textMap(block);
+  if (!map.nodes.length) return null;
+  return { node: map.nodes[0].node, offset: 0, block: block, map };
+}
+
 export function wordAt(x, y) {
   const hit = caretFrom(x, y);
   if (!hit || hit.node.nodeType !== 3) return "";
@@ -75,15 +87,16 @@ export function wordAt(x, y) {
 }
 
 export function pointIn(x, y, scope) {
-  const hit = caretFrom(x, y);
-  if (!hit || !scope?.contains(hit.node) || skipped(hit.node)) return null;
-  const block = (hit.node.nodeType === 1 ? hit.node : hit.node.parentElement)?.closest(BLOCKS);
+  const hit = textNear(x, y, scope);
+  if (!hit) return null;
+  const block = hit.block || (hit.node.nodeType === 1 ? hit.node : hit.node.parentElement)?.closest(BLOCKS);
   const host = block && scope.contains(block) ? block : scope;
-  const map = textMap(host);
-  const slot = map.nodes.find((item) => item.node === hit.node);
+  const map = hit.map || textMap(host);
+  const slot = map.nodes.find((item) => item.node === hit.node) || map.nodes[0];
   if (!slot) return null;
   const sentences = splitSentences(map.text).map((sentence) => ({ ...sentence, range: rangeFor(map, sentence) })).filter((row) => row.range);
-  const index = sentenceAt(sentences, slot.start + Math.min(hit.offset, slot.end - slot.start));
+  const at = slot.start + Math.min(hit.offset || 0, Math.max(0, slot.end - slot.start));
+  const index = sentenceAt(sentences, at);
   if (index < 0) return null;
   return { block: host, sentences, index };
 }

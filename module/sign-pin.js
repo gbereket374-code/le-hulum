@@ -50,6 +50,7 @@ class DbSignPin extends HTMLElement {
     document.removeEventListener("keydown", this.onKey);
     document.removeEventListener("selectionchange", this.onSelect);
     document.removeEventListener("click", this.onClick);
+    document.removeEventListener("pointerover", this.onHover);
     window.removeEventListener("resize", this.onResize);
     window.removeEventListener("scroll", this.onScroll, true);
   }

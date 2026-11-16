@@ -97,6 +97,7 @@ export function createSession(refs, hooks) {
     if (mine !== token) return;
     hooks.mark({
       sentence: sentence.text,
+      translation: result.text_en || "",
       layer: result.layer || "",
       gloss: (result.gloss || []).map((item) => item.gloss).filter(Boolean).join(" "),
       clips: String((result.playlist || []).filter((item) => item.src).length)

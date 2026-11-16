@@ -36,6 +36,14 @@ function chip(item, t, onPlay) {
 
 export function paintResult(refs, result, sentence, t, hooks) {
   const gloss = result.gloss || [];
+  const source = (sentence?.text || result.text || "").trim();
+  const english = (result.text_en || "").trim();
+  refs.source.hidden = !source;
+  refs.source.lang = /[\u1200-\u135A]/.test(source) ? "am" : "en";
+  refs.source.textContent = source;
+  refs.translation.hidden = !english || english === source;
+  refs.translation.lang = "en";
+  refs.translation.textContent = english;
   refs.chips.replaceChildren(...gloss.map((item) => chip(item, t, hooks.playClip)));
   const content = gloss.filter((item) => ["sign", "missing", "fingerspell"].includes(item.kind));
   const signed = content.filter((item) => item.kind === "sign").length;

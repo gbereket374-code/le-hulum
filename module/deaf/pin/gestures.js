@@ -79,9 +79,22 @@ async function word(host, event) {
   host.session.playWord({ src: best.term.sign, from: best.term.from || 0, to: best.term.to || 0 });
 }
 
+function signPoint(host, x, y, force) {
+  const hit = pointIn(x, y, host.scope());
+  if (!hit) return false;
+  const sentence = hit.sentences[hit.index];
+  if (!sentence?.text || (!force && sentence.text === host._hoverText)) return false;
+  host._hoverText = sentence.text;
+  host.refs.pin.hidden = false;
+  host.closePanel(false);
+  host.session.start([{ sentences: hit.sentences }], hit.index);
+  return true;
+}
+
 export function bindGestures(host) {
   let origin = null;
   let moved = false;
+  let hoverTimer = 0;
   const pin = host.refs.pin;
   pin.addEventListener("pointerdown", (event) => {
     moved = false;
@@ -112,9 +125,25 @@ export function bindGestures(host) {
     const field = event.target?.closest?.("input, textarea, select, [contenteditable='true']");
     if (field) return;
     if (event.altKey && event.shiftKey && event.key.toLowerCase() === "s" && signSelection(host)) event.preventDefault();
+    if (event.key === "Enter" && !event.altKey && !event.ctrlKey && !event.metaKey) {
+      const node = event.target;
+      if (!node || host.shadowRoot.contains(node)) return;
+      const rect = node.getBoundingClientRect?.();
+      if (!rect) return;
+      if (signPoint(host, rect.left + Math.min(24, rect.width / 2), rect.top + Math.min(16, rect.height / 2), true)) {
+        event.preventDefault();
+      }
+    }
   };
   host.onSelect = () => showPick(host);
   host.onClick = (event) => word(host, event);
+  host.onHover = (event) => {
+    if (event.buttons || event.composedPath().includes(host)) return;
+    clearTimeout(hoverTimer);
+    const x = event.clientX;
+    const y = event.clientY;
+    hoverTimer = setTimeout(() => signPoint(host, x, y, false), 280);
+  };
   host.onResize = () => {
     let tries = 0;
     clearTimeout(host.later);
@@ -131,6 +160,7 @@ export function bindGestures(host) {
   document.addEventListener("keydown", host.onKey);
   document.addEventListener("selectionchange", host.onSelect);
   document.addEventListener("click", host.onClick);
+  document.addEventListener("pointerover", host.onHover, { passive: true });
   window.addEventListener("resize", host.onResize);
   window.addEventListener("scroll", host.onScroll, true);
 }
