@@ -6,8 +6,10 @@ body[data-page="home"] main{max-width:none;padding:0}
 .hero-ring-wrap{position:relative;padding:6px;border-radius:38px}
 .hero-ring{position:absolute;left:50%;top:50%;width:160%;aspect-ratio:1;margin:-80% 0 0 -80%;background:conic-gradient(from 0deg,transparent 0deg,var(--lh-pr) 60deg,var(--lh-pr2) 120deg,transparent 180deg);opacity:.85;animation:lh-ring 9s linear infinite}
 .hero-frame{position:relative;width:min(340px,72vw);aspect-ratio:3/4;border-radius:32px;overflow:hidden;border:1px solid var(--lh-bd);box-shadow:var(--lh-sh);animation:lh-float 7s ease-in-out infinite;background:radial-gradient(90% 70% at 50% 18%,#6B5039,#17120E 72%)}
+.hero-frame video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .hero-frame .head{position:absolute;left:34%;top:16%;width:32%;aspect-ratio:1;border-radius:50%;background:linear-gradient(#C4A07A,#6B5039)}
 .hero-frame .body{position:absolute;left:18%;top:46%;width:64%;height:62%;border-radius:46% 46% 18px 18px;background:linear-gradient(#8A5A32,#2A1C12)}
+.hero-frame .gloss,.hero-frame .state,.hero-pause{z-index:1}
 .hero-frame .gloss{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);padding:6px 10px;border-radius:8px;background:#F4B740;color:#1A1206;font:700 14px/1 var(--lh-font-code)}
 .hero-frame .state{position:absolute;left:12px;bottom:16px;padding:4px 8px;border-radius:999px;background:rgba(0,0,0,.72);color:#fff;font-size:13px;font-weight:700}
 .hero-pause{position:absolute;right:10px;top:10px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(0,0,0,.72);color:#fff;font-weight:800}

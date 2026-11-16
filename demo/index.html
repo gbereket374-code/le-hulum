@@ -14,14 +14,13 @@
     <div class="hero-center">
       <div class="hero-ring-wrap"><div class="hero-ring" aria-hidden="true"></div>
         <div class="hero-frame">
-          <div class="head" aria-hidden="true"></div>
-          <div class="body" aria-hidden="true"></div>
+          <video id="hero-clip" src="data/memory/A01.mp4" muted playsinline preload="auto" aria-hidden="true"></video>
           <p class="state" id="hero-state"><span class="en-only">Signing</span><span class="am-only" lang="am">በምልክት ላይ</span></p>
           <p class="gloss" id="hero-word">WELCOME</p>
           <button type="button" class="hero-pause" id="hero-play" aria-pressed="true" aria-label="Pause">❚❚</button>
         </div>
       </div>
-      <p class="hero-cap" id="hero-cap"><span class="en-only">Welcome to LE HULUM. Let us learn together.</span><span class="am-only" lang="am">እንኳን ወደ ለሁሉም በደህና መጡ። አብረን እንማር።</span></p>
+      <p class="hero-cap" id="hero-cap" lang="am">ሰላም እንዴት ነህ ወይም እንዴት ነሽ</p>
       <p class="hint"><span class="en-only">Hover, tap or press Enter on any text to see it signed</span><span class="am-only" lang="am">ማንኛውንም ጽሑፍ በምልክት ለማየት ያንዣብቡ፣ ይንኩ ወይም Enter ይጫኑ</span></p>
       <h1 id="hero-t"><span class="en-only">Ear to the deaf. Eye for the blind.</span><span class="am-only" lang="am">ለመስማት ለተሳናቸው ጆሮ፣ ለማየት ለተሳናቸው ዓይን።</span></h1>
       <p class="tag-other"><span class="en-only" lang="am">ለመስማት ለተሳናቸው ጆሮ፣ ለማየት ለተሳናቸው ዓይን።</span><span class="am-only">Ear to the deaf. Eye for the blind.</span></p>
@@ -128,7 +127,9 @@
   const words = { en: ["WELCOME", "L-E H-U-L-U-M", "TOGETHER", "LEARN"], am: ["እንኳን-ደህና-መጡ", "ለሁሉም", "አብረን", "መማር"] };
   const word = document.getElementById("hero-word");
   const btn = document.getElementById("hero-play");
+  const clip = document.getElementById("hero-clip");
   let i = 1, timer = 0, on = true;
+  clip.addEventListener("timeupdate", () => { if (clip.currentTime >= 3) clip.currentTime = 0; });
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches || document.documentElement.dataset.motion === "reduce";
   function tick() {
     const list = document.documentElement.lang === "am" ? words.am : words.en;
@@ -136,8 +137,11 @@
     word.lang = document.documentElement.lang === "am" ? "am" : "en";
     i += 1;
   }
-  function start() { if (reduce || timer) return; timer = setInterval(tick, 800); }
-  function stop() { clearInterval(timer); timer = 0; }
+  function start() {
+    if (!reduce && !timer) timer = setInterval(tick, 800);
+    clip.play().catch(() => {});
+  }
+  function stop() { clearInterval(timer); timer = 0; clip.pause(); }
   if (reduce) { on = false; btn.setAttribute("aria-pressed", "false"); btn.textContent = "▶"; btn.setAttribute("aria-label", "Play"); }
   else start();
   btn.addEventListener("click", () => {
