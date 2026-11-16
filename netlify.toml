@@ -1,4 +1,4 @@
-# Publish the same layout nginx serves: Savanna at /, the player at /module/, the demo at /demo/.
+# Publish the demo at /, the player at /module/, and a /demo/ copy for absolute asset paths.
 [build]
   command = "bash scripts/vercel-public.sh"
   publish = "public"
