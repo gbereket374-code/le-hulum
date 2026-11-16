@@ -7,3 +7,5 @@ demo/data/raw/
 .dev/
 /public/
 
+.vercel
+.env*
