@@ -5,8 +5,6 @@ const NAV = [
   ["lesson-text.html", "Text lesson", "የጽሑፍ ትምህርት", "text"],
   ["sign-try.html", "Try it", "ይሞክሩ", "try"],
   ["jobs.html", "Jobs", "ሥራዎች", "jobs"],
-  ["live.html", "Session", "ክፍለ ጊዜ", "live"],
-  ["studio.html", "Studio", "ስቱዲዮ", "studio"],
   ["integrate.html", "Integrate", "ያገናኙ", "integrate"]
 ];
 const CURRENT = { auto: "lesson", verify: "jobs" };
