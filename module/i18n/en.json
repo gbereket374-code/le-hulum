@@ -134,5 +134,21 @@
   "stat_confidence": "Confidence",
   "stat_coverage": "Coverage",
   "try_note": "Type Amharic, then sign it. Long text is signed one sentence at a time.",
-  "auto_note": "This lesson is signed automatically from the captions. Compare with the human-signed version."
+  "auto_note": "This lesson is signed automatically from the captions. Compare with the human-signed version.",
+  "pin_open": "Sign this page",
+  "pin_open_am": "ይህን ገጽ አመልክቱ",
+  "pin_list": "Choose a block to sign",
+  "pin_close": "Close",
+  "pin_drag": "Drag the pin onto a sentence, or press to sign the text under its tip",
+  "pin_selection": "Sign selection",
+  "pin_pause": "Pause",
+  "pin_resume": "Play",
+  "pin_prev": "Previous sentence",
+  "pin_next": "Next sentence",
+  "pin_stop": "Stop",
+  "pin_none": "No sign for this sentence yet",
+  "pin_request": "Request sign",
+  "pin_requested": "Sign requested",
+  "pin_block": "Signing paragraph {block}, sentence {sentence} of {total}",
+  "pin_empty": "No readable text in this block"
 }

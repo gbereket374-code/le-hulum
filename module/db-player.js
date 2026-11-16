@@ -1,4 +1,5 @@
 // C-01, C-03, C-04, FR-CORE-01, FR-CORE-03, INT-01, INT-03, INT-04: Define <db-player> and keep src and lang in sync.
+import "./sign-pin.js";
 import { attachCaptions } from "./core/captions.js";
 import { loadStrings } from "./core/i18n.js";
 import { Player } from "./core/player.js";

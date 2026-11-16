@@ -1,6 +1,24 @@
 // FR-DEAF-02: Drag anywhere inside the stage, pinch, and the corner grip.
 import { fromFractions, magnet, toFractions } from "./sign-geometry.js";
 
+function limits(win) {
+  if (!win.pinSize) return { lo: 0.18, hi: 0.55 };
+  return { lo: Math.min(0.45, Number(win.minScale) || 0.1), hi: Number(win.maxScale) || 0.45 };
+}
+
+function boxOf(win, sw, sh) {
+  if (!win.pinSize) return fromFractions(win.frac, sw, sh);
+  const { lo, hi } = limits(win);
+  let w = Math.min(sw * hi, Math.max(sw * lo, win.frac.w * sw));
+  let h = w / 0.75;
+  if (h > sh) { h = sh; w = h * 0.75; }
+  return {
+    w, h,
+    x: Math.max(0, Math.min(win.frac.x * sw, sw - w)),
+    y: Math.max(0, Math.min(win.frac.y * sh, sh - h))
+  };
+}
+
 export function bindSignPointer(win) {
   const pts = new Map();
   let pinch = null;
@@ -39,7 +57,7 @@ export function bindSignPointer(win) {
     if (travel < 8) return;
     const sw = win.stage.clientWidth || 1;
     const sh = win.stage.clientHeight || 1;
-    win.frac = toFractions(magnet(fromFractions(win.frac, sw, sh), sw, sh, 12), sw, sh);
+    win.frac = toFractions(magnet(boxOf(win, sw, sh), sw, sh, 12), sw, sh);
     win.userPlaced = true;
     win.place();
     win.hooks.save?.();
@@ -54,16 +72,19 @@ export function bindSignPointer(win) {
     const [a, b] = [...pts.values()];
     const dist = Math.hypot(a.lx - b.lx, a.ly - b.ly) || 1;
     if (!pinch) pinch = { dist, w: win.frac.w };
-    win.frac.w = Math.min(0.55, Math.max(0.18, pinch.w * dist / pinch.dist));
+    const { lo, hi } = limits(win);
+    win.frac.w = Math.min(hi, Math.max(lo, pinch.w * dist / pinch.dist));
+    win.userMoved = true;
     win.userPlaced = true;
     win.place();
   }
 
   function drag(point, event, sw, sh) {
-    const box = fromFractions(win.frac, sw, sh);
+    const box = boxOf(win, sw, sh);
     const moved = { x: box.x + event.clientX - point.lx, y: box.y + event.clientY - point.ly, w: box.w, h: box.h };
     point.lx = event.clientX;
     point.ly = event.clientY;
+    win.userMoved = true;
     win.frac = toFractions(moved, sw, sh);
     win.place();
   }
@@ -73,12 +94,14 @@ export function bindSignPointer(win) {
     const grow = (corner[1] === "l" ? -1 : 1) * (event.clientX - point.lx);
     point.lx = event.clientX;
     point.ly = event.clientY;
-    const box = fromFractions(win.frac, sw, sh);
-    win.frac.w = Math.min(0.55, Math.max(0.18, (box.w + grow) / sw));
-    const next = fromFractions(win.frac, sw, sh);
+    const { lo, hi } = limits(win);
+    const box = boxOf(win, sw, sh);
+    win.frac.w = Math.min(hi, Math.max(lo, (box.w + grow) / sw));
+    const next = boxOf(win, sw, sh);
     if (corner[1] === "l") win.frac.x = (box.x + box.w - next.w) / sw;
     if (corner[0] === "t") win.frac.y = (box.y + box.h - next.h) / sh;
-    win.frac = toFractions(fromFractions(win.frac, sw, sh), sw, sh);
+    win.frac = toFractions(boxOf(win, sw, sh), sw, sh);
+    win.userMoved = true;
     win.userPlaced = true;
     win.place();
   }

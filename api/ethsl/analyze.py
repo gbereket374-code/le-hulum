@@ -18,6 +18,7 @@ _EXIST = {"አለ", "አሉ", "አለው"}
 _TIME = {"በኋላ": "AFTER", "በፊት": "BEFORE", "ትላንትና": "YESTERDAY", "ጠዋት": "MORNING"}
 _ADJ = {"GOOD", "IMPORTANT"}
 _ADV = {"AGAIN"}
+_ORDINAL = {"የመጀመሪያ": "FIRST", "የሁለተኛ": "SECOND"}
 _ENDS = (("አችኋል", "YOU-PL"), ("ችኋል", "YOU-PL"), ("ላችሁ", "YOU-PL"), ("አችሁ", "YOU-PL"), ("ችሁ", "YOU-PL"), ("ለች", "SHE"), ("ለን", "WE"), ("አቸው", "THEY"))
 
 
@@ -132,10 +133,17 @@ def _feature(token, gloss, group, merged):
         gloss, ambiguous = lemma(token)
         row = next((item for item in lexicon() if item["gloss"] == gloss), None)
         group = row["group"] if row else ""
-    if gloss == "START" and token in ("መጀመሪያ", "የመጀመሪያ"):
+    if token in _ORDINAL:
+        gloss, row, group = _ORDINAL[token], None, ""
+    elif gloss == "START" and token == "መጀመሪያ":
         gloss, row, group = "FIRST", None, "time"
-    pos = _pos(gloss, group) if gloss and (row or merged or gloss == "FIRST") else "missing"
-    if gloss and not row and not merged and subject_ending(token):
+    known = gloss and (row or merged or gloss == "FIRST" or token in _ORDINAL)
+    pos = _pos(gloss, group) if known else "missing"
+    if token in _ORDINAL:
+        pos = "adj"
+    elif gloss and not row and not merged and subject_ending(token):
+        pos = "verb"
+    elif pos == "missing" and gloss and _imperative(token, None, "verb"):
         pos = "verb"
     _bare, neg = strip_neg(fold(token))
     if neg and pos == "noun":

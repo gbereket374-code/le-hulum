@@ -100,6 +100,15 @@ def test_look_time_setting_and_no_silent_drop():
             assert token in drops or token in seen or any(len(token) >= 3 and token in item for item in seen), (text, token, seen)
 
 
+def test_ordinal_follows_its_noun_and_missing_imperative_leads():
+    assert glosses("ዛሬ የመጀመሪያ ተለዋዋጫችሁን ፍጠሩ።", False)[0] == ["TODAY", "CREATE", "POSS-YOU-PL", "VARIABLE", "FIRST"]
+    assert glosses("መጀመሪያ፣ ኮድ ጻፉ።", False)[0][0] == "FIRST"
+    words, result = glosses("ስክሪኑን ተመልከቱ።", False)
+    assert words == ["LOOK", "SCREEN"]
+    assert any(item["gloss"] == "LOOK" and item["kind"] == "missing" for item in result["gloss"])
+    assert glosses("የሁለተኛ ተለዋዋጭን ፍጠሩ።", False)[0] == ["CREATE", "VARIABLE", "SECOND"]
+
+
 def test_sign_routes(data_root, monkeypatch):
     monkeypatch.setattr("api.seed.seed_if_empty", lambda: None)
     with TestClient(app) as client:
