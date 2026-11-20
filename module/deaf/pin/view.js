@@ -3,6 +3,7 @@ export function buildPin(root) {
   const launch = button("launch");
   launch.setAttribute("aria-expanded", "false");
   launch.setAttribute("aria-controls", "pin-panel");
+  launch.setAttribute("aria-label", "Sign this page");
   const am = document.createElement("span");
   am.lang = "am";
   const en = document.createElement("span");
@@ -96,6 +97,7 @@ function el(tag, name) {
 export function paintPin(refs, t) {
   refs.am.textContent = t("pin_open_am");
   refs.en.textContent = t("pin_open");
+  refs.launch.setAttribute("aria-label", t("pin_open_am") + " — " + t("pin_open"));
   refs.title.textContent = t("pin_list");
   refs.close.textContent = t("pin_close");
   refs.pin.setAttribute("aria-label", t("pin_drag"));

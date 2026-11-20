@@ -74,7 +74,9 @@ async function run(how, block, playlist, auto) {
       const stuck = Math.abs(sample.t - box.lastT) < 0.04 && Math.abs((video?.currentTime || 0) - box.lastS) < 0.04 && !sample.ended;
       box.still = stuck ? box.still + 1 : 0;
       box.lastT = sample.t; box.lastS = video?.currentTime || 0;
-      if (box.still >= 120) box.frozen = true;
+      // Remote CDN stalls need a longer freeze window than local Docker.
+      const limit = /onrender\.com|hf\.space/i.test(location.hostname) ? 300 : 120;
+      if (box.still >= limit) box.frozen = true;
     }, 100);
   });
   const started = Date.now();
@@ -86,7 +88,8 @@ async function run(how, block, playlist, auto) {
     else player.media.play();
   }, how);
   let done = false;
-  for (let i = 0; i < 240 && !done; i += 1) {
+  const polls = remote ? 360 : 240;
+  for (let i = 0; i < polls && !done; i += 1) {
     await page.waitForTimeout(500);
     done = await page.evaluate(() => {
       const box = window.__lh;
