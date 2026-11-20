@@ -166,11 +166,11 @@
             <div style="border-radius:16px;background:#0a1124;border:1px solid var(--hero-line);overflow:hidden">
               <pre style="margin:0;padding:20px;overflow:auto;font:400 clamp(12px,1.1vw,15px)/1.8 var(--mono);color:#ece8dc"><code><span style="color:#8f9a8f">&lt;!-- your lesson page --&gt;</span>
 <span style="color:#9fc9ad">&lt;script</span> <span style="color:#e9c25c">type</span>="module"
-  <span style="color:#e9c25c">src</span>="https://HOST/module/db-player.js"<span style="color:#9fc9ad">&gt;&lt;/script&gt;</span></code></pre>
+  <span style="color:#e9c25c">src</span>="{{ host }}/module/db-player.js"<span style="color:#9fc9ad">&gt;&lt;/script&gt;</span></code></pre>
             </div>
             <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-              <button onClick="{{ copy }}" style="min-height:48px;padding:0 18px;border:1.5px solid var(--hero-ink);border-radius:var(--r-pill);background:{{ copyBg }};color:{{ copyFg }};font-weight:700;font-size:15px">{{ copyLabel }}</button>
-              <span style="font-size:15px;color:var(--hero-ink-2)">{{ t.s1note }}</span>
+              <button onClick="{{ copy }}" aria-describedby="lh-copy-status" style="min-height:48px;padding:0 18px;border:1.5px solid var(--hero-ink);border-radius:var(--r-pill);background:{{ copyBg }};color:{{ copyFg }};font-weight:700;font-size:15px">{{ copyLabel }}</button>
+              <span id="lh-copy-status" role="status" aria-live="polite" style="font-size:15px;color:var(--hero-ink-2)">{{ copyStatus }}</span>
             </div>
           </div>
         </sc-if>
@@ -362,7 +362,7 @@ const T = {
       ['Every line is signed by a real interpreter, in sync', 'At the end of a sentence the teacher’s video waits until the signer finishes, so nothing is cut mid-way.'],
       ['New text is signed automatically from real clips, following EthSL grammar', 'Our engine joins recorded interpreter clips in EthSL word order, with face signals for questions and “not”.'],
     ],
-    copy: 'Copy line', copied: 'Copied ✓', s1note: 'Works inside ALX Savanna today.',
+    copy: 'Copy line', copied: 'Copied', s1note: 'Works inside ALX Savanna today.',
     teacherL: 'Teacher', signerL: 'Signer', captionsL: 'Captions', waits: 'waits', line1: 'A variable is a name…', line2: 'Let’s make your first…',
     s2note: 'Pacing can be set by the learner: smooth, pause at sentence ends, or off.',
     s3in: '“What is a variable?”', ethslOrder: 'EthSL word order', brows: 'Eyebrows: question',
@@ -417,7 +417,7 @@ const T = {
       ['እያንዳንዱ መስመር በእውነተኛ አስተርጓሚ፣ በጊዜው ይተረጎማል', 'አስተርጓሚው እስኪጨርስ ድረስ የመምህሩ ቪዲዮ በዓረፍተ ነገሩ መጨረሻ ይጠብቃል፤ ስለዚህ ምንም በመሃል አይቋረጥም።'],
       ['አዲስ ጽሑፍ ከእውነተኛ ቅንጥቦች፣ የምልክት ቋንቋ ሰዋስውን ተከትሎ በራሱ ይተረጎማል', 'ሞተራችን የተቀረጹ የአስተርጓሚ ቅንጥቦችን በምልክት ቋንቋ የቃላት ቅደም ተከተል ያገናኛል፤ ለጥያቄ እና ለ«አይ» የፊት ምልክቶችንም ይጨምራል።'],
     ],
-    copy: 'መስመሩን ቅዳ', copied: 'ተቀድቷል ✓', s1note: 'ዛሬውኑ በALX Savanna ውስጥ ይሰራል።',
+    copy: 'መስመሩን ቅዳ', copied: 'ተቀድቷል', s1note: 'ዛሬውኑ በALX Savanna ውስጥ ይሰራል።',
     teacherL: 'መምህር', signerL: 'አስተርጓሚ', captionsL: 'ጽሑፍ', waits: 'ይጠብቃል', line1: 'ተለዋዋጭ እሴትን…', line2: 'የመጀመሪያ ተለዋዋጭዎን…',
     s2note: 'ተማሪው ፍጥነቱን መምረጥ ይችላል፦ ለስላሳ፣ በዓረፍተ ነገር መጨረሻ ቆም፣ ወይም ጠፍቷል።',
     s3in: '«ተለዋዋጭ ምንድን ነው?»', ethslOrder: 'የምልክት ቋንቋ ቅደም ተከተል', brows: 'ቅንድብ፦ ጥያቄ',
@@ -556,12 +556,16 @@ class Component extends DCLogic {
       howCols: w >= 960 ? 'minmax(0,.9fr) minmax(0,1.1fr)' : 'minmax(0,1fr)',
       steps: t.steps.map(([h, b], i) => ({ n: '0' + (i + 1), h, b, sel: s.step === i, bg: s.step === i ? 'var(--surface)' : 'transparent', border: s.step === i ? 'var(--ink)' : 'var(--line)', numBg: s.step === i ? 'var(--ink)' : 'transparent', numFg: s.step === i ? 'var(--bg)' : 'var(--ink)', pick: () => this.setState({ step: i }) })),
       how0: s.step === 0, how1: s.step === 1, how2: s.step === 2,
+      host: (window.LH_CONFIG && window.LH_CONFIG.HOST) || location.origin || '',
       copy: () => {
         const host = (window.LH_CONFIG && window.LH_CONFIG.HOST) || location.origin;
-        try { navigator.clipboard.writeText('<script type="module" src="' + host + '/module/db-player.js"><\/script>'); } catch (e) {}
+        const line = '<script type="module" src="' + host + '/module/db-player.js"><\/script>';
+        try { navigator.clipboard.writeText(line); } catch (e) {}
         this.setState({ copied: true }); clearTimeout(this._cp); this._cp = setTimeout(() => this.setState({ copied: false }), 2200);
       },
-      copyLabel: s.copied ? t.copied : t.copy, copyBg: s.copied ? 'var(--hero-ink)' : 'transparent', copyFg: s.copied ? 'var(--hero)' : 'var(--hero-ink)',
+      copyLabel: s.copied ? t.copied : t.copy,
+      copyStatus: s.copied ? t.copied : t.s1note,
+      copyBg: s.copied ? 'var(--hero-ink)' : 'transparent', copyFg: s.copied ? 'var(--hero)' : 'var(--hero-ink)',
       legend: t.legendL.map(([icon, label]) => ({ icon, label })),
       review: t.review.map(([h, b], i) => ({ n: i + 1, h, b, line: i < 3 ? 'var(--line-strong)' : 'transparent', bg: i === 1 ? 'var(--ink)' : 'var(--surface)', fg: i === 1 ? 'var(--bg)' : 'var(--ink)' })),
       ...(() => {
