@@ -72,7 +72,7 @@
       <div style="display:grid;grid-template-columns:{{ resCols }};gap:clamp(24px,4vw,56px);align-items:start">
         <div style="display:flex;flex-direction:column;position:sticky;top:96px">
           <div style="position:relative;aspect-ratio:3/4;border-radius:var(--r-l) var(--r-l) 0 0;overflow:hidden;background:repeating-linear-gradient(135deg,var(--stage) 0 2px,var(--stage-2) 2px 14px)">
-            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;font:500 11px/1.7 var(--mono);color:var(--stage-ink-2)">INTERPRETER VIDEO · 3:4</div>
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;font:500 11px/1.7 var(--mono);color:var(--stage-ink-2)">EthSL</div>
             <span style="position:absolute;top:14px;left:14px;padding:6px 12px;border-radius:var(--r-pill);background:var(--surface);color:var(--ink);font-size:13px;font-weight:700">{{ sourceBadge }}</span>
             <sc-if value="{{ curGloss }}" hint-placeholder-val="{{ false }}">
               <span style="position:absolute;left:50%;bottom:16px;transform:translateX(-50%);padding:8px 14px;border-radius:10px;background:rgba(0,0,0,.75);color:#fff;font:600 17px var(--mono);letter-spacing:.04em;white-space:nowrap">{{ curGloss }}</span>
@@ -288,7 +288,7 @@ const T = {
     thanksYes: 'Thanks. This helps us keep good signs.', thanksNo: 'Thanks. Sent to Deaf review.',
     whyH: 'Why this sign', whyRec: 'An interpreter recorded this whole sentence, so you see one natural recording, not joined clips.',
     whyOrder: 'EthSL puts question words like WHAT at the end of the sentence.', whyNot: 'NOT comes after the verb, with a head shake.', whyAuto: 'Each word was matched to a reviewed dictionary sign and joined in EthSL order.', whyNone: 'Words with no sign yet stay in the captions and are sent to our recording queue.',
-    loop: 'Loop', example: 'Example sentence', signExample: 'Sign this example', credit: 'Signed by [interpreter name] · reviewed by Deaf co-designer', related: 'Related words', report: 'Report a problem', closeCard: 'Close card',
+    loop: 'Loop', example: 'Example sentence', signExample: 'Sign this example', credit: 'Signed by interpreter · reviewed by Deaf co-designer', related: 'Related words', report: 'Report a problem', closeCard: 'Close card',
     noSignBadge: 'No sign yet', noSignB: 'This word is not in our sign library yet. You can see it fingerspelled now, and request a recorded sign.', fingerspell: 'Fingerspell it', request: 'Request a sign',
     dictH: 'EthSL dictionary', words: 'signs, reviewed with Deaf people', topics: 'Topics', all: 'All', showSign: 'Show sign', missing: 'Missing a sign?',
     demoStates: 'Preview states:', stEmpty: 'Empty', stLoading: 'Loading', stError: 'Error',
@@ -311,7 +311,7 @@ const T = {
     thanksYes: 'እናመሰግናለን። ጥሩ ምልክቶችን እንድንጠብቅ ይረዳናል።', thanksNo: 'እናመሰግናለን። ለግምገማ ተልኳል።',
     whyH: 'ይህ ምልክት ለምን', whyRec: 'አስተርጓሚው ሙሉውን ዓረፍተ ነገር ቀርጾታል፤ ስለዚህ የተገናኙ ቅንጥቦች ሳይሆን አንድ ተፈጥሯዊ ቅጂ ያያሉ።',
     whyOrder: 'የምልክት ቋንቋ እንደ «ምን» ያሉ የጥያቄ ቃላትን በዓረፍተ ነገሩ መጨረሻ ያስቀምጣል።', whyNot: '«አይ» ከግሱ በኋላ፣ ከራስ መነቅነቅ ጋር ይመጣል።', whyAuto: 'እያንዳንዱ ቃል ከተገመገመ የመዝገበ ቃላት ምልክት ጋር ተዛምዶ በምልክት ቋንቋ ቅደም ተከተል ተገናኝቷል።', whyNone: 'ምልክት የሌላቸው ቃላት በጽሑፍ ትርጉሙ ውስጥ ይቆያሉ፤ ወደ መቅረጫ ወረፋችንም ይላካሉ።',
-    loop: 'ድገም', example: 'ምሳሌ ዓረፍተ ነገር', signExample: 'ይህንን ምሳሌ በምልክት', credit: 'በ[የአስተርጓሚ ስም] የተሰራ · በመስማት የተሳነው ተባባሪ ዲዛይነር የተገመገመ', related: 'ተዛማጅ ቃላት', report: 'ችግር ሪፖርት አድርግ', closeCard: 'ካርዱን ዝጋ',
+    loop: 'ድገም', example: 'ምሳሌ ዓረፍተ ነገር', signExample: 'ይህንን ምሳሌ በምልክት', credit: 'በአስተርጓሚ የተሰራ · በመስማት የተሳነው ተባባሪ ዲዛይነር የተገመገመ', related: 'ተዛማጅ ቃላት', report: 'ችግር ሪፖርት አድርግ', closeCard: 'ካርዱን ዝጋ',
     noSignBadge: 'ገና ምልክት የለውም', noSignB: 'ይህ ቃል ገና በምልክት ቤተ መጻሕፍታችን ውስጥ የለም። አሁን በጣት ፊደል ማየት እና የተቀረጸ ምልክት መጠየቅ ይችላሉ።', fingerspell: 'በጣት ፊደል አሳይ', request: 'ምልክት ይጠይቁ',
     dictH: 'የምልክት ቋንቋ መዝገበ ቃላት', words: 'ምልክቶች፣ ከመስማት የተሳናቸው ጋር የተገመገሙ', topics: 'ርዕሶች', all: 'ሁሉም', showSign: 'ምልክቱን አሳይ', missing: 'ምልክት ጎደለ?',
     demoStates: 'ሁኔታዎችን ይመልከቱ፦', stEmpty: 'ባዶ', stLoading: 'በመጫን ላይ', stError: 'ስህተት',
@@ -420,7 +420,7 @@ class Component extends DCLogic {
       showCard: !!card && (s.mode === 'word' || s.mode === 'sentence'), card: card || {},
       cardTop: s.mode === 'sentence' ? '32px' : '0', cardClosable: s.mode === 'sentence', closeCard: () => this.setState({ card: null }),
       cardCols: w >= 720 ? 'minmax(200px,300px) minmax(0,1fr)' : 'minmax(0,1fr)',
-      cardVidLabel: 'SIGN VIDEO · 3:4\n' + (s.loop ? 'looping' : 'once') + ' · ' + (s.slow ? '0.75×' : '1×'),
+      cardVidLabel: 'EthSL sign\n' + (s.loop ? 'looping' : 'once') + ' · ' + (s.slow ? '0.75×' : '1×'),
       cardTopic: card ? topicName(card.topic) : '', cardExample: card ? card.example[lang] : '',
       loop: s.loop, slow: s.slow, toggleLoop: () => this.setState({ loop: !s.loop }), toggleSlow: () => this.setState({ slow: !s.slow }),
       loopBg: s.loop ? 'var(--ink)' : 'transparent', loopFg: s.loop ? 'var(--bg)' : 'var(--ink)', slowBg: s.slow ? 'var(--ink)' : 'transparent', slowFg: s.slow ? 'var(--bg)' : 'var(--ink)',

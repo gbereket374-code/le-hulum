@@ -1,0 +1,84 @@
+Skip to content
+LE HULUM
+/ ለሁሉም
+Menu
+Savanna demo
+/
+Python basics
+/
+Lesson 1
+Python: Your first variable
+ፓይተን፦ የመጀመሪያ ተለዋዋጭዎ
+0:46
+14 lines
+Python basics
+HOW THIS LESSON IS SIGNED
+●
+Signed by interpreter
+β
+Signed automatically
+Lesson first
+Sign first
+Drag the signer, or use ⋯ to move it to a corner.
+LESSON VIDEO
+teacher
+main.py
+name = "Abebe"
+print(name)
+> Abebe
+SIGNER
+3:4
+Play lesson · 0:46
+Teacher
+Captions appear here, in Amharic and English.
+−10
++10
+0:00 / 0:46
+CC
+EthSL
+More
+Chapters
+Words
+Transcript
+0:00
+Hello, and welcome.
+0:00
+0:12
+Now, type this line.
+0:12
+0:25
+Look at the screen. The computer shows "Abebe".
+0:25
+●
+Signed by interpreter
+β
+Automatic sign (beta)
+∅
+No sign yet
+…
+Waiting for signer
+
+Keyboard: Space play/pause · ← → 10 seconds · C captions · S signer.
+
+LE HULUM
+ለሁሉም
+
+Ethiopian Sign Language for any online lesson, with one line of code.
+
+PRODUCT
+Home
+Signed lesson
+Asayegn
+For platforms
+DEVELOPERS
+API docs
+Install guide
+GitHub
+TEAM
+About
+Contact
+ALX Digital Bridge Hackathon
+Privacy
+Finalist · ALX Digital Bridge Accessibility Hackathon 2026 · Track 2: Accessible learning media
+Built with Deaf co-designers and certified EthSL interpreters.
+EthSL

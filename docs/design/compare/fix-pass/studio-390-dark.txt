@@ -1,0 +1,37 @@
+Skip to content
+LE HULUM
+/ ለሁሉም
+Menu
+EthSL
+[Interpreter name]
+▾
+Auto
+አማርኛ
+English
+</>
+Add EthSL to your own platform with one line of code
+For platforms
+→
+×
+Type a message.
+Watch it signed.
+
+መልዕክት ይጻፉ። በምልክት ይመልከቱት።
+
+Real Ethiopian Sign Language interpreters, joined by our engine.
+
+interpreter ready
+TRY ONE OF THESE
+EN
+What is a variable?
+አማ
+ተለዋዋጭ ምንድን ነው?
+አማ
+ኮዱ ካልሰራ፣ ስህተቱን አረጋግጡ።
+አማ
+ሰላም፣ እንኳን ደህና መጣችሁ።
+ኮድ / code
+⇄ Run the judges’ test: same question in English, then Amharic
+Type something to sign
+↑
+Enter to send · Shift+Enter for a new line · Amharic or English

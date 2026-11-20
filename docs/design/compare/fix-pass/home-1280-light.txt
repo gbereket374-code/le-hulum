@@ -1,0 +1,190 @@
+Skip to content
+LE HULUM
+Home
+Signed lesson
+Asayegn
+For platforms
+English
+አማርኛ
+Theme
+Try it live
+INTERPRETER VIDEO · 3:4
+young Ethiopian man, dark jacket
+upper body + hands visible
+Real interpreter
+CODE
+INTERPRETER · LINE 3/3
+Pause
+If the code does not work, check the error.
+ኮዱ ካልሰራ፣ ስህተቱን አረጋግጡ።
+CODE
+WORK
+NOT
+ERROR
+CHECK
+↔
+Head shake: not
+ETHIOPIAN SIGN LANGUAGE FOR EVERY ONLINE LESSON
+Ear to the deaf.
+Eye for the blind.
+
+ለመስማት ለተሳናቸው ጆሮ፣ ለማየት ለተሳናቸው ዓይን።
+
+Ethiopian Sign Language for any online lesson, with one line of code.
+
+Watch a signed lesson
+Add it to your platform
+→
+BUILT WITH
+A Deaf co-designer
+Certified EthSL interpreters
+ALX Savanna
+Track 2 · Accessible learning media
+Sign it
+
+Type a word or a question in Amharic or English
+
+Type a word or a question in Amharic or English
+Sign it
+Try
+What is a variable?
+ተለዋዋጭ ምንድን ነው?
+ኮዱ ካልሰራ፣ ስህተቱን አረጋግጡ።
+EthSL word signs
+64
+recorded phrases
+39
+sentences cut mid-way: the teacher waits for the signer
+14
+of 10 sentences understood by our Deaf co-designer
+14
+01 · THE PROBLEM
+Online learning in Ethiopia is not yet made for Deaf learners.
+
+Video lessons are now the main way people learn to code in Ethiopia. For Deaf learners, most of that teaching is out of reach.
+
+01
+No sign language. Almost no Amharic captions.
+
+Deaf learners in Ethiopia get no sign language and almost no Amharic captions in online courses.
+
+02
+Global tools don’t speak EthSL.
+
+Global sign tools don’t speak Ethiopian Sign Language.
+
+03
+One interpreter per lesson doesn’t scale.
+
+Booking an interpreter for every lesson does not scale.
+
+02 · HOW IT WORKS
+One line of code. A real interpreter on every line.
+
+Platforms keep their player, their pages and their content. LE HULUM adds the signing layer on top.
+
+01
+Add one line
+Paste our script tag into any lesson page. No app to install, no player to replace.
+02
+Every line is signed by a real interpreter, in sync
+03
+New text is signed automatically from real clips, following EthSL grammar
+lesson.html
+<!-- your lesson page --><script type="module"
+  src="https://HOST/module/db-player.js"></script>
+Copy line
+Works inside ALX Savanna today.
+03 · BUILT WITH THE DEAF COMMUNITY
+Signs are made by people, and checked by the people who use them.
+CO-DESIGNER · SIGNED QUOTE · 3:4
+▶ Play
+[Captions of the signed quote appear here]
+“
+[Placeholder: a quote from our Deaf co-designer, in their own words, signed on video and captioned.]
+[Co-designer name]
+Deaf co-designer
+How a sign is reviewed
+1
+Record
+A certified interpreter records each sign and phrase.
+2
+Deaf review
+Our Deaf co-designer checks that it is clear and natural.
+3
+Publish
+Only approved signs reach learners.
+4
+Learner feedback
+“Not clear” reports send a sign back for review.
+Interpreters
+3:4
+[Interpreter name]
+Certified EthSL interpreter · lesson and welcome
+✓
+Filmed with written consent
+3:4
+[Interpreter name]
+Certified EthSL interpreter · dictionary signs
+✓
+Filmed with written consent
+Team
+IMG
+[Name]
+Product & engineering
+IMG
+[Name]
+Deaf co-designer
+IMG
+[Name]
+Design & research
+IMG
+[Name]
+Sign library & data
+HONEST STATUS
+
+Our current sign library was recorded for this demo. With ALX Ethiopia we will grow it with Deaf reviewers to make translation as accurate as possible.
+
+04 · QUESTIONS
+What people ask us
+How does automatic signing work?
+−
+We split the text into words, put them in EthSL word order and join recorded interpreter clips for each sign. Names and new terms are fingerspelled. Questions and “not” get the right face signal. If the whole sentence was recorded, we play that recording instead.
+Is it real sign language?
++
+What if a word has no sign yet?
++
+Does it work on a cheap phone and slow internet?
++
+Is learners’ data private?
++
+How do we add it to our platform?
++
+ለሁሉም
+Bring Ethiopian Sign Language to your learners
+Contact us
+→
+Try it live
+LE HULUM
+ለሁሉም
+
+Ethiopian Sign Language for any online lesson, with one line of code.
+
+PRODUCT
+Home
+Signed lesson
+Asayegn
+For platforms
+DEVELOPERS
+API docs
+Install guide
+GitHub
+TEAM
+About
+Contact
+ALX Digital Bridge Hackathon
+Privacy
+Finalist · ALX Digital Bridge Accessibility Hackathon 2026 · Track 2: Accessible learning media
+Built with Deaf co-designers and certified EthSL interpreters.
+Learner settings
+EthSL

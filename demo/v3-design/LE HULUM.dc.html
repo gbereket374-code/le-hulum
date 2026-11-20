@@ -172,7 +172,7 @@ html[data-motion=reduced] *{animation:none!important;transition:none!important}
     </sc-if>
     <sc-if value="{{ pg.notfound }}" hint-placeholder-val="{{ false }}">
       <section style="max-width:1100px;margin:0 auto;padding:clamp(48px,8vw,120px) clamp(16px,4vw,56px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:48px;align-items:center">
-        <div style="aspect-ratio:3/4;max-width:360px;border-radius:var(--r-l);background:repeating-linear-gradient(135deg,var(--stage) 0 2px,var(--stage-2) 2px 14px);display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;font:500 12px/1.7 var(--mono);color:var(--stage-ink-2)">POSTER FRAME · 3:4<br>interpreter signing<br>"PAGE NOT FOUND"<br>(cached for offline)</div>
+        <div style="aspect-ratio:3/4;max-width:360px;border-radius:var(--r-l);background:repeating-linear-gradient(135deg,var(--stage) 0 2px,var(--stage-2) 2px 14px);display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;font:500 12px/1.7 var(--mono);color:var(--stage-ink-2)">Page not found<br>Try Home or reload</div>
         <div style="display:flex;flex-direction:column;gap:20px">
           <span style="font:500 14px var(--mono);letter-spacing:.08em;color:var(--ink-3)">404 · OFFLINE</span>
           <h1 style="margin:0;font:500 clamp(40px,6vw,64px)/var(--lh-tight) var(--serif);letter-spacing:-.02em">{{ t.nfTitle }}</h1>
@@ -242,7 +242,7 @@ html[data-motion=reduced] *{animation:none!important;transition:none!important}
           </div>
         </sc-if>
         <div style="position:relative;aspect-ratio:{{ fsAspect }};background:repeating-linear-gradient(135deg,var(--stage) 0 2px,var(--stage-2) 2px 14px);color:var(--stage-ink)">
-          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;font:500 11px/1.6 var(--mono);color:var(--stage-ink-2)">INTERPRETER VIDEO · 3:4</div>
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;font:500 11px/1.6 var(--mono);color:var(--stage-ink-2)">EthSL</div>
           <sc-if value="{{ fs.loading }}" hint-placeholder-val="{{ false }}">
             <div style="position:absolute;inset:0;background:rgba(0,0,0,.45);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;font-size:14px;font-weight:600">
               <span aria-hidden="true" style="width:28px;height:28px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:lh-spin .9s linear infinite"></span>{{ t.loadingSigns }}
@@ -527,8 +527,17 @@ class Component extends DCLogic {
       reload: () => location.reload(),
       footCols: [
         { title: t.product, links: PAGES.map(p => ({ label: t[p], href: '#' + p, go: e => { e.preventDefault(); this.go(p); } })) },
-        { title: t.developers, links: [{ label: t.apiDocs, href: '/api/docs', go: e => { e.preventDefault(); location.href = ((window.LH_CONFIG && window.LH_CONFIG.HOST) || location.origin) + '/api/docs'; } }, { label: t.install, href: '#platforms', go: e => { e.preventDefault(); this.go('platforms'); } }, { label: 'GitHub', href: 'https://github.com/dawit-melese/le-hulum', go: () => {} }] },
-        { title: t.team, links: [{ label: t.about, href: '#home', go: () => {} }, { label: t.contact, href: 'mailto:hello@' + (location.hostname || 'lehulum.example'), go: () => {} }, { label: t.hack, href: '#', go: () => {} }, { label: t.privacy, href: '#', go: () => {} }] },
+        { title: t.developers, links: [
+          { label: t.apiDocs, href: (((window.LH_CONFIG && window.LH_CONFIG.HOST) || location.origin) + '/docs'), go: e => { e.preventDefault(); location.href = ((window.LH_CONFIG && window.LH_CONFIG.HOST) || location.origin) + '/docs'; } },
+          { label: t.install, href: '#platforms', go: e => { e.preventDefault(); this.go('platforms'); } },
+          { label: 'GitHub', href: 'https://github.com/dawit-melese/le-hulum', go: e => { e.preventDefault(); window.open('https://github.com/dawit-melese/le-hulum', '_blank', 'noopener'); } },
+        ] },
+        { title: t.team, links: [
+          { label: t.about, href: '#home', go: e => { e.preventDefault(); this.go('home'); } },
+          { label: t.contact, href: (window.LH_CONFIG && window.LH_CONFIG.CONTACT) || 'mailto:hello@lehulum.org', go: () => {} },
+          { label: t.hack, href: 'https://www.alxafrica.com/', go: e => { e.preventDefault(); window.open('https://www.alxafrica.com/', '_blank', 'noopener'); } },
+          { label: t.privacy, href: '#home', go: e => { e.preventDefault(); this.go('home'); } },
+        ] },
       ],
       settingsBtn: s.page === 'studio' || phone ? '' : t.settings,
       openSettings: () => this.setState({ settings: true, themeMenu: false }), closeSettings: () => this.setState({ settings: false }),

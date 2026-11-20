@@ -6,5 +6,6 @@
     API: HOST + '/api/v1',
     MODULE: HOST + '/module/db-player.js',
     DATA: HOST + '/demo/data',
+    CONTACT: 'mailto:hello@lehulum.org',
   };
 })(typeof window !== 'undefined' ? window : globalThis);

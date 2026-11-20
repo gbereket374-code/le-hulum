@@ -321,7 +321,7 @@
       <div style="position:relative;max-width:1440px;margin:0 auto;padding:clamp(56px,9vw,140px) clamp(20px,4.4vw,72px);display:flex;flex-direction:column;gap:36px">
         <h2 id="cta-h" style="margin:0;font:500 clamp(40px,6vw,92px)/var(--lh-tight) var(--serif);letter-spacing:-.03em;max-width:15ch;text-wrap:balance">{{ t.ctaH }}</h2>
         <div style="display:flex;gap:12px;flex-wrap:wrap">
-          <a href="mailto:hello@HOST" style="min-height:60px;padding:0 8px 0 26px;border-radius:var(--r-pill);background:var(--hero-accent);color:#0b1430;font-size:17px;font-weight:700;display:flex;align-items:center;gap:16px;text-decoration:none">{{ t.contact }}<span aria-hidden="true" style="width:44px;height:44px;border-radius:50%;background:#0b1430;color:var(--hero-accent);display:flex;align-items:center;justify-content:center">→</span></a>
+          <a href="{{ contactHref }}" style="min-height:60px;padding:0 8px 0 26px;border-radius:var(--r-pill);background:var(--hero-accent);color:#0b1430;font-size:17px;font-weight:700;display:flex;align-items:center;gap:16px;text-decoration:none">{{ t.contact }}<span aria-hidden="true" style="width:44px;height:44px;border-radius:50%;background:#0b1430;color:var(--hero-accent);display:flex;align-items:center;justify-content:center">→</span></a>
           <button onClick="{{ goStudio }}" style="min-height:60px;padding:0 26px;border:1.5px solid var(--hero-ink);border-radius:var(--r-pill);background:transparent;color:var(--hero-ink);font-size:17px;font-weight:700">{{ t.tryLive }}</button>
         </div>
       </div>
@@ -368,12 +368,12 @@ const T = {
     s3in: '“What is a variable?”', ethslOrder: 'EthSL word order', brows: 'Eyebrows: question',
     legendL: [['●', 'Sign'], ['ABC', 'Fingerspelled'], ['→', 'Pointing'], ['∅', 'No sign yet'], ['‖', 'Pause']],
     commEy: '03 · Built with the Deaf community', commH: 'Signs are made by people, and checked by the people who use them.',
-    quoteVid: 'CO-DESIGNER · SIGNED QUOTE · 3:4', playQuote: 'Play the signed quote', quoteCap: '[Captions of the signed quote appear here]',
-    quote: '[Placeholder: a quote from our Deaf co-designer, in their own words, signed on video and captioned.]', quoteName: '[Co-designer name]', quoteRole: 'Deaf co-designer',
+    quoteVid: 'Co-designer signed quote', playQuote: 'Play the signed quote', quoteCap: '',
+    quote: '', quoteName: '', quoteRole: 'Deaf co-designer',
     reviewH: 'How a sign is reviewed',
     review: [['Record', 'A certified interpreter records each sign and phrase.'], ['Deaf review', 'Our Deaf co-designer checks that it is clear and natural.'], ['Publish', 'Only approved signs reach learners.'], ['Learner feedback', '“Not clear” reports send a sign back for review.']],
-    interpH: 'Interpreters', consent: 'Filmed with written consent', interps: [['[Interpreter name]', 'Certified EthSL interpreter · lesson and welcome'], ['[Interpreter name]', 'Certified EthSL interpreter · dictionary signs']],
-    teamH: 'Team', team: [['[Name]', 'Product & engineering'], ['[Name]', 'Deaf co-designer'], ['[Name]', 'Design & research'], ['[Name]', 'Sign library & data']],
+    interpH: 'Interpreters', consent: 'Filmed with written consent', interps: [],
+    teamH: 'Team', team: [],
     statusH: 'Honest status', status: 'Our current sign library was recorded for this demo. With ALX Ethiopia we will grow it with Deaf reviewers to make translation as accurate as possible.',
     faqEy: '04 · Questions', faqH: 'What people ask us',
     faqs: [
@@ -423,12 +423,12 @@ const T = {
     s3in: '«ተለዋዋጭ ምንድን ነው?»', ethslOrder: 'የምልክት ቋንቋ ቅደም ተከተል', brows: 'ቅንድብ፦ ጥያቄ',
     legendL: [['●', 'ምልክት'], ['ABC', 'በጣት ፊደል'], ['→', 'ማመልከት'], ['∅', 'ገና ምልክት የለውም'], ['‖', 'ቆም']],
     commEy: '03 · ከመስማት የተሳናቸው ማኅበረሰብ ጋር', commH: 'ምልክቶቹ በሰዎች የተሰሩ፣ በሚጠቀሙባቸው ሰዎች የተፈተሹ ናቸው።',
-    quoteVid: 'ተባባሪ ዲዛይነር · በምልክት የተሰጠ አስተያየት · 3:4', playQuote: 'በምልክት የተሰጠውን አስተያየት አጫውት', quoteCap: '[የአስተያየቱ ጽሑፍ ትርጉም እዚህ ይታያል]',
-    quote: '[ቦታ ያዥ፦ መስማት ከተሳነው ተባባሪ ዲዛይነራችን የተሰጠ አስተያየት፣ በራሳቸው ቃላት፣ በቪዲዮ በምልክት እና በጽሑፍ።]', quoteName: '[የተባባሪ ዲዛይነር ስም]', quoteRole: 'መስማት የተሳነው ተባባሪ ዲዛይነር',
+    quoteVid: 'በምልክት የተሰጠ የተባባሪ ዲዛይነር አስተያየት', playQuote: 'በምልክት የተሰጠውን አስተያየት አጫውት', quoteCap: '',
+    quote: '', quoteName: '', quoteRole: 'መስማት የተሳነው ተባባሪ ዲዛይነር',
     reviewH: 'አንድ ምልክት እንዴት ይገመገማል',
     review: [['መቅረጽ', 'የተረጋገጠ አስተርጓሚ እያንዳንዱን ምልክት እና ሐረግ ይቀርጻል።'], ['በመስማት የተሳናቸው ግምገማ', 'መስማት የተሳነው ተባባሪ ዲዛይነራችን ግልጽ እና ተፈጥሯዊ መሆኑን ያረጋግጣል።'], ['ማተም', 'የጸደቁ ምልክቶች ብቻ ወደ ተማሪዎች ይደርሳሉ።'], ['የተማሪ አስተያየት', '«ግልጽ አይደለም» የሚሉ ሪፖርቶች ምልክቱን ለግምገማ ይመልሳሉ።']],
-    interpH: 'አስተርጓሚዎች', consent: 'በጽሑፍ ፈቃድ የተቀረጸ', interps: [['[የአስተርጓሚ ስም]', 'የተረጋገጠ የምልክት ቋንቋ አስተርጓሚ · ትምህርት እና አቀባበል'], ['[የአስተርጓሚ ስም]', 'የተረጋገጠ የምልክት ቋንቋ አስተርጓሚ · የመዝገበ ቃላት ምልክቶች']],
-    teamH: 'ቡድን', team: [['[ስም]', 'ምርት እና ምህንድስና'], ['[ስም]', 'መስማት የተሳነው ተባባሪ ዲዛይነር'], ['[ስም]', 'ዲዛይን እና ጥናት'], ['[ስም]', 'የምልክት ቤተ መጻሕፍት እና ዳታ']],
+    interpH: 'አስተርጓሚዎች', consent: 'በጽሑፍ ፈቃድ የተቀረጸ', interps: [],
+    teamH: 'ቡድን', team: [],
     statusH: 'ትክክለኛው ሁኔታ', status: 'አሁን ያለን የምልክት ቤተ መጻሕፍት ለዚህ ማሳያ የተቀረጸ ነው። ከALX ኢትዮጵያ ጋር በመሆን፣ ትርጉሙ በተቻለ መጠን ትክክለኛ እንዲሆን ከመስማት የተሳናቸው ገምጋሚዎች ጋር እናሳድገዋለን።',
     faqEy: '04 · ጥያቄዎች', faqH: 'በተደጋጋሚ የሚጠየቁ ጥያቄዎች',
     faqs: [
@@ -557,6 +557,7 @@ class Component extends DCLogic {
       steps: t.steps.map(([h, b], i) => ({ n: '0' + (i + 1), h, b, sel: s.step === i, bg: s.step === i ? 'var(--surface)' : 'transparent', border: s.step === i ? 'var(--ink)' : 'var(--line)', numBg: s.step === i ? 'var(--ink)' : 'transparent', numFg: s.step === i ? 'var(--bg)' : 'var(--ink)', pick: () => this.setState({ step: i }) })),
       how0: s.step === 0, how1: s.step === 1, how2: s.step === 2,
       host: (window.LH_CONFIG && window.LH_CONFIG.HOST) || location.origin || '',
+      contactHref: (window.LH_CONFIG && window.LH_CONFIG.CONTACT) || 'mailto:hello@lehulum.org',
       copy: () => {
         const host = (window.LH_CONFIG && window.LH_CONFIG.HOST) || location.origin;
         const line = '<script type="module" src="' + host + '/module/db-player.js"><\/script>';
