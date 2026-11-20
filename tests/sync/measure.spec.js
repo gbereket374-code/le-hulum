@@ -28,10 +28,13 @@ function report(name, snap) {
 }
 
 async function run(how, block, playlist, auto) {
+  const host = process.env.LH_HOST || "http://localhost:8080";
   const context = await browser.newContext();
   const page = await context.newPage();
   const cdp = await context.newCDPSession(page);
-  await cdp.send("Network.setCacheDisabled", { cacheDisabled: true });
+  // Keep HTTP cache on for remote hosts — free-tier CDN stalls look like freezes otherwise.
+  const remote = /onrender\.com|hf\.space/i.test(host);
+  await cdp.send("Network.setCacheDisabled", { cacheDisabled: !remote });
   if (block) await page.route("**/*A05.mp4*", (route) => route.abort());
   if (playlist) {
     await page.route("**/data/sign.json*", async (route) => {
@@ -44,7 +47,6 @@ async function run(how, block, playlist, auto) {
       await route.fulfill({ contentType: "application/json", body: JSON.stringify(doc) });
     });
   }
-  const host = process.env.LH_HOST || "http://localhost:8080";
   const pageUrl = auto ? `${host}/demo/lesson-auto.html?sign=on` : `${host}/demo/lesson-video.html?sign=on`;
   await page.goto(pageUrl, { waitUntil: "domcontentloaded", timeout: 120000 });
   await page.waitForFunction(() => {

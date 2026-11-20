@@ -75,15 +75,17 @@ def health():
 
 
 def _mount_static():
-    """One-container hosting: /module, /demo, /savanna (Range-capable FileResponse)."""
+    """One-container hosting: /module, /demo, /savanna, /pages (Range-capable FileResponse)."""
     pairs = (
         ("/module", ROOT / "module"),
         ("/demo", ROOT / "demo"),
         ("/savanna", ROOT / "savanna"),
+        # Same path local nginx used for the Savanna learner homepage.
+        ("/pages", ROOT / "savanna" / "pages"),
     )
     for url, path in pairs:
         if path.is_dir():
-            app.mount(url, StaticFiles(directory=str(path), html=True), name=url.strip("/"))
+            app.mount(url, StaticFiles(directory=str(path), html=True), name=url.strip("/").replace("/", "_") or "root")
 
 
 @app.get("/")
