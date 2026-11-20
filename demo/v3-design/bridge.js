@@ -84,8 +84,8 @@
       single = true;
       entry = {
         gloss: content[0].gloss,
-        am: result.text && isAm(result.text) ? result.text : '',
-        en: result.text_en || input || '',
+        am: result.text && isAm(result.text) ? result.text : (isAm(input) ? input : ''),
+        en: result.text_en || (!isAm(input) ? input : '') || content[0].gloss,
         topic: 'tech',
         example: { en: input, am: input },
         related: [],

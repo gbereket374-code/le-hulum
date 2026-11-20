@@ -97,7 +97,7 @@
 
                   <sc-if value="{{ floatOn }}" hint-placeholder-val="{{ false }}">
                     <div role="group" aria-label="{{ t.signerWin }}" onMouseEnter="{{ showCtl }}" onFocus="{{ showCtl }}" onClick="{{ showCtl }}" style="position:absolute;left:{{ fl.left }};top:{{ fl.top }};width:{{ fl.width }};aspect-ratio:3/4;border-radius:14px;overflow:hidden;background:repeating-linear-gradient(135deg,#141e3a 0 2px,#1a2648 2px 12px);box-shadow:0 0 0 3px #f3f5fb,0 14px 36px rgba(0,0,0,.45);opacity:{{ fl.opacity }};touch-action:none">
-                      <div onPointerDown="{{ dragStart }}" onKeyDown="{{ dragKey }}" tabindex="0" aria-label="{{ t.dragHandle }}" style="position:absolute;inset:0;cursor:move"></div>
+                      <div role="button" onPointerDown="{{ dragStart }}" onKeyDown="{{ dragKey }}" tabindex="0" aria-label="{{ t.dragHandle }}" style="position:absolute;inset:0;cursor:move"></div>
                       <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;font:500 9px/1.5 var(--mono);color:#aab4cf;pointer-events:none">SIGNER<br>3:4</div>
                       <div style="position:absolute;left:6px;top:6px;right:6px;display:flex;flex-wrap:wrap;gap:4px;pointer-events:none">
                         <sc-for list="{{ signerBadges }}" as="b" hint-placeholder-count="0"><span style="padding:3px 7px;border-radius:var(--r-pill);background:{{ b.bg }};color:{{ b.fg }};font-size:11px;font-weight:700">{{ b.icon }} {{ b.label }}</span></sc-for>

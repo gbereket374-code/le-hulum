@@ -140,7 +140,7 @@
             <span style="font:500 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)">{{ t.tryThese }}</span>
             <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:720px">
               <sc-for list="{{ tryChips }}" as="c" hint-placeholder-count="5">
-                <button onClick="{{ c.go }}" lang="{{ c.lang }}" style="min-height:46px;padding:4px 16px;border:1px solid var(--line-strong);border-radius:var(--r-pill);background:var(--surface);font-size:15px;font-weight:500;line-height:1.35;box-shadow:0 1px 2px rgba(0,0,0,.05);display:flex;align-items:center;gap:8px" style-hover="border-color:var(--ink)"><span aria-hidden="true" style="font:600 10px var(--mono);color:var(--ink-3)">{{ c.tag }}</span>{{ c.label }}</button>
+                <button onClick="{{ c.go }}" lang="{{ c.lang }}" aria-label="{{ c.aria }}" style="min-height:46px;padding:4px 16px;border:1px solid var(--line-strong);border-radius:var(--r-pill);background:var(--surface);font-size:15px;font-weight:500;line-height:1.35;box-shadow:0 1px 2px rgba(0,0,0,.05);display:flex;align-items:center;gap:8px" style-hover="border-color:var(--ink)"><span aria-hidden="true" style="font:600 10px var(--mono);color:var(--ink-3)">{{ c.tag }}</span>{{ c.label }}</button>
               </sc-for>
             </div>
             <button onClick="{{ judgesTest }}" style="min-height:46px;padding:0 18px;border:1.5px dashed var(--ink);border-radius:var(--r-pill);background:transparent;font-size:14px;font-weight:700">⇄ {{ t.judges }}</button>
@@ -193,8 +193,8 @@
                         <div style="display:grid;grid-template-columns:{{ m.gridCols }}">
                           <div style="position:relative;aspect-ratio:{{ m.frameAspect }};background:#0a1124;display:flex;justify-content:center;overflow:hidden">
                             <div style="height:100%;aspect-ratio:3/4;max-width:100%;background:repeating-linear-gradient(135deg,#141e3a 0 2px,#1a2648 2px 14px);position:relative">
-                              <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:12px;font:500 10px/1.6 var(--mono);color:#aab4cf">INTERPRETER VIDEO · 3:4</span>
-                              <sc-if value="{{ m.curGloss }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);padding:7px 14px;border-radius:10px;background:rgba(0,0,0,.66);color:#fff;font:600 clamp(14px,1.6vw,18px) var(--mono);letter-spacing:.04em;white-space:nowrap">{{ m.curGloss }}</span></sc-if>
+                              <video data-asayegn-vid="{{ m.id }}" muted playsinline preload="none" aria-label="{{ m.aria }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#0a1124"></video>
+                              <sc-if value="{{ m.curGloss }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);padding:7px 14px;border-radius:10px;background:rgba(0,0,0,.66);color:#fff;font:600 clamp(14px,1.6vw,18px) var(--mono);letter-spacing:.04em;white-space:nowrap;z-index:1">{{ m.curGloss }}</span></sc-if>
                             </div>
                             <div style="position:absolute;left:10px;right:10px;bottom:10px;display:flex;align-items:center;gap:6px;padding:6px;border-radius:16px;background:rgba(8,13,30,.82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;flex-wrap:wrap">
                               <button onClick="{{ m.playPause }}" aria-label="{{ m.playLabel }}" style="min-width:44px;min-height:44px;padding:0 14px;border:0;border-radius:var(--r-pill);background:#8ea9ff;color:#0b1430;font-weight:700;font-size:13px;display:flex;align-items:center;gap:8px">
@@ -422,7 +422,10 @@ class Component extends DCLogic {
     this._steps = [1, 2, 3, 4].map(n => setTimeout(() => this.updMsg(b.id, { step: n }), n * 230));
     const finish = (res) => {
       this.updMsg(b.id, { status: 'ready', res });
-      this.setState(s => ({ playing: b.id, single: false, idx: { ...s.idx, [b.id]: 0 } }), () => this.tick());
+      this.setState(s => ({ playing: b.id, single: false, idx: { ...s.idx, [b.id]: 0 } }), () => {
+        this.tick();
+        this.playClip(b.id, 0);
+      });
       this.scrollEnd();
       if (opts.then) setTimeout(opts.then, 1400);
     };
@@ -468,7 +471,30 @@ class Component extends DCLogic {
       this.setState({ idx: { ...st.idx, [m.id]: i + 1 } }, () => this.tick());
     }, (m.res && m.res.single ? 1600 : 850) / sp);
   }
-  play(id, from, single) { this.setState(s => ({ playing: id, single: !!single, idx: { ...s.idx, [id]: from } }), () => this.tick()); }
+  play(id, from, single) {
+    this.setState(s => ({ playing: id, single: !!single, idx: { ...s.idx, [id]: from } }), () => {
+      this.tick();
+      this.playClip(id, from);
+    });
+  }
+  playClip(id, from) {
+    const m = this.state.msgs.find(x => x.id === id);
+    if (!m || !m.res) return;
+    const B = window.LH_BRIDGE;
+    const vid = document.querySelector('video[data-asayegn-vid="' + id + '"]');
+    if (!B || !vid) return;
+    let list = (m.res.playlist || []).slice();
+    if (!list.length && m.res.entry && m.res.entry.clip) {
+      list = [{ src: B.absMedia(m.res.entry.clip), from: m.res.entry.from, to: m.res.entry.to }];
+    }
+    const chips = this.chipsOf(m);
+    if (from > 0 && chips[from] && chips[from].clip) {
+      list = [{ src: B.absMedia(chips[from].clip), from: chips[from].from, to: chips[from].to }];
+    } else if (from > 0 && list.length) {
+      list = list.slice(from);
+    }
+    B.playPlaylist(vid, list);
+  }
 
   renderVals() {
     const lang = this.props.lang || 'en', t = T[lang], s = this.state, w = this.props.w || 1440, LH = window.LH;
@@ -560,7 +586,7 @@ class Component extends DCLogic {
       topics: [{ id: 'all', en: t.all, am: t.all }].concat(LH ? LH.topics : []).map(tp => { const sel = s.topic === tp.id; return { label: tp[lang] || tp.en, sel, n: tp.id === 'all' ? lex.length : lex.filter(x => x.topic === tp.id).length, bg: sel ? 'var(--ink)' : 'transparent', fg: sel ? 'var(--bg)' : 'var(--ink)', border: sel ? 'var(--ink)' : 'var(--line-strong)', pick: () => this.setState({ topic: tp.id }) }; }),
       dict: lex.filter(x => s.topic === 'all' || x.topic === s.topic).map(x => ({ am: x.am, en: x.en, gloss: x.gloss, aria: x.en + ' · ' + x.am, post: () => this.post(lang === 'am' ? x.am : x.en, { entry: x }) })),
       isEmpty: !hasMsgs && s.view === 'chat', isChat: hasMsgs && s.view === 'chat',
-      tryChips: TRY.map(([label, l, tag]) => ({ label: tag.includes('/') ? '' : label, tag: tag.includes('/') ? tag : tag, lang: l, go: () => this.post(label) })),
+      tryChips: TRY.map(([label, l, tag]) => ({ label: tag.includes('/') ? tag : label, tag: tag.includes('/') ? '' : tag, lang: l, aria: label, go: () => this.post(label) })),
       judgesTest: () => this.post('What is a variable?', { then: () => this.post('ተለዋዋጭ ምንድን ነው?') }),
       msgs,
       download: () => this.toastMsg(t.downloaded),

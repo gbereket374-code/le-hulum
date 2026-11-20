@@ -7,7 +7,9 @@
 <title>LE HULUM external plugin test</title>
 <!-- Replace HOSTED with the public Space / Render origin after deploy. -->
 <script>
-  window.LH_HOSTED = window.LH_HOSTED || (location.origin.includes('localhost') ? '' : location.origin);
+  window.LH_HOSTED = window.LH_HOSTED
+    || new URLSearchParams(location.search).get('host')
+    || 'https://le-hulum.onrender.com';
 </script>
 </head>
 <body style="font:1.125rem/1.8 system-ui;max-width:40rem;margin:2rem auto;padding:0 1rem">

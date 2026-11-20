@@ -44,14 +44,15 @@ async function run(how, block, playlist, auto) {
       await route.fulfill({ contentType: "application/json", body: JSON.stringify(doc) });
     });
   }
-  const pageUrl = auto ? "http://localhost:8080/demo/lesson-auto.html?sign=on" : "http://localhost:8080/demo/lesson-video.html?sign=on";
-  await page.goto(pageUrl, { waitUntil: "domcontentloaded" });
+  const host = process.env.LH_HOST || "http://localhost:8080";
+  const pageUrl = auto ? `${host}/demo/lesson-auto.html?sign=on` : `${host}/demo/lesson-video.html?sign=on`;
+  await page.goto(pageUrl, { waitUntil: "domcontentloaded", timeout: 120000 });
   await page.waitForFunction(() => {
     const player = document.querySelector("db-player")?._player;
     const ready = player?.media?.readyState >= 1 && player.sign?.isOpen?.() && player.captions?.getCues?.("am")?.length > 5;
     if (!ready) return false;
     return player.host.getAttribute("sign") ? true : (player.sign.plan || []).length > 5;
-  });
+  }, { timeout: 180000 });
   await page.evaluate(() => {
     const player = document.querySelector("db-player")._player;
     window.__lh = { samples: [], t0: 0, frozen: false, still: 0, lastT: -1, lastS: -1 };
