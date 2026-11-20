@@ -1,6 +1,6 @@
 // FR-DEAF-09, FR-DEAF-10: The Words panel. One list stop, search, and this-line switch.
 const CSS = `<style data-words>
-.words{position:relative;display:flex;flex-direction:column;gap:.85rem;margin:0;padding:1.25rem 1.15rem 1rem;border-top:3px solid var(--lh-accent,#0A6B4E);background:var(--lh-surface,#fff);color:var(--lh-text,#1C1B18);max-height:70vh;overflow:auto}
+.words{position:relative;display:flex;flex-direction:column;gap:.85rem;margin:0;padding:1.25rem 1.15rem 1rem;border-top:3px solid var(--accent,var(--lh-accent,#2747d6));background:var(--surface,var(--lh-surface,#fff));color:var(--ink,var(--lh-text,#0e1525));max-height:70vh;overflow:auto;border-radius:0 0 var(--r-m,16px) var(--r-m,16px)}
 @media (min-width:720px){
 .player:has(#words-panel:not([hidden])){display:grid;grid-template-columns:minmax(0,1fr) minmax(18rem,22rem)}
 .player:has(#words-panel:not([hidden]))>.stage{grid-area:1/1}
@@ -13,10 +13,10 @@ const CSS = `<style data-words>
 .words h2{margin:0;font-size:1.35rem;font-weight:700;line-height:1.45}
 .words .count{margin:.15rem 0 0;color:var(--lh-text-muted,#57534A);font-size:.95rem}
 .words input,.words .close,.words .go{min-height:2.75rem;font:inherit;color:var(--lh-text,#1C1B18)}
-.words input{width:100%;padding:0 .85rem;border:1px solid var(--lh-border,#8A8478);border-radius:8px;background:var(--lh-surface,#fff)}
+.words input{width:100%;padding:0 .85rem;border:1px solid var(--lh-border,#8A8478);border-radius:var(--r-s,10px);background:var(--lh-surface,#fff)}
 .words input:hover,.words .close:hover,.words .term button:hover{border-color:var(--lh-text,#1C1B18)}
 .switch{display:flex;align-items:center;justify-content:space-between;gap:.75rem;width:100%;min-height:2.75rem;padding:0;border:0;background:transparent;color:inherit;text-align:start;font:inherit}
-.knob{position:relative;flex:0 0 auto;width:3.25rem;height:2rem;border:1px solid var(--lh-border,#8A8478);border-radius:999px;background:var(--lh-surface-2,#F1EDE4)}
+.knob{position:relative;flex:0 0 auto;width:3.25rem;height:2rem;border:1px solid var(--lh-border,#8A8478);border-radius:var(--r-pill,999px);background:var(--lh-surface-2,#F1EDE4)}
 .knob::after{content:"";position:absolute;top:3px;left:3px;width:1.35rem;height:1.35rem;border-radius:50%;background:var(--lh-text-muted,#57534A)}
 .switch[aria-checked="true"] .knob{background:var(--lh-accent,#0A6B4E);border-color:var(--lh-accent,#0A6B4E)}
 .switch[aria-checked="true"] .knob::after{left:1.45rem;background:var(--lh-on-accent,#fff)}
@@ -26,14 +26,14 @@ const CSS = `<style data-words>
 .am{margin:0;font-family:var(--lh-font-ethiopic,"Noto Sans Ethiopic",sans-serif);font-size:1.45rem;font-weight:700;line-height:1.7}
 .en{margin:0;color:var(--lh-text-muted,#57534A)}
 .cues{margin:.1rem 0 0;font-family:var(--lh-font-code,"JetBrains Mono",ui-monospace,monospace);font-size:.82rem;color:var(--lh-text-muted,#57534A)}
-.go,.close{padding:0 .9rem;border:1px solid var(--lh-border,#8A8478);border-radius:8px;background:var(--lh-surface,#fff)}
+.go,.close{padding:0 .9rem;border:1px solid var(--lh-border,#8A8478);border-radius:var(--r-s,10px);background:var(--lh-surface,#fff)}
 .go{position:absolute;right:1.15rem;font-weight:700}
 .close{width:100%}
-.words :focus-visible{outline:3px solid var(--lh-focus,#1C1B18);outline-offset:2px}
+.words :focus-visible{outline:3px solid var(--focus,var(--lh-focus,#2747d6));outline-offset:3px}
 .empty{margin:0;color:var(--lh-text-muted,#57534A)}
 .word-card{position:absolute;left:0;right:0;bottom:0;z-index:6;display:flex;flex-wrap:wrap;gap:.35rem;max-height:100%;overflow:auto;padding:.45rem;border-top:1px solid var(--lh-player-border,#8C8678);background:var(--lh-player-bg,#14130F);color:var(--lh-player-text,#F3F0E8)}
 .word-card p{flex:1 0 100%;margin:0;font-size:.95rem;line-height:1.4}
-.word-card button{min-height:2.75rem;padding:0 .75rem;border:1px solid var(--lh-player-border,#8C8678);border-radius:8px;background:transparent;color:inherit;font:inherit}
+.word-card button{min-height:2.75rem;padding:0 .75rem;border:1px solid var(--lh-player-border,#8C8678);border-radius:var(--r-s,10px);background:transparent;color:inherit;font:inherit}
 .word-card button:focus-visible{outline:3px solid var(--lh-player-focus,#FFD54A);outline-offset:2px}
 </style>`;
 

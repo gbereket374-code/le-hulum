@@ -1,0 +1,411 @@
+/* NFR-A11Y-01 FR-01: Demo shell chrome — header, ann bar, nav, settings, footer. */
+/* Layout mirrors LE HULUM.dc.html; class names are BEM-like, no framework. */
+
+/* ── Visually-hidden utility ─────────────────────────────────── */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+/* ── Skip link ───────────────────────────────────────────────── */
+.lh-skip {
+  position: fixed; left: -9999px; top: 12px; z-index: 600;
+  padding: 12px 20px; border-radius: var(--r-s, 10px);
+  background: var(--accent); color: var(--accent-ink);
+  font-weight: 700; font-size: 1rem; text-decoration: none;
+  transition: left 0s;
+}
+.lh-skip:focus { left: 12px; }
+
+/* ── Announcement bar ────────────────────────────────────────── */
+.lh-ann {
+  display: flex; align-items: center; justify-content: center;
+  gap: 12px; min-height: 44px; padding: 4px 4px 4px 16px;
+  background: var(--accent-soft-ink); color: var(--bg);
+  font-size: 0.9375rem; line-height: 1.4;
+}
+.lh-ann[hidden] { display: none !important; }
+.lh-ann__dot {
+  flex: none; width: 8px; height: 8px;
+  border-radius: 50%; background: var(--gold);
+}
+.lh-ann__text { font-weight: 500; margin: 0; }
+.lh-ann__dismiss {
+  flex: none; min-width: 44px; min-height: 44px;
+  padding: 0 12px; background: transparent; border: 0;
+  color: inherit; font-size: 0.875rem; font-weight: 600;
+  text-decoration: underline; text-underline-offset: 3px;
+  cursor: pointer;
+}
+.lh-ann__dismiss:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+/* ── Sticky header ───────────────────────────────────────────── */
+.lh-header {
+  position: sticky; top: 0; z-index: 40;
+  background: color-mix(in oklab, var(--bg) 86%, transparent);
+  backdrop-filter: saturate(1.4) blur(14px);
+  -webkit-backdrop-filter: saturate(1.4) blur(14px);
+  border-bottom: 1px solid var(--line);
+}
+html[data-theme=hc] .lh-header,
+html[data-theme=contrast] .lh-header { backdrop-filter: none; background: var(--bg); }
+
+/* ── Inner row (max 1440) ────────────────────────────────────── */
+.lh-header__inner {
+  display: flex; align-items: center; gap: 8px;
+  max-width: 1440px; margin: 0 auto;
+  padding: 0 clamp(12px, 2vw, 32px);
+  min-height: 64px;
+}
+
+/* ── Logo ────────────────────────────────────────────────────── */
+.lh-logo {
+  display: flex; align-items: center; gap: 10px;
+  min-height: 44px; padding: 0 4px; color: var(--ink);
+  text-decoration: none; flex: none;
+}
+.lh-logo__svg { display: block; flex: none; }
+.lh-logo__brand { display: flex; flex-direction: column; line-height: 1.05; white-space: nowrap; }
+.lh-logo__brand b {
+  font-family: var(--sans); font-weight: 700; font-size: 1.0625rem;
+  letter-spacing: 0.03em;
+}
+.lh-logo__brand span {
+  font-family: "Noto Sans Ethiopic", var(--sans);
+  font-weight: 600; font-size: 0.75rem; line-height: 1.3;
+  color: var(--ink-2); letter-spacing: 0;
+}
+
+/* ── Desktop nav ─────────────────────────────────────────────── */
+.lh-nav {
+  display: none; gap: 2px; margin: 0 auto;
+  list-style: none; padding: 0;
+}
+.lh-nav a {
+  display: inline-flex; align-items: center;
+  min-height: 44px; padding: 0 14px;
+  border-radius: var(--r-pill, 999px);
+  text-decoration: none; white-space: nowrap;
+  font-weight: 600; font-size: 0.9375rem; color: var(--ink);
+  transition: background 0.15s;
+}
+.lh-nav a:hover { background: var(--surface-2); }
+.lh-nav a[aria-current="page"] {
+  font-weight: 700; background: var(--surface-2);
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+/* ── Tool row (lang, theme, CTA, hamburger) ──────────────────── */
+.lh-tools {
+  margin-left: auto; display: flex; align-items: center; gap: 6px;
+}
+.lh-icon-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 44px; min-width: 44px; padding: 0 12px;
+  border-radius: var(--r-pill, 999px); border: 1px solid var(--line-strong);
+  background: transparent; color: var(--ink);
+  font-weight: 700; font-size: 0.9375rem; cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.lh-icon-btn:hover { background: var(--surface-2); }
+.lh-icon-btn:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+/* ── Theme menu ──────────────────────────────────────────────── */
+.lh-theme-wrap { position: relative; }
+.lh-theme-menu {
+  position: absolute; right: 0; top: calc(100% + 8px); z-index: 50;
+  min-width: 180px; display: flex; flex-direction: column; gap: 2px;
+  padding: 6px; border-radius: var(--r-m, 16px);
+  background: var(--surface); border: 1px solid var(--line-strong);
+  box-shadow: var(--shadow);
+}
+.lh-theme-menu[hidden] { display: none !important; }
+.lh-theme-menu button {
+  min-height: 44px; padding: 0 12px; border: 0;
+  border-radius: var(--r-s, 10px); background: transparent;
+  color: var(--ink); font-weight: 600; text-align: start; cursor: pointer;
+  transition: background 0.12s;
+}
+.lh-theme-menu button:hover { background: var(--surface-2); }
+.lh-theme-menu button[aria-current="true"] { background: var(--surface-2); font-weight: 700; }
+
+/* ── Primary CTA ─────────────────────────────────────────────── */
+.lh-cta {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 44px; padding: 0 20px;
+  border-radius: var(--r-pill, 999px);
+  background: var(--accent); color: var(--accent-ink);
+  font-weight: 700; font-size: 0.9375rem;
+  text-decoration: none; white-space: nowrap; border: 0;
+  transition: opacity 0.15s;
+}
+.lh-cta:hover { opacity: 0.88; }
+.lh-cta:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+/* ── Hamburger ───────────────────────────────────────────────── */
+.lh-menu-btn {
+  min-height: 44px; min-width: 44px; padding: 0 12px;
+  border-radius: var(--r-pill, 999px); border: 1px solid var(--line-strong);
+  background: transparent; color: var(--ink);
+  font-weight: 700; font-size: 0.9375rem; cursor: pointer;
+  transition: background 0.15s;
+}
+.lh-menu-btn:hover { background: var(--surface-2); }
+.lh-menu-btn[aria-expanded="false"] .lh-menu-btn__open,
+.lh-menu-btn[aria-expanded="true"]  .lh-menu-btn__close { display: none; }
+
+/* ── Mobile nav panel ────────────────────────────────────────── */
+.lh-mobile-nav {
+  max-width: 1440px; margin: 0 auto;
+  padding: 8px 12px 12px; background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  display: flex; flex-direction: column; gap: 2px;
+}
+.lh-mobile-nav[hidden] { display: none !important; }
+.lh-mobile-nav a {
+  min-height: 52px; display: flex; align-items: center;
+  padding: 0 14px; border-radius: var(--r-m, 16px);
+  text-decoration: none; color: var(--ink);
+  font-weight: 700; font-size: 1.0625rem;
+  transition: background 0.12s;
+}
+.lh-mobile-nav a:hover { background: var(--surface-2); }
+.lh-mobile-nav a[aria-current="page"] { background: var(--surface-2); }
+.lh-mobile-nav .lh-cta { margin: 6px 0 0; align-self: stretch; justify-content: center; }
+
+/* ── Settings FAB ────────────────────────────────────────────── */
+.lh-settings-fab {
+  position: fixed; right: 16px; bottom: 16px; z-index: 95;
+  min-height: 52px; padding: 0 18px;
+  border-radius: var(--r-pill, 999px); border: 2px solid var(--accent-ink);
+  background: var(--accent); color: var(--accent-ink);
+  font-weight: 700; display: inline-flex; align-items: center; gap: 8px;
+  box-shadow: var(--shadow); cursor: pointer; transition: opacity 0.15s;
+}
+.lh-settings-fab:hover { opacity: 0.9; }
+.lh-settings-fab svg { width: 24px; height: 24px; }
+.lh-settings-fab:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+/* ── EthSL launcher (floating) ───────────────────────────────── */
+.lh-ethsl-btn {
+  position: fixed; left: 16px; bottom: 16px; z-index: 95;
+  min-height: 52px; padding: 0 18px;
+  border-radius: var(--r-pill, 999px); border: 2px solid var(--line-strong);
+  background: var(--surface); color: var(--ink);
+  font-weight: 700; display: inline-flex; align-items: center; gap: 8px;
+  box-shadow: var(--shadow); cursor: pointer; transition: opacity 0.15s;
+}
+.lh-ethsl-btn:hover { opacity: 0.85; }
+.lh-ethsl-btn svg { width: 22px; height: 22px; }
+.lh-ethsl-btn:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+/* EthSL panel (floating signer shell) */
+.lh-ethsl-panel {
+  position: fixed; left: 16px; bottom: 16px; z-index: 96;
+  width: 320px; border-radius: var(--r-l, 24px);
+  background: var(--stage); color: var(--stage-ink);
+  border: 1px solid var(--line-strong); box-shadow: var(--shadow);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.lh-ethsl-panel[hidden] { display: none !important; }
+.lh-ethsl-panel__head {
+  display: flex; align-items: center; padding: 10px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  gap: 8px;
+}
+.lh-ethsl-panel__title { flex: 1; font-weight: 700; font-size: 0.875rem; margin: 0; }
+.lh-ethsl-panel__close {
+  min-width: 36px; min-height: 36px; border: 0; border-radius: 50%;
+  background: rgba(255,255,255,0.1); color: var(--stage-ink);
+  font-size: 1.125rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.lh-ethsl-panel__close:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.lh-ethsl-panel__stage {
+  aspect-ratio: 3/4; background: var(--stage-2);
+  display: flex; align-items: center; justify-content: center;
+}
+.lh-ethsl-panel__idle { padding: 24px; color: var(--stage-ink-2); font-size: 0.875rem; text-align: center; }
+.lh-ethsl-panel__form {
+  display: flex; gap: 6px; padding: 10px 12px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.lh-ethsl-panel__input {
+  flex: 1; min-height: 40px; padding: 0 12px;
+  border-radius: var(--r-pill, 999px); border: 1px solid var(--line-strong);
+  background: var(--stage-2); color: var(--stage-ink);
+  font: inherit; font-size: 0.875rem;
+}
+.lh-ethsl-panel__input::placeholder { color: var(--stage-ink-2); }
+.lh-ethsl-panel__send {
+  min-width: 40px; min-height: 40px; border-radius: 50%;
+  border: 0; background: var(--accent); color: var(--accent-ink);
+  font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.lh-ethsl-panel__send:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+/* ── Settings dialog (sheet) ─────────────────────────────────── */
+.lh-sheet {
+  margin: auto auto 0; padding: 20px 20px 32px;
+  width: min(32rem, calc(100vw - 24px));
+  max-height: min(88vh, 100%);
+  border: 1px solid var(--line-strong); border-radius: 24px 24px 0 0;
+  background: var(--surface); color: var(--ink);
+  box-shadow: var(--shadow);
+}
+.lh-sheet::backdrop { background: var(--scrim); }
+.lh-sheet__title { margin: 0 0 4px; font-size: 1.25rem; font-weight: 700; }
+.lh-sheet__note { margin: 0 0 16px; font-size: 0.875rem; color: var(--ink-2); }
+.lh-sheet__rows { display: flex; flex-direction: column; gap: 12px; }
+.lh-sheet__row { display: flex; flex-direction: column; gap: 6px; }
+.lh-sheet__label { font-weight: 600; font-size: 0.875rem; color: var(--ink-2); }
+
+/* segment controls */
+.lh-seg {
+  display: flex; flex-wrap: wrap; gap: 4px; border: 0; padding: 0; margin: 0;
+}
+.lh-seg__btn {
+  min-height: 44px; padding: 0 14px;
+  border-radius: var(--r-pill, 999px); border: 1px solid var(--line-strong);
+  background: transparent; color: var(--ink);
+  font: inherit; font-size: 0.875rem; font-weight: 600;
+  cursor: pointer; transition: background 0.12s;
+}
+.lh-seg__btn:hover { background: var(--surface-2); }
+.lh-seg__btn[aria-pressed="true"] {
+  background: var(--accent); color: var(--accent-ink); border-color: var(--accent);
+  font-weight: 700;
+}
+.lh-seg__btn:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+/* switch rows */
+.lh-switch-row {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px 0; border-top: 1px solid var(--line);
+}
+.lh-switch-row__text { flex: 1; }
+.lh-switch-row__label { font-weight: 600; font-size: 0.9375rem; display: block; }
+.lh-switch-row__hint { font-size: 0.8125rem; color: var(--ink-2); margin: 2px 0 0; display: block; }
+.lh-switch {
+  /* custom toggle — real <button role=switch> */
+  flex: none; position: relative;
+  width: 48px; height: 28px; min-width: 48px;
+  border-radius: var(--r-pill, 999px); border: 2px solid var(--line-strong);
+  background: var(--surface-2); cursor: pointer;
+  transition: background 0.18s, border-color 0.18s;
+}
+.lh-switch[aria-checked="true"] { background: var(--accent); border-color: var(--accent); }
+.lh-switch::after {
+  content: ''; position: absolute; top: 2px; left: 2px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--ink); transition: left 0.18s;
+}
+.lh-switch[aria-checked="true"]::after { left: calc(100% - 22px); background: var(--accent-ink); }
+.lh-switch:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+/* dialog footer */
+.lh-sheet__footer {
+  display: flex; justify-content: flex-end; gap: 8px;
+  margin-top: 20px; padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.lh-sheet__done {
+  min-height: 44px; padding: 0 20px;
+  border-radius: var(--r-pill, 999px);
+  background: var(--accent); color: var(--accent-ink);
+  border: 0; font-weight: 700; cursor: pointer;
+  transition: opacity 0.15s;
+}
+.lh-sheet__done:hover { opacity: 0.88; }
+.lh-sheet__done:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+/* ── Footer ──────────────────────────────────────────────────── */
+.lh-footer {
+  margin-top: 40px;
+  border-top: 1px solid var(--line);
+  background: var(--surface-2);
+}
+.lh-footer__inner {
+  max-width: 1440px; margin: 0 auto;
+  padding: 48px clamp(16px, 4vw, 48px) 24px;
+  display: grid;
+  grid-template-columns: 2fr repeat(3, 1fr);
+  gap: 32px;
+}
+.lh-footer__brand { display: flex; gap: 10px; align-items: flex-start; }
+.lh-footer__brand-name { font-weight: 700; font-size: 1.125rem; }
+.lh-footer__brand-name span { font-family: "Noto Sans Ethiopic", var(--sans); }
+.lh-footer__brand p { margin: 4px 0 0; color: var(--ink-2); font-size: 0.875rem; }
+.lh-footer__col h2 {
+  margin: 0 0 8px; font-size: 0.875rem; font-weight: 700;
+  color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em;
+}
+.lh-footer__col a {
+  display: flex; align-items: center; min-height: 36px;
+  font-size: 0.9375rem; color: var(--ink);
+  text-decoration: none; transition: color 0.12s;
+}
+.lh-footer__col a:hover { color: var(--accent); }
+.lh-footer__note {
+  max-width: 1440px; margin: 0 auto;
+  padding: 12px clamp(16px, 4vw, 48px) 24px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-2); font-size: 0.8125rem;
+  display: flex; flex-wrap: wrap; gap: 4px;
+}
+.lh-footer[hidden] { display: none !important; }
+
+/* ── Announcement live region ────────────────────────────────── */
+.lh-live {
+  position: absolute; left: -9999px; width: 1px; height: 1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap;
+}
+
+/* ── Lang-specific visibility ────────────────────────────────── */
+html[lang=en] .am-only { display: none !important; }
+html[lang=am] .en-only { display: none !important; }
+
+/* ── Responsive breakpoints ──────────────────────────────────── */
+@media (max-width: 639px) {
+  .lh-cta { display: none; }
+  .lh-settings-fab { right: 12px; bottom: 80px; }
+  .lh-ethsl-btn  { left: 12px;  bottom: 80px; }
+  .lh-ethsl-panel { width: calc(100vw - 24px); left: 12px; }
+  .lh-footer__inner { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 640px) {
+  .lh-cta { display: inline-flex; }
+}
+@media (min-width: 1024px) {
+  .lh-nav { display: flex; }
+  .lh-menu-btn { display: none; }
+  .lh-mobile-nav { display: none !important; }
+  .lh-sheet {
+    margin: 0 0 0 auto; border-radius: 0;
+    width: 440px; height: 100%; max-height: 100vh;
+    border-left: 1px solid var(--line-strong); border-top: 0;
+    overflow-y: auto;
+  }
+}
+/* Amharic nav widens at 1360 */
+html[lang=am] .lh-nav { display: none; }
+@media (min-width: 1360px) {
+  html[lang=am] .lh-nav { display: flex; }
+}
+
+/* ── HC overrides ────────────────────────────────────────────── */
+html[data-theme=hc] .lh-header,
+html[data-theme=contrast] .lh-header {
+  border-bottom-width: 2px;
+}
+html[data-theme=hc] .lh-cta,
+html[data-theme=contrast] .lh-cta { border: 2px solid var(--accent); }
+html[data-theme=hc] .lh-footer__col h2,
+html[data-theme=contrast] .lh-footer__col h2 {
+  letter-spacing: 0;
+}
+/* Never uppercase Amharic footer headings */
+html[lang=am] .lh-footer__col h2 {
+  text-transform: none;
+  letter-spacing: 0;
+}

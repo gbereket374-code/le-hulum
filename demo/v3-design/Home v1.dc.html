@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="color:var(--ink)">
+
+  <section aria-labelledby="hero-h" style="max-width:1440px;margin:0 auto;padding:clamp(32px,6vw,88px) clamp(16px,4vw,56px) clamp(48px,6vw,88px)">
+    <div style="display:grid;grid-template-columns:{{ heroCols }};gap:clamp(32px,6vw,96px);align-items:start">
+      <div style="display:flex;flex-direction:column;gap:clamp(20px,2.4vw,32px);animation:lh-rise .7s ease-out both">
+        <div style="display:flex;align-items:center;gap:12px;font:500 13px/1.5 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent-soft-ink)">
+          <span aria-hidden="true" style="width:28px;height:1px;background:currentColor"></span>{{ t.eyebrow }}
+        </div>
+        <h1 id="hero-h" style="margin:0;font-family:var(--serif);font-weight:500;font-size:{{ h1Size }};line-height:var(--lh-tight);letter-spacing:-.025em;text-wrap:balance">
+          <span style="display:block">{{ head1 }}</span>
+          <span style="display:block;font-style:italic;color:var(--accent-soft-ink)">{{ head2 }}</span>
+        </h1>
+        <p lang="{{ altLang }}" style="margin:0;font-family:var(--serif);font-weight:500;font-size:clamp(20px,2.2vw,30px);line-height:1.6;color:var(--ink-2)">{{ altTag }}</p>
+        <p style="margin:0;font-size:clamp(18px,1.6vw,22px);line-height:var(--lh);color:var(--ink-2);max-width:34ch;text-wrap:pretty">{{ t.pitch }}</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <button onClick="{{ goLesson }}" style="min-height:56px;padding:0 26px;border:0;border-radius:var(--r-pill);background:var(--accent);color:var(--accent-ink);font-size:17px;font-weight:700;display:flex;align-items:center;gap:12px" style-hover="filter:brightness(1.08)">
+            <span aria-hidden="true" style="width:0;height:0;border-left:11px solid currentColor;border-top:7px solid transparent;border-bottom:7px solid transparent"></span>{{ t.cta1 }}
+          </button>
+          <button onClick="{{ goPlatforms }}" style="min-height:56px;padding:0 26px;border:1.5px solid var(--ink);border-radius:var(--r-pill);background:transparent;font-size:17px;font-weight:700" style-hover="background:var(--surface-2)">{{ t.cta2 }}</button>
+        </div>
+        <ul style="list-style:none;margin:8px 0 0;padding:20px 0 0;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:10px 28px;font-size:15px;line-height:1.5;color:var(--ink-2)">
+          <sc-for list="{{ proof }}" as="p" hint-placeholder-count="3">
+            <li style="display:flex;align-items:center;gap:10px"><span aria-hidden="true" style="width:7px;height:7px;transform:rotate(45deg);background:var(--accent)"></span>{{ p }}</li>
+          </sc-for>
+        </ul>
+      </div>
+
+      <figure style="margin:0;display:flex;flex-direction:column;max-width:520px;width:100%;justify-self:end;animation:lh-rise .9s .1s ease-out both">
+        <div style="position:relative;aspect-ratio:3/4;border-radius:var(--r-l) var(--r-l) 0 0;overflow:hidden;background:repeating-linear-gradient(135deg,var(--stage) 0 2px,var(--stage-2) 2px 14px)">
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:32px;white-space:pre-line;font:500 12px/1.8 var(--mono);color:var(--stage-ink-2)">{{ t.videoPh }}</div>
+          <div style="position:absolute;top:16px;left:16px;display:flex;align-items:center;gap:8px;background:var(--surface);color:var(--ink);padding:8px 14px;border-radius:var(--r-pill);font-size:14px;font-weight:600">
+            <span aria-hidden="true" style="width:8px;height:8px;border-radius:50%;background:var(--accent);animation:{{ liveAnim }}"></span>{{ t.realBadge }}
+          </div>
+          <button onClick="{{ togglePlay }}" aria-pressed="{{ paused }}" style="position:absolute;right:16px;bottom:16px;min-height:48px;padding:0 18px 0 14px;border:2px solid #fff;border-radius:var(--r-pill);background:rgba(15,14,12,.82);color:#fff;font-size:15px;font-weight:700;display:flex;align-items:center;gap:10px">
+            <sc-if value="{{ playing }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="display:flex;gap:3px"><span style="width:4px;height:14px;background:#fff;border-radius:1px"></span><span style="width:4px;height:14px;background:#fff;border-radius:1px"></span></span></sc-if>
+            <sc-if value="{{ paused }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="width:0;height:0;border-left:11px solid #fff;border-top:7px solid transparent;border-bottom:7px solid transparent"></span></sc-if>
+            {{ playLabel }}
+          </button>
+        </div>
+        <figcaption aria-live="polite" style="background:var(--stage);color:var(--stage-ink);border-radius:0 0 var(--r-l) var(--r-l);padding:18px 22px 20px;display:flex;flex-direction:column;gap:6px">
+          <span style="font:500 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--stage-ink-2)">{{ t.interpreter }} · {{ capCount }}</span>
+          <span style="font-size:clamp(18px,1.6vw,21px);font-weight:600;line-height:1.55">{{ capMain }}</span>
+          <span lang="{{ altLang }}" style="font-size:16px;line-height:1.55;color:var(--stage-ink-2)">{{ capAlt }}</span>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:10px">
+            <sc-for list="{{ capBars }}" as="b" hint-placeholder-count="3"><span style="height:3px;border-radius:2px;background:{{ b }}"></span></sc-for>
+          </div>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section aria-labelledby="signit-h" style="background:var(--surface-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+    <div style="max-width:1440px;margin:0 auto;padding:clamp(32px,4vw,56px) clamp(16px,4vw,56px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:24px 64px;align-items:center">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <h2 id="signit-h" style="margin:0;font:500 clamp(30px,3vw,40px)/1.15 var(--serif);letter-spacing:-.01em">{{ t.signItH }}</h2>
+        <p style="margin:0;font-size:17px;line-height:var(--lh);color:var(--ink-2)">{{ t.signItHelp }}</p>
+      </div>
+      <form onSubmit="{{ submit }}" style="display:flex;flex-direction:column;gap:14px">
+        <label for="quick-sign" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">{{ t.signItHelp }}</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;background:var(--surface);border:1.5px solid var(--line-strong);border-radius:18px;padding:6px">
+          <input id="quick-sign" value="{{ q }}" onInput="{{ onQ }}" placeholder="{{ t.signItPh }}" style="flex:1 1 220px;min-width:0;min-height:52px;padding:0 14px;border:0;background:transparent;font-size:18px;outline-offset:0">
+          <button type="submit" style="flex:none;min-height:52px;padding:0 24px;border:0;border-radius:13px;background:var(--ink);color:var(--bg);font-size:16px;font-weight:700;display:flex;align-items:center;gap:10px">
+            <span aria-hidden="true" style="position:relative;width:18px;height:18px"><span style="position:absolute;left:2px;top:1px;width:6px;height:15px;border-radius:3px;background:var(--accent-soft);transform:rotate(-14deg)"></span><span style="position:absolute;right:2px;top:1px;width:6px;height:15px;border-radius:3px;background:var(--gold);transform:rotate(14deg)"></span></span>{{ t.signItBtn }}
+          </button>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <span style="font-size:14px;font-weight:600;color:var(--ink-3);margin-right:4px">{{ t.tryL }}</span>
+          <sc-for list="{{ chips }}" as="c" hint-placeholder-count="3">
+            <button type="button" onClick="{{ c.go }}" lang="{{ c.lang }}" style="min-height:44px;padding:0 16px;border:1px solid var(--line-strong);border-radius:var(--r-pill);background:var(--surface);font-size:15px;font-weight:500" style-hover="border-color:var(--ink);background:var(--bg)">{{ c.label }}</button>
+          </sc-for>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section aria-label="{{ t.impactL }}" style="max-width:1440px;margin:0 auto;padding:clamp(56px,7vw,104px) clamp(16px,4vw,56px)">
+    <dl style="margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:40px 32px">
+      <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+        <div style="display:flex;flex-direction:column;gap:14px;border-top:1.5px solid var(--ink);padding-top:20px">
+          <dt style="order:2;font-size:17px;line-height:var(--lh);color:var(--ink-2);max-width:28ch">{{ s.label }}</dt>
+          <dd style="order:1;margin:0;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+            <span style="font:500 clamp(64px,7vw,104px)/.9 var(--serif);letter-spacing:-.04em;padding:{{ s.pad }};border:{{ s.border }};border-radius:12px">{{ s.n }}</span>
+            <span style="font:500 13px var(--mono);color:var(--ink-3)">{{ s.unit }}</span>
+          </dd>
+          <sc-if value="{{ s.ph }}" hint-placeholder-val="{{ false }}"><span style="order:3;align-self:flex-start;font:500 12px var(--mono);letter-spacing:.04em;padding:4px 8px;border-radius:6px;background:var(--warn-soft);color:var(--warn-ink)">{{ t.phNote }}</span></sc-if>
+        </div>
+      </sc-for>
+    </dl>
+  </section>
+
+  <section aria-labelledby="problem-h" style="background:var(--stage);color:var(--stage-ink)">
+    <div style="max-width:1440px;margin:0 auto;padding:clamp(64px,8vw,128px) clamp(16px,4vw,56px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:48px clamp(40px,7vw,120px)">
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <span style="font:500 13px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--stage-ink-2)">{{ t.probEy }}</span>
+        <h2 id="problem-h" style="margin:0;font:500 clamp(34px,4.2vw,60px)/var(--lh-tight) var(--serif);letter-spacing:-.02em;text-wrap:balance">{{ t.probH }}</h2>
+      </div>
+      <ol style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column">
+        <sc-for list="{{ problems }}" as="p" hint-placeholder-count="3">
+          <li style="display:grid;grid-template-columns:56px 1fr;gap:8px 16px;padding:28px 0;border-top:1px solid rgba(255,255,255,.18)">
+            <span aria-hidden="true" style="font:500 15px var(--mono);color:var(--gold);padding-top:6px">{{ p.n }}</span>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <h3 style="margin:0;font-size:clamp(20px,1.8vw,24px);font-weight:600;line-height:1.35">{{ p.h }}</h3>
+              <p style="margin:0;font-size:17px;line-height:var(--lh);color:var(--stage-ink-2);max-width:52ch">{{ p.b }}</p>
+            </div>
+          </li>
+        </sc-for>
+      </ol>
+    </div>
+  </section>
+
+  <section aria-labelledby="how-h" style="max-width:1440px;margin:0 auto;padding:clamp(64px,8vw,128px) clamp(16px,4vw,56px);display:flex;flex-direction:column;gap:clamp(36px,4vw,56px)">
+    <div style="display:flex;flex-direction:column;gap:20px;max-width:900px">
+      <span style="font:500 13px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent-soft-ink)">{{ t.howEy }}</span>
+      <h2 id="how-h" style="margin:0;font:500 clamp(34px,4.2vw,60px)/var(--lh-tight) var(--serif);letter-spacing:-.02em;text-wrap:balance">{{ t.howH }}</h2>
+    </div>
+    <ol style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:20px">
+      <li style="display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-l);overflow:hidden">
+        <div style="min-height:220px;background:var(--stage);color:var(--stage-ink);padding:22px;display:flex;flex-direction:column;justify-content:center;gap:14px">
+          <span style="font:500 12px var(--mono);color:var(--stage-ink-2)">lesson.html</span>
+          <code style="font:400 13px/1.75 var(--mono);word-break:break-all;color:var(--stage-ink)"><span style="color:#9fc9ad">&lt;script</span> type="module"<br>src="https://HOST/module/db-player.js"<span style="color:#9fc9ad">&gt;&lt;/script&gt;</span></code>
+          <span style="align-self:flex-start;font:500 12px var(--mono);padding:4px 8px;border-radius:6px;background:rgba(255,255,255,.1)">+1 line</span>
+        </div>
+        <div style="padding:24px;display:flex;flex-direction:column;gap:10px">
+          <span style="font:500 14px var(--mono);color:var(--ink-3)">01</span>
+          <h3 style="margin:0;font-size:22px;font-weight:600;line-height:1.35">{{ t.s1h }}</h3>
+          <p style="margin:0;font-size:16px;line-height:var(--lh);color:var(--ink-2)">{{ t.s1b }}</p>
+        </div>
+      </li>
+      <li style="display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-l);overflow:hidden">
+        <div aria-hidden="true" style="min-height:220px;background:var(--surface-2);padding:22px;display:flex;flex-direction:column;justify-content:center;gap:12px">
+          <div style="display:grid;grid-template-columns:64px 1fr;gap:8px;align-items:center;font:500 12px var(--mono);color:var(--ink-3)">
+            <span>{{ t.teacherL }}</span>
+            <div style="display:flex;gap:4px;height:26px"><span style="flex:3;background:var(--ink);border-radius:6px"></span><span style="flex:1.2;border:1.5px dashed var(--line-strong);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px">{{ t.waits }}</span><span style="flex:2.5;background:var(--ink);border-radius:6px"></span></div>
+            <span>{{ t.signerL }}</span>
+            <div style="display:flex;gap:4px;height:26px"><span style="flex:4.2;background:var(--accent);border-radius:6px"></span><span style="flex:2.5;background:var(--accent);border-radius:6px"></span></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font:500 11px var(--mono);color:var(--ink-3)"><span>0:00</span><span>0:03</span><span>0:07</span></div>
+        </div>
+        <div style="padding:24px;display:flex;flex-direction:column;gap:10px">
+          <span style="font:500 14px var(--mono);color:var(--ink-3)">02</span>
+          <h3 style="margin:0;font-size:22px;font-weight:600;line-height:1.35">{{ t.s2h }}</h3>
+          <p style="margin:0;font-size:16px;line-height:var(--lh);color:var(--ink-2)">{{ t.s2b }}</p>
+        </div>
+      </li>
+      <li style="display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-l);overflow:hidden">
+        <div aria-hidden="true" style="min-height:220px;background:var(--surface-2);padding:22px;display:flex;flex-direction:column;justify-content:center;gap:14px">
+          <span style="font-size:17px;font-weight:500">{{ t.s3in }}</span>
+          <span style="font:500 12px var(--mono);color:var(--ink-3)">↓ EthSL order</span>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span style="min-height:36px;display:flex;align-items:center;gap:6px;padding:0 12px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font:600 13px var(--mono)">● VARIABLE</span>
+            <span style="min-height:36px;display:flex;align-items:center;gap:6px;padding:0 12px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font:600 13px var(--mono)">● WHAT</span>
+            <span style="min-height:36px;display:flex;align-items:center;gap:6px;padding:0 12px;border-radius:8px;border:1.5px solid var(--ink);font:600 13px var(--mono)">◠ {{ t.brows }}</span>
+          </div>
+        </div>
+        <div style="padding:24px;display:flex;flex-direction:column;gap:10px">
+          <span style="font:500 14px var(--mono);color:var(--ink-3)">03</span>
+          <h3 style="margin:0;font-size:22px;font-weight:600;line-height:1.35">{{ t.s3h }}</h3>
+          <p style="margin:0;font-size:16px;line-height:var(--lh);color:var(--ink-2)">{{ t.s3b }}</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="comm-h" style="border-top:1px solid var(--line)">
+    <div style="max-width:1440px;margin:0 auto;padding:clamp(64px,8vw,128px) clamp(16px,4vw,56px);display:flex;flex-direction:column;gap:clamp(40px,5vw,72px)">
+      <div style="display:flex;flex-direction:column;gap:20px;max-width:900px">
+        <span style="font:500 13px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent-soft-ink)">{{ t.commEy }}</span>
+        <h2 id="comm-h" style="margin:0;font:500 clamp(34px,4.2vw,60px)/var(--lh-tight) var(--serif);letter-spacing:-.02em;text-wrap:balance">{{ t.commH }}</h2>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:40px clamp(40px,6vw,96px);align-items:start">
+        <figure style="margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:24px;align-items:end">
+          <div style="display:flex;flex-direction:column">
+            <div style="position:relative;aspect-ratio:3/4;border-radius:20px 20px 0 0;background:repeating-linear-gradient(135deg,var(--stage) 0 2px,var(--stage-2) 2px 14px);display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;font:500 11px/1.7 var(--mono);color:var(--stage-ink-2)">
+              {{ t.quoteVid }}
+              <button aria-label="{{ t.playQuote }}" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);margin-top:56px;min-height:48px;padding:0 18px;border:2px solid #fff;border-radius:var(--r-pill);background:rgba(15,14,12,.82);color:#fff;font-size:14px;font-weight:700">▶ {{ t.play }}</button>
+            </div>
+            <div style="background:var(--stage);color:var(--stage-ink);border-radius:0 0 20px 20px;padding:12px 16px;font-size:14px;line-height:1.5">{{ t.quoteCap }}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:18px">
+            <span aria-hidden="true" style="font:500 72px/0.6 var(--serif);color:var(--accent)">“</span>
+            <blockquote style="margin:0;font:400 clamp(21px,1.8vw,26px)/1.5 var(--serif);text-wrap:pretty">{{ t.quote }}</blockquote>
+            <figcaption style="display:flex;flex-direction:column;gap:2px;font-size:15px;line-height:1.5"><span style="font-weight:700">{{ t.quoteName }}</span><span style="color:var(--ink-3)">{{ t.quoteRole }}</span></figcaption>
+          </div>
+        </figure>
+
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <h3 style="margin:0;font-size:22px;font-weight:600">{{ t.reviewH }}</h3>
+          <ol style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column">
+            <sc-for list="{{ review }}" as="r" hint-placeholder-count="4">
+              <li style="display:grid;grid-template-columns:44px 1fr;gap:16px;position:relative;padding-bottom:22px">
+                <span aria-hidden="true" style="position:absolute;left:21px;top:44px;bottom:0;width:1.5px;background:{{ r.line }}"></span>
+                <span style="width:44px;height:44px;border-radius:50%;border:1.5px solid var(--ink);display:flex;align-items:center;justify-content:center;font:600 14px var(--mono);background:{{ r.bg }};color:{{ r.fg }}">{{ r.n }}</span>
+                <div style="display:flex;flex-direction:column;gap:4px;padding-top:8px">
+                  <span style="font-size:18px;font-weight:600;line-height:1.4">{{ r.h }}</span>
+                  <span style="font-size:16px;line-height:var(--lh);color:var(--ink-2)">{{ r.b }}</span>
+                </div>
+              </li>
+            </sc-for>
+          </ol>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:40px clamp(40px,6vw,96px)">
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <h3 style="margin:0;font-size:22px;font-weight:600">{{ t.interpH }}</h3>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px">
+            <sc-for list="{{ interpreters }}" as="p" hint-placeholder-count="2">
+              <div style="display:flex;gap:14px;align-items:center;padding:16px;border:1px solid var(--line);border-radius:var(--r-m);background:var(--surface)">
+                <span aria-hidden="true" style="flex:none;width:56px;height:72px;border-radius:10px;background:repeating-linear-gradient(135deg,var(--surface-3) 0 2px,var(--surface-2) 2px 9px);display:flex;align-items:center;justify-content:center;font:500 9px var(--mono);color:var(--ink-3)">3:4</span>
+                <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+                  <span style="font-weight:700;font-size:16px">{{ p.name }}</span>
+                  <span style="font-size:14px;color:var(--ink-2);line-height:1.4">{{ p.role }}</span>
+                  <span style="align-self:flex-start;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--accent-soft-ink)"><span aria-hidden="true">✓</span>{{ t.consent }}</span>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <h3 style="margin:0;font-size:22px;font-weight:600">{{ t.teamH }}</h3>
+          <ul style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:12px">
+            <sc-for list="{{ team }}" as="m" hint-placeholder-count="4">
+              <li style="display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)">
+                <span aria-hidden="true" style="flex:none;width:44px;height:44px;border-radius:50%;background:var(--surface-2);border:1px dashed var(--line-strong);display:flex;align-items:center;justify-content:center;font:500 10px var(--mono);color:var(--ink-3)">IMG</span>
+                <span style="display:flex;flex-direction:column;gap:2px;font-size:15px;line-height:1.4"><span style="font-weight:700">{{ m.name }}</span><span style="color:var(--ink-2)">{{ m.role }}</span></span>
+              </li>
+            </sc-for>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="status-h" style="max-width:1440px;margin:0 auto;padding:0 clamp(16px,4vw,56px)">
+    <div style="border:1.5px solid var(--ink);border-radius:var(--r-l);padding:clamp(28px,4vw,56px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:20px 56px;align-items:start;background:var(--surface)">
+      <h2 id="status-h" style="margin:0;display:flex;align-items:center;gap:12px;font:500 14px var(--mono);letter-spacing:.08em;text-transform:uppercase"><span aria-hidden="true" style="width:12px;height:12px;border-radius:50%;border:2px solid var(--ink);background:var(--gold)"></span>{{ t.statusH }}</h2>
+      <p style="margin:0;font:400 clamp(21px,2vw,28px)/1.5 var(--serif);text-wrap:pretty;grid-column:span 2;min-width:0">{{ t.status }}</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="faq-h" style="max-width:1440px;margin:0 auto;padding:clamp(64px,8vw,128px) clamp(16px,4vw,56px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:32px clamp(40px,7vw,120px);align-items:start">
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <span style="font:500 13px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent-soft-ink)">{{ t.faqEy }}</span>
+      <h2 id="faq-h" style="margin:0;font:500 clamp(34px,4.2vw,60px)/var(--lh-tight) var(--serif);letter-spacing:-.02em">{{ t.faqH }}</h2>
+    </div>
+    <div style="display:flex;flex-direction:column;border-top:1.5px solid var(--ink)">
+      <sc-for list="{{ faqs }}" as="f" hint-placeholder-count="6">
+        <div style="border-bottom:1px solid var(--line-strong)">
+          <h3 style="margin:0">
+            <button onClick="{{ f.toggle }}" aria-expanded="{{ f.open }}" aria-controls="{{ f.id }}" style="width:100%;min-height:72px;padding:16px 0;border:0;background:transparent;display:flex;align-items:center;justify-content:space-between;gap:20px;text-align:left;font-size:clamp(18px,1.6vw,21px);font-weight:600;line-height:1.4" style-hover="color:var(--accent-soft-ink)">
+              {{ f.q }}
+              <span aria-hidden="true" style="flex:none;width:36px;height:36px;border-radius:50%;border:1.5px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:400;background:{{ f.iconBg }};color:{{ f.iconFg }}">{{ f.icon }}</span>
+            </button>
+          </h3>
+          <sc-if value="{{ f.open }}" hint-placeholder-val="{{ false }}">
+            <div id="{{ f.id }}" style="padding:0 56px 24px 0;font-size:17px;line-height:var(--lh);color:var(--ink-2)">{{ f.a }}</div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section aria-labelledby="cta-h" style="background:var(--accent);color:var(--accent-ink);position:relative;overflow:hidden">
+    <span aria-hidden="true" style="position:absolute;right:-2vw;bottom:-6vw;font:600 clamp(160px,26vw,420px)/1 'Noto Serif Ethiopic';opacity:.09;pointer-events:none;white-space:nowrap">ለሁሉም</span>
+    <div style="position:relative;max-width:1440px;margin:0 auto;padding:clamp(64px,9vw,140px) clamp(16px,4vw,56px);display:flex;flex-direction:column;gap:36px">
+      <h2 id="cta-h" style="margin:0;font:500 clamp(40px,6vw,88px)/var(--lh-tight) var(--serif);letter-spacing:-.025em;max-width:16ch;text-wrap:balance">{{ t.ctaH }}</h2>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <a href="mailto:hello@HOST" style="min-height:56px;padding:0 28px;border-radius:var(--r-pill);background:var(--accent-ink);color:var(--accent);font-size:17px;font-weight:700;display:flex;align-items:center;text-decoration:none">{{ t.contact }}</a>
+        <button onClick="{{ goStudio }}" style="min-height:56px;padding:0 28px;border:2px solid var(--accent-ink);border-radius:var(--r-pill);background:transparent;color:var(--accent-ink);font-size:17px;font-weight:700">{{ t.tryLive }}</button>
+      </div>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const T = {
+  en: {
+    eyebrow: 'Ethiopian Sign Language · for every online lesson',
+    head1: 'Ear to the deaf.', head2: 'Eye for the blind.', altTag: 'ለመስማት ለተሳናቸው ጆሮ፣ ለማየት ለተሳናቸው ዓይን።',
+    pitch: 'Ethiopian Sign Language for any online lesson, with one line of code.',
+    cta1: 'Watch a signed lesson', cta2: 'Add it to your platform',
+    proof: ['Built with a Deaf co-designer', 'Certified EthSL interpreters', 'Demonstrated inside ALX Savanna'],
+    videoPh: 'INTERPRETER VIDEO · 3:4\nyoung Ethiopian man, dark jacket\nupper body + hands visible\nsigning a welcome', realBadge: 'Real interpreter · EthSL',
+    interpreter: 'Interpreter', pause: 'Pause', play: 'Play', line: 'Line',
+    caps: [['Welcome to LE HULUM.', 'እንኳን ወደ ለሁሉም በደህና መጡ።'], ['I sign every lesson, line by line.', 'እያንዳንዱን ትምህርት መስመር በመስመር በምልክት እተረጉማለሁ።'], ['Learn in Ethiopian Sign Language.', 'በኢትዮጵያ ምልክት ቋንቋ ይማሩ።']],
+    signItH: 'Sign it', signItHelp: 'Type a word or a question in Amharic or English', signItPh: 'What is a variable?', signItBtn: 'Sign it', tryL: 'Try',
+    impactL: 'Impact', phNote: 'PLACEHOLDER · result pending',
+    stats: [['64', 'EthSL word signs'], ['39', 'recorded phrases'], ['0', 'sentences cut mid-way: the teacher waits for the signer'], ['X', 'of 10 sentences understood by our Deaf co-designer']],
+    probEy: '01 · The problem', probH: 'Online learning in Ethiopia is not yet made for Deaf learners.',
+    problems: [
+      ['No sign language. Almost no Amharic captions.', 'Deaf learners in Ethiopia get no sign language and almost no Amharic captions in online courses.'],
+      ['Global tools don’t speak EthSL.', 'Global sign tools don’t speak Ethiopian Sign Language.'],
+      ['One interpreter per lesson doesn’t scale.', 'Booking an interpreter for every lesson does not scale.'],
+    ],
+    howEy: '02 · How it works', howH: 'One line of code. A real interpreter on every line.',
+    s1h: 'Add one line', s1b: 'Paste our script tag into any lesson page. No app to install, no player to replace.',
+    s2h: 'Every line is signed by a real interpreter, in sync', s2b: 'At the end of a sentence the teacher’s video waits until the signer finishes, so nothing is cut mid-way.',
+    s3h: 'New text is signed automatically from real clips, following EthSL grammar', s3b: 'Our engine joins recorded interpreter clips in EthSL word order, with face signals for questions and “not”.',
+    teacherL: 'Teacher', signerL: 'Signer', waits: 'waits', s3in: '“What is a variable?”', brows: 'Eyebrows: question',
+    commEy: '03 · Built with the Deaf community', commH: 'Signs are made by people, and checked by the people who use them.',
+    quoteVid: 'CO-DESIGNER · SIGNED QUOTE · 3:4', playQuote: 'Play the signed quote', quoteCap: '[Captions of the signed quote appear here]',
+    quote: '[Placeholder: a quote from our Deaf co-designer, in their own words, signed on video and captioned.]', quoteName: '[Co-designer name]', quoteRole: 'Deaf co-designer',
+    reviewH: 'How a sign is reviewed',
+    review: [['Record', 'A certified interpreter records each sign and phrase.'], ['Deaf review', 'Our Deaf co-designer checks that it is clear and natural.'], ['Publish', 'Only approved signs reach learners.'], ['Learner feedback', '“Not clear” reports send a sign back for review.']],
+    interpH: 'Interpreters', consent: 'Filmed with written consent', interps: [['[Interpreter name]', 'Certified EthSL interpreter · lesson and welcome'], ['[Interpreter name]', 'Certified EthSL interpreter · dictionary signs']],
+    teamH: 'Team', team: [['[Name]', 'Product & engineering'], ['[Name]', 'Deaf co-designer'], ['[Name]', 'Design & research'], ['[Name]', 'Sign library & data']],
+    statusH: 'Honest status', status: 'Our current sign library was recorded for this demo. With ALX Ethiopia we will grow it with Deaf reviewers to make translation as accurate as possible.',
+    faqEy: '04 · Questions', faqH: 'What people ask us',
+    faqs: [
+      ['How does automatic signing work?', 'We split the text into words, put them in EthSL word order and join recorded interpreter clips for each sign. Names and new terms are fingerspelled. Questions and “not” get the right face signal. If the whole sentence was recorded, we play that recording instead.'],
+      ['Is it real sign language?', 'Yes. Every sign is performed by a certified EthSL interpreter and reviewed by a Deaf co-designer. We don’t use avatars. Automatic signing is labelled “beta”, so learners always know which is which.'],
+      ['What if a word has no sign yet?', 'It appears as a “No sign yet” chip and stays in the captions. Learners can request it, and it goes into our record-and-review queue.'],
+      ['Does it work on a cheap phone and slow internet?', 'Yes. Pages are light, a poster shows before any video loads, sign clips are short and cached on the phone, and Data saver loads video only when you press play.'],
+      ['Is learners’ data private?', 'Settings stay on the learner’s device. No account is needed and we never record learners. “Understood / Not clear” feedback is anonymous.'],
+      ['How do we add it to our platform?', 'Add one script tag and the <db-player> element to your lesson page, or call our REST API. The full install guide is on the For platforms page.'],
+    ],
+    ctaH: 'Bring Ethiopian Sign Language to your learners', contact: 'Contact us', tryLive: 'Try it live',
+  },
+  am: {
+    eyebrow: 'የኢትዮጵያ ምልክት ቋንቋ · ለእያንዳንዱ የኦንላይን ትምህርት',
+    head1: 'ለመስማት ለተሳናቸው ጆሮ፣', head2: 'ለማየት ለተሳናቸው ዓይን።', altTag: 'Ear to the deaf. Eye for the blind.',
+    pitch: 'ለማንኛውም የኦንላይን ትምህርት የኢትዮጵያ ምልክት ቋንቋ፣ በአንድ መስመር ኮድ።',
+    cta1: 'በምልክት የተተረጎመ ትምህርት ይመልከቱ', cta2: 'ወደ መድረክዎ ያክሉት',
+    proof: ['ከመስማት የተሳነው ተባባሪ ዲዛይነር ጋር የተሰራ', 'የተረጋገጡ የምልክት ቋንቋ አስተርጓሚዎች', 'በALX Savanna ውስጥ የቀረበ'],
+    videoPh: 'የአስተርጓሚ ቪዲዮ · 3:4\nINTERPRETER VIDEO\nsigning a welcome', realBadge: 'እውነተኛ አስተርጓሚ · EthSL',
+    interpreter: 'አስተርጓሚ', pause: 'ቆም አድርግ', play: 'አጫውት', line: 'መስመር',
+    caps: [['እንኳን ወደ ለሁሉም በደህና መጡ።', 'Welcome to LE HULUM.'], ['እያንዳንዱን ትምህርት መስመር በመስመር በምልክት እተረጉማለሁ።', 'I sign every lesson, line by line.'], ['በኢትዮጵያ ምልክት ቋንቋ ይማሩ።', 'Learn in Ethiopian Sign Language.']],
+    signItH: 'በምልክት ይተርጉሙ', signItHelp: 'በአማርኛ ወይም በእንግሊዝኛ ቃል ወይም ጥያቄ ይጻፉ', signItPh: 'ተለዋዋጭ ምንድን ነው?', signItBtn: 'በምልክት', tryL: 'ይሞክሩ',
+    impactL: 'ውጤት', phNote: 'ቦታ ያዥ · ውጤቱ በመጠባበቅ ላይ',
+    stats: [['64', 'የምልክት ቋንቋ ቃላት'], ['39', 'የተቀረጹ ሐረጎች'], ['0', 'በመሃል የተቋረጡ ዓረፍተ ነገሮች፦ መምህሩ አስተርጓሚውን ይጠብቃል'], ['X', 'ከ10 ዓረፍተ ነገሮች በመስማት የተሳነው ተባባሪ ዲዛይነራችን የተረዳቸው']],
+    probEy: '01 · ችግሩ', probH: 'በኢትዮጵያ ያለው የኦንላይን ትምህርት ገና ለመስማት የተሳናቸው ተማሪዎች አልተዘጋጀም።',
+    problems: [
+      ['ምልክት ቋንቋ የለም። የአማርኛ ጽሑፍ ትርጉምም እምብዛም የለም።', 'በኢትዮጵያ ያሉ መስማት የተሳናቸው ተማሪዎች በኦንላይን ኮርሶች ምልክት ቋንቋ አያገኙም፤ የአማርኛ ጽሑፍ ትርጉምም እምብዛም የለም።'],
+      ['ዓለም አቀፍ መሣሪያዎች የኢትዮጵያ ምልክት ቋንቋን አያውቁም።', 'ዓለም አቀፍ የምልክት መሣሪያዎች የኢትዮጵያ ምልክት ቋንቋን አይናገሩም።'],
+      ['ለእያንዳንዱ ትምህርት አስተርጓሚ መቅጠር አያዋጣም።', 'ለእያንዳንዱ ትምህርት አስተርጓሚ ማስያዝ ለብዙ ተማሪዎች ሊደርስ አይችልም።'],
+    ],
+    howEy: '02 · እንዴት ይሰራል', howH: 'አንድ መስመር ኮድ። በእያንዳንዱ መስመር እውነተኛ አስተርጓሚ።',
+    s1h: 'አንድ መስመር ያክሉ', s1b: 'የእኛን script tag ወደ ማንኛውም የትምህርት ገጽ ይለጥፉ። የሚጫን መተግበሪያ የለም፣ የሚቀየር ማጫወቻም የለም።',
+    s2h: 'እያንዳንዱ መስመር በእውነተኛ አስተርጓሚ፣ በጊዜው ይተረጎማል', s2b: 'አስተርጓሚው እስኪጨርስ ድረስ የመምህሩ ቪዲዮ በዓረፍተ ነገሩ መጨረሻ ይጠብቃል፤ ስለዚህ ምንም በመሃል አይቋረጥም።',
+    s3h: 'አዲስ ጽሑፍ ከእውነተኛ ቅንጥቦች፣ የምልክት ቋንቋ ሰዋስውን ተከትሎ በራሱ ይተረጎማል', s3b: 'ሞተራችን የተቀረጹ የአስተርጓሚ ቅንጥቦችን በምልክት ቋንቋ የቃላት ቅደም ተከተል ያገናኛል፤ ለጥያቄ እና ለ«አይ» የፊት ምልክቶችንም ይጨምራል።',
+    teacherL: 'መምህር', signerL: 'አስተርጓሚ', waits: 'ይጠብቃል', s3in: '«ተለዋዋጭ ምንድን ነው?»', brows: 'ቅንድብ፦ ጥያቄ',
+    commEy: '03 · ከመስማት የተሳናቸው ማኅበረሰብ ጋር', commH: 'ምልክቶቹ በሰዎች የተሰሩ፣ በሚጠቀሙባቸው ሰዎች የተፈተሹ ናቸው።',
+    quoteVid: 'ተባባሪ ዲዛይነር · በምልክት የተሰጠ አስተያየት · 3:4', playQuote: 'በምልክት የተሰጠውን አስተያየት አጫውት', quoteCap: '[የአስተያየቱ ጽሑፍ ትርጉም እዚህ ይታያል]',
+    quote: '[ቦታ ያዥ፦ መስማት ከተሳነው ተባባሪ ዲዛይነራችን የተሰጠ አስተያየት፣ በራሳቸው ቃላት፣ በቪዲዮ በምልክት እና በጽሑፍ።]', quoteName: '[የተባባሪ ዲዛይነር ስም]', quoteRole: 'መስማት የተሳነው ተባባሪ ዲዛይነር',
+    reviewH: 'አንድ ምልክት እንዴት ይገመገማል',
+    review: [['መቅረጽ', 'የተረጋገጠ አስተርጓሚ እያንዳንዱን ምልክት እና ሐረግ ይቀርጻል።'], ['በመስማት የተሳናቸው ግምገማ', 'መስማት የተሳነው ተባባሪ ዲዛይነራችን ግልጽ እና ተፈጥሯዊ መሆኑን ያረጋግጣል።'], ['ማተም', 'የጸደቁ ምልክቶች ብቻ ወደ ተማሪዎች ይደርሳሉ።'], ['የተማሪ አስተያየት', '«ግልጽ አይደለም» የሚሉ ሪፖርቶች ምልክቱን ለግምገማ ይመልሳሉ።']],
+    interpH: 'አስተርጓሚዎች', consent: 'በጽሑፍ ፈቃድ የተቀረጸ', interps: [['[የአስተርጓሚ ስም]', 'የተረጋገጠ የምልክት ቋንቋ አስተርጓሚ · ትምህርት እና አቀባበል'], ['[የአስተርጓሚ ስም]', 'የተረጋገጠ የምልክት ቋንቋ አስተርጓሚ · የመዝገበ ቃላት ምልክቶች']],
+    teamH: 'ቡድን', team: [['[ስም]', 'ምርት እና ምህንድስና'], ['[ስም]', 'መስማት የተሳነው ተባባሪ ዲዛይነር'], ['[ስም]', 'ዲዛይን እና ጥናት'], ['[ስም]', 'የምልክት ቤተ መጻሕፍት እና ዳታ']],
+    statusH: 'ትክክለኛው ሁኔታ', status: 'አሁን ያለን የምልክት ቤተ መጻሕፍት ለዚህ ማሳያ የተቀረጸ ነው። ከALX ኢትዮጵያ ጋር በመሆን፣ ትርጉሙ በተቻለ መጠን ትክክለኛ እንዲሆን ከመስማት የተሳናቸው ገምጋሚዎች ጋር እናሳድገዋለን።',
+    faqEy: '04 · ጥያቄዎች', faqH: 'በተደጋጋሚ የሚጠየቁ ጥያቄዎች',
+    faqs: [
+      ['ራስ-ሰር ትርጉም እንዴት ይሰራል?', 'ጽሑፉን ወደ ቃላት እንከፍላለን፣ በምልክት ቋንቋ ቅደም ተከተል እናስቀምጣለን፣ ለእያንዳንዱ ምልክት የተቀረጹ የአስተርጓሚ ቅንጥቦችን እናገናኛለን። ስሞች እና አዳዲስ ቃላት በጣት ፊደል ይጻፋሉ። ጥያቄዎች እና «አይ» ተገቢውን የፊት ምልክት ያገኛሉ። ሙሉ ዓረፍተ ነገሩ ተቀርጾ ከሆነ ያንን ቅጂ እናጫውታለን።'],
+      ['እውነተኛ ምልክት ቋንቋ ነው?', 'አዎ። እያንዳንዱ ምልክት በተረጋገጠ የምልክት ቋንቋ አስተርጓሚ የሚሰራ እና በመስማት የተሳነው ተባባሪ ዲዛይነር የሚገመገም ነው። አቫታር አንጠቀምም። ራስ-ሰር ትርጉም «ቤታ» ተብሎ ስለሚለጠፍ ተማሪዎች ሁልጊዜ ልዩነቱን ያውቃሉ።'],
+      ['አንድ ቃል ገና ምልክት ከሌለውስ?', '«ገና ምልክት የለውም» ተብሎ ይታያል፣ ቃሉም በጽሑፍ ትርጉሙ ውስጥ ይቆያል። ተማሪዎች እንዲሰራ መጠየቅ ይችላሉ፤ ወደ መቅረጫ እና መገምገሚያ ወረፋችን ይገባል።'],
+      ['በርካሽ ስልክ እና በዝግተኛ ኢንተርኔት ይሰራል?', 'አዎ። ገጾቹ ቀላል ናቸው፣ ቪዲዮ ከመጫኑ በፊት ፎቶ ይታያል፣ የምልክት ቅንጥቦች አጭር ሆነው በስልኩ ላይ ይቀመጣሉ፣ ዳታ ቆጣቢ ደግሞ ቪዲዮ የሚጭነው ሲጫኑ ብቻ ነው።'],
+      ['የተማሪዎች መረጃ ግላዊ ነው?', 'ቅንብሮች በተማሪው መሣሪያ ላይ ይቆያሉ። መለያ አያስፈልግም፣ ተማሪዎችንም በፍጹም አንቀርጽም። «ገባኝ / ግልጽ አይደለም» አስተያየት ስም አልባ ነው።'],
+      ['ወደ መድረካችን እንዴት እናክለዋለን?', 'አንድ script tag እና <db-player> ኤለመንትን ወደ ትምህርት ገጽዎ ያክሉ፣ ወይም የREST API-ያችንን ይጠቀሙ። ሙሉ የመጫኛ መመሪያው «ለመድረኮች» ገጽ ላይ ነው።'],
+    ],
+    ctaH: 'የኢትዮጵያ ምልክት ቋንቋን ወደ ተማሪዎችዎ ያምጡ', contact: 'ያግኙን', tryLive: 'በቀጥታ ይሞክሩ',
+  },
+};
+const CHIPS = [['What is a variable?', 'en'], ['ተለዋዋጭ ምንድን ነው?', 'am'], ['ኮዱ ካልሰራ፣ ስህተቱን አረጋግጡ።', 'am']];
+
+class Component extends DCLogic {
+  state = { cap: 0, playing: true, q: '', faq: 0 };
+  componentDidMount() { this.start(); }
+  componentWillUnmount() { clearInterval(this._i); }
+  start() { clearInterval(this._i); this._i = setInterval(() => { if (this.state.playing) this.setState(s => ({ cap: (s.cap + 1) % 3 })); }, 3800); }
+  renderVals() {
+    const lang = this.props.lang || 'en', t = T[lang], w = this.props.w || 1440, s = this.state;
+    const go = p => () => this.props.go && this.props.go(p);
+    const open = q => this.props.openStudio && this.props.openStudio(q);
+    return {
+      t, altLang: lang === 'en' ? 'am' : 'en',
+      heroCols: w >= 960 ? 'minmax(0,1.3fr) minmax(320px,.7fr)' : 'minmax(0,1fr)',
+      h1Size: lang === 'am' ? 'clamp(38px,5.4vw,80px)' : 'clamp(50px,7.4vw,112px)',
+      head1: t.head1, head2: t.head2, altTag: t.altTag, proof: t.proof,
+      playing: s.playing, paused: !s.playing, playLabel: s.playing ? t.pause : t.play,
+      liveAnim: s.playing ? 'lh-pulse 1.6s ease-in-out infinite' : 'none',
+      togglePlay: () => this.setState({ playing: !s.playing }),
+      capMain: t.caps[s.cap][0], capAlt: t.caps[s.cap][1], capCount: t.line + ' ' + (s.cap + 1) + '/3',
+      capBars: [0, 1, 2].map(i => i <= s.cap ? 'var(--gold)' : 'rgba(255,255,255,.2)'),
+      goLesson: go('lesson'), goPlatforms: go('platforms'), goStudio: go('studio'),
+      q: s.q, onQ: e => this.setState({ q: e.target.value }),
+      submit: e => { e.preventDefault(); open(s.q || t.signItPh); },
+      chips: CHIPS.map(([label, l]) => ({ label, lang: l, go: () => open(label) })),
+      stats: t.stats.map(([n, label], i) => ({ n, label, unit: i === 3 ? '/ 10' : '', ph: i === 3, pad: i === 3 ? '0 14px' : '0', border: i === 3 ? '2px dashed var(--line-strong)' : '0' })),
+      problems: t.problems.map(([h, b], i) => ({ n: '0' + (i + 1), h, b })),
+      review: t.review.map(([h, b], i) => ({ n: i + 1, h, b, line: i < 3 ? 'var(--line-strong)' : 'transparent', bg: i === 1 ? 'var(--ink)' : 'var(--surface)', fg: i === 1 ? 'var(--bg)' : 'var(--ink)' })),
+      interpreters: t.interps.map(([name, role]) => ({ name, role })),
+      team: t.team.map(([name, role]) => ({ name, role })),
+      faqs: t.faqs.map(([q, a], i) => ({ q, a, id: 'faq-' + i, open: s.faq === i, icon: s.faq === i ? '−' : '+',
+        iconBg: s.faq === i ? 'var(--ink)' : 'transparent', iconFg: s.faq === i ? 'var(--bg)' : 'var(--ink)',
+        toggle: () => this.setState({ faq: s.faq === i ? -1 : i }) })),
+    };
+  }
+}
+</script>
+</body>
+</html>

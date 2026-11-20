@@ -1,0 +1,16 @@
+{
+  "people": [
+    {
+      "id": "interp-1",
+      "role": "interpreter",
+      "name": "[Interpreter name]",
+      "consent": true
+    },
+    {
+      "id": "co-1",
+      "role": "co-designer",
+      "name": "[Deaf co-designer]",
+      "consent": true
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+// NFR-A11Y-01: Asayegn chat UI strings (EN + AM). Source: Asayegn.dc.html.
+export const T = {
+  en: {
+    sideL: 'Asayegn navigation', newChat: 'New chat', browse: 'Browse signs', history: 'Your history',
+    historyEmpty: 'Your messages will appear here.', historyNote: 'Stored on this device only.',
+    settings: 'Learner settings', help: 'Help & feedback', forPlatforms: 'For platforms',
+    emptyH1: 'Type a message.', emptyH2: 'Watch it signed.',
+    emptySub: 'Real Ethiopian Sign Language interpreters, joined by our engine.',
+    tryThese: 'Try one of these', judges: 'Run the judges’ test: same question in English, then Amharic',
+    you: 'You', preparing: 'Preparing your signs',
+    steps: ['Reading your message', 'Finding the signs', 'Applying EthSL grammar', 'Joining real interpreter clips', 'Ready'],
+    errMsg: 'Can’t reach the sign server. Try again.', retry: 'Try again',
+    recorded: 'Recorded phrase', automatic: 'Automatic', dictionary: 'Dictionary sign', notSigned: 'Not signed',
+    noSign: 'No sign yet', noSignB: 'This isn’t in our sign library yet. You can request a recorded sign.',
+    fingerspell: 'Fingerspell it', request: 'Request a sign',
+    understood: 'Understood', notClear: 'Not clear', thanks: 'Thanks for your feedback.',
+    composer: 'Type something to sign', send: 'Send',
+    hint: 'Enter to send · Shift+Enter for a new line · Amharic or English',
+    browseSub: 'Pick a sign to add it to the chat.', backChat: 'Back to chat', all: 'All',
+    offline: 'You’re offline. Signs you’ve already watched still play.',
+  },
+  am: {
+    sideL: 'የአሳየኝ ማሰሻ', newChat: 'አዲስ ውይይት', browse: 'ምልክቶችን ያስሱ', history: 'ታሪክዎ',
+    historyEmpty: 'መልዕክቶችዎ እዚህ ይታያሉ።', historyNote: 'በዚህ መሣሪያ ላይ ብቻ ይቀመጣል።',
+    settings: 'የተማሪ ቅንብሮች', help: 'እገዛ እና አስተያየት', forPlatforms: 'ለመድረኮች',
+    emptyH1: 'መልዕክት ይጻፉ።', emptyH2: 'በምልክት ይመልከቱት።',
+    emptySub: 'እውነተኛ የኢትዮጵያ ምልክት ቋንቋ አስተርጓሚዎች፣ በሞተራችን የተገናኙ።',
+    tryThese: 'ከእነዚህ አንዱን ይሞክሩ', judges: 'የዳኞች ሙከራ፦ አንድ ጥያቄ በእንግሊዝኛ፣ ከዚያ በአማርኛ',
+    you: 'እርስዎ', preparing: 'ምልክቶችዎን በማዘጋጀት ላይ',
+    steps: ['መልዕክትዎን በማንበብ ላይ', 'ምልክቶቹን በመፈለግ ላይ', 'የምልክት ቋንቋ ሰዋስው በመተግበር ላይ', 'እውነተኛ የአስተርጓሚ ቅንጥቦችን በማገናኘት ላይ', 'ዝግጁ'],
+    errMsg: 'የምልክት አገልጋዩን ማግኘት አልተቻለም። እንደገና ይሞክሩ።', retry: 'እንደገና ሞክር',
+    recorded: 'የተቀረጸ ሐረግ', automatic: 'ራስ-ሰር', dictionary: 'የመዝገበ ቃላት ምልክት', notSigned: 'አልተተረጎመም',
+    noSign: 'ገና ምልክት የለውም', noSignB: 'ይህ ገና በምልክት ቤተ መጻሕፍታችን ውስጥ የለም። የተቀረጸ ምልክት መጠየቅ ይችላሉ።',
+    fingerspell: 'በጣት ፊደል አሳይ', request: 'ምልክት ይጠይቁ',
+    understood: 'ገባኝ', notClear: 'ግልጽ አይደለም', thanks: 'ለአስተያየትዎ እናመሰግናለን።',
+    composer: 'በምልክት እንዲተረጎም ይጻፉ', send: 'ላክ',
+    hint: 'ለመላክ Enter · ለአዲስ መስመር Shift+Enter · አማርኛ ወይም እንግሊዝኛ',
+    browseSub: 'ወደ ውይይቱ ለመጨመር ምልክት ይምረጡ።', backChat: 'ወደ ውይይት ተመለስ', all: 'ሁሉም',
+    offline: 'ከኢንተርኔት ውጪ ነዎት። ያዩዋቸው ምልክቶች አሁንም ይጫወታሉ።',
+  },
+};
+
+export const TRY = [
+  ['What is a variable?', 'en'],
+  ['ተለዋዋጭ ምንድን ነው?', 'am'],
+  ['ኮዱ ካልሰራ፣ ስህተቱን አረጋግጡ።', 'am'],
+  ['ሰላም፣ እንኳን ደህና መጣችሁ።', 'am'],
+];

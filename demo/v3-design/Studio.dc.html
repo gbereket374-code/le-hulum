@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="max-width:1440px;margin:0 auto;padding:clamp(28px,5vw,64px) clamp(16px,4vw,56px) clamp(64px,8vw,120px);display:flex;flex-direction:column;gap:clamp(28px,4vw,48px);color:var(--ink)">
+
+  <div style="display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;flex-direction:column;gap:10px;max-width:900px">
+      <span style="font:500 13px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent-soft-ink)">{{ t.ey }}</span>
+      <h1 style="margin:0;font:500 clamp(38px,5vw,68px)/var(--lh-tight) var(--serif);letter-spacing:-.02em">{{ t.h1 }}</h1>
+    </div>
+    <form onSubmit="{{ submit }}" role="search" style="display:flex;flex-direction:column;gap:10px">
+      <label for="studio-q" style="font-size:17px;font-weight:600">{{ t.label }}</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;background:var(--surface);border:2px solid var(--ink);border-radius:20px;padding:6px">
+        <input id="studio-q" value="{{ input }}" onInput="{{ onInput }}" placeholder="{{ t.ph }}" autocomplete="off" style="flex:1 1 240px;min-width:0;min-height:60px;padding:0 16px;border:0;background:transparent;font-size:clamp(19px,1.8vw,24px);outline-offset:0">
+        <sc-if value="{{ hasInput }}" hint-placeholder-val="{{ false }}">
+          <button type="button" onClick="{{ clear }}" style="flex:none;min-height:60px;padding:0 16px;border:0;border-radius:14px;background:transparent;font-size:15px;font-weight:600;color:var(--ink-2)">{{ t.clear }}</button>
+        </sc-if>
+        <button type="submit" style="flex:none;min-height:60px;padding:0 28px;border:0;border-radius:14px;background:var(--accent);color:var(--accent-ink);font-size:17px;font-weight:700">{{ t.btn }}</button>
+      </div>
+    </form>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px 24px">
+      <sc-for list="{{ exGroups }}" as="g" hint-placeholder-count="4">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <span style="font:500 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)">{{ g.title }}</span>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <sc-for list="{{ g.items }}" as="c" hint-placeholder-count="2">
+              <button onClick="{{ c.go }}" style="min-height:44px;padding:6px 14px;border:1px solid var(--line-strong);border-radius:var(--r-pill);background:var(--surface);font-size:15px;line-height:1.35;text-align:left" style-hover="border-color:var(--ink)">{{ c.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <section aria-label="{{ t.result }}" aria-live="polite" style="border-top:1.5px solid var(--ink);padding-top:clamp(24px,3vw,40px)">
+    <sc-if value="{{ st.empty }}" hint-placeholder-val="{{ true }}">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:32px;align-items:center;padding:12px 0">
+        <div style="aspect-ratio:4/3;max-width:420px;border-radius:var(--r-l);border:1.5px dashed var(--line-strong);display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;white-space:pre-line;font:500 12px/1.7 var(--mono);color:var(--ink-3)">{{ t.emptyArt }}</div>
+        <div style="display:flex;flex-direction:column;gap:12px;max-width:52ch">
+          <h2 style="margin:0;font:500 clamp(26px,2.6vw,34px)/1.25 var(--serif)">{{ t.emptyH }}</h2>
+          <p style="margin:0;font-size:17px;line-height:var(--lh);color:var(--ink-2)">{{ t.emptyB }}</p>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ st.loading }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;grid-template-columns:{{ resCols }};gap:clamp(24px,4vw,56px)" aria-busy="true">
+        <div style="aspect-ratio:3/4;border-radius:var(--r-l);background:linear-gradient(90deg,var(--surface-2),var(--surface-3),var(--surface-2));background-size:400px 100%;animation:lh-shimmer 1.2s linear infinite;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;color:var(--ink-2)">{{ t.loading }}</div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="height:40px;width:70%;border-radius:10px;background:var(--surface-2)"></div>
+          <div style="display:flex;gap:8px"><div style="height:56px;width:120px;border-radius:12px;background:var(--surface-2)"></div><div style="height:56px;width:90px;border-radius:12px;background:var(--surface-2)"></div><div style="height:56px;width:110px;border-radius:12px;background:var(--surface-2)"></div></div>
+          <div style="height:110px;border-radius:16px;background:var(--surface-2)"></div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ st.error }}" hint-placeholder-val="{{ false }}">
+      <div role="alert" style="display:flex;flex-wrap:wrap;gap:20px;align-items:center;padding:24px;border:2px solid var(--err-ink);border-radius:var(--r-m);background:var(--err-soft);color:var(--err-ink)">
+        <span aria-hidden="true" style="width:40px;height:40px;border-radius:50%;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px">!</span>
+        <div style="flex:1 1 260px;display:flex;flex-direction:column;gap:4px"><strong style="font-size:18px">{{ t.errH }}</strong><span style="font-size:16px;line-height:1.5">{{ t.errB }}</span></div>
+        <button onClick="{{ retry }}" style="min-height:48px;padding:0 20px;border:2px solid currentColor;border-radius:var(--r-pill);background:transparent;color:inherit;font-weight:700">{{ t.retry }}</button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ st.sentence }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;grid-template-columns:{{ resCols }};gap:clamp(24px,4vw,56px);align-items:start">
+        <div style="display:flex;flex-direction:column;position:sticky;top:96px">
+          <div style="position:relative;aspect-ratio:3/4;border-radius:var(--r-l) var(--r-l) 0 0;overflow:hidden;background:repeating-linear-gradient(135deg,var(--stage) 0 2px,var(--stage-2) 2px 14px)">
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;font:500 11px/1.7 var(--mono);color:var(--stage-ink-2)">INTERPRETER VIDEO · 3:4</div>
+            <span style="position:absolute;top:14px;left:14px;padding:6px 12px;border-radius:var(--r-pill);background:var(--surface);color:var(--ink);font-size:13px;font-weight:700">{{ sourceBadge }}</span>
+            <sc-if value="{{ curGloss }}" hint-placeholder-val="{{ false }}">
+              <span style="position:absolute;left:50%;bottom:16px;transform:translateX(-50%);padding:8px 14px;border-radius:10px;background:rgba(0,0,0,.75);color:#fff;font:600 17px var(--mono);letter-spacing:.04em;white-space:nowrap">{{ curGloss }}</span>
+            </sc-if>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center;padding:8px;background:var(--stage);border-radius:0 0 var(--r-l) var(--r-l)">
+            <button onClick="{{ replay }}" style="min-height:44px;padding:0 16px;border:0;border-radius:var(--r-pill);background:var(--stage-ink);color:var(--stage);font-weight:700;font-size:14px">{{ playBtn }}</button>
+            <div role="group" aria-label="{{ t.speed }}" style="margin-left:auto;display:flex;gap:2px;padding:3px;border-radius:var(--r-pill);border:1px solid rgba(255,255,255,.3)">
+              <sc-for list="{{ speeds }}" as="sp" hint-placeholder-count="2">
+                <button onClick="{{ sp.pick }}" aria-pressed="{{ sp.sel }}" style="min-height:38px;min-width:52px;border:0;border-radius:var(--r-pill);font:600 13px var(--mono);background:{{ sp.bg }};color:{{ sp.fg }}">{{ sp.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:24px;min-width:0">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="font:500 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)">{{ inputLangLabel }}</span>
+            <h2 style="margin:0;font:500 clamp(28px,3vw,42px)/1.3 var(--serif);text-wrap:pretty">{{ res.input }}</h2>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline">
+              <h3 style="margin:0;font-size:17px;font-weight:700">{{ t.glossH }}</h3>
+              <span style="font-size:14px;color:var(--ink-3)">{{ t.glossHint }}</span>
+            </div>
+            <ol style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px">
+              <sc-for list="{{ chips }}" as="c" hint-placeholder-count="3">
+                <li>
+                  <button onClick="{{ c.open }}" disabled="{{ c.disabled }}" aria-label="{{ c.aria }}" style="min-height:64px;min-width:64px;padding:8px 14px;border-radius:14px;border:{{ c.border }};background:{{ c.bg }};color:{{ c.fg }};display:flex;flex-direction:column;align-items:flex-start;gap:3px;box-shadow:{{ c.ring }};cursor:{{ c.cursor }}">
+                    <span style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;opacity:.95"><span aria-hidden="true" style="font-family:var(--mono)">{{ c.icon }}</span>{{ c.typeLabel }}</span>
+                    <span style="font:600 16px var(--mono);letter-spacing:.03em">{{ c.label }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ol>
+            <sc-if value="{{ face }}" hint-placeholder-val="{{ false }}">
+              <span style="align-self:flex-start;display:flex;align-items:center;gap:8px;min-height:36px;padding:0 14px;border:1.5px solid var(--ink);border-radius:var(--r-pill);font-size:14px;font-weight:600"><span aria-hidden="true" style="font-family:var(--mono)">{{ faceIcon }}</span>{{ face }}</span>
+            </sc-if>
+          </div>
+
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:10px">
+            <sc-for list="{{ statCards }}" as="sc" hint-placeholder-count="3">
+              <div style="padding:16px;border:1px solid var(--line);border-radius:var(--r-m);background:var(--surface);display:flex;flex-direction:column;gap:6px">
+                <span style="font-size:13px;font-weight:600;color:var(--ink-3)">{{ sc.k }}</span>
+                <span style="font-size:20px;font-weight:700;line-height:1.3">{{ sc.v }}</span>
+              </div>
+            </sc-for>
+          </div>
+
+          <sc-if value="{{ twin }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;padding:16px 18px;border-radius:var(--r-m);background:var(--accent-soft);color:var(--accent-soft-ink)">
+              <span aria-hidden="true" style="font-weight:700">⇄</span>
+              <div style="flex:1 1 260px;display:flex;flex-direction:column;gap:2px"><strong style="font-size:15px">{{ t.twinH }}</strong><span style="font-size:17px;color:var(--ink)">{{ twin.text }}</span></div>
+              <button onClick="{{ twin.go }}" style="min-height:44px;padding:0 18px;border:1.5px solid currentColor;border-radius:var(--r-pill);background:transparent;color:inherit;font-weight:700">{{ twin.btn }}</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ lessonLine }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;padding:16px;border:1px solid var(--line);border-radius:var(--r-m);background:var(--surface)">
+              <div aria-hidden="true" style="width:96px;aspect-ratio:16/10;border-radius:10px;background:repeating-linear-gradient(135deg,var(--surface-3) 0 2px,var(--surface-2) 2px 10px);display:flex;align-items:center;justify-content:center;font:500 10px var(--mono);color:var(--ink-3)">{{ lessonLine.time }}</div>
+              <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                <span style="font-size:13px;font-weight:600;color:var(--ink-3)">{{ t.lessonH }} · Python · {{ lessonLine.time }}</span>
+                <span style="font-size:17px;font-weight:600;line-height:1.45">{{ lessonLine.text }}</span>
+                <button onClick="{{ goLesson }}" style="align-self:flex-start;min-height:44px;padding:0 16px;border:0;border-radius:var(--r-pill);background:var(--ink);color:var(--bg);font-weight:700;font-size:14px">▶ {{ t.playPart }}</button>
+              </div>
+            </div>
+          </sc-if>
+
+          <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+            <span style="font-size:15px;font-weight:600;margin-right:6px">{{ t.feedbackQ }}</span>
+            <button onClick="{{ fbYes }}" aria-pressed="{{ fbIsYes }}" style="min-height:48px;padding:0 18px;border:1.5px solid var(--ink);border-radius:var(--r-pill);background:{{ fbYesBg }};color:{{ fbYesFg }};font-weight:700;display:flex;align-items:center;gap:8px"><span aria-hidden="true">✓</span>{{ t.understood }}</button>
+            <button onClick="{{ fbNo }}" aria-pressed="{{ fbIsNo }}" style="min-height:48px;padding:0 18px;border:1.5px solid var(--ink);border-radius:var(--r-pill);background:{{ fbNoBg }};color:{{ fbNoFg }};font-weight:700;display:flex;align-items:center;gap:8px"><span aria-hidden="true">?</span>{{ t.notClear }}</button>
+            <sc-if value="{{ fbMsg }}" hint-placeholder-val="{{ false }}"><span role="status" style="font-size:14px;color:var(--ink-2)">{{ fbMsg }}</span></sc-if>
+          </div>
+
+          <div style="border-top:1px solid var(--line)">
+            <button onClick="{{ toggleWhy }}" aria-expanded="{{ why }}" style="width:100%;min-height:56px;border:0;background:transparent;display:flex;justify-content:space-between;align-items:center;font-size:17px;font-weight:700;text-align:left">{{ t.whyH }}<span aria-hidden="true" style="font-size:20px">{{ whyIcon }}</span></button>
+            <sc-if value="{{ why }}" hint-placeholder-val="{{ false }}">
+              <ul style="margin:0;padding:0 0 12px 20px;display:flex;flex-direction:column;gap:8px;font-size:16px;line-height:var(--lh);color:var(--ink-2)">
+                <sc-for list="{{ whyItems }}" as="wi" hint-placeholder-count="3"><li>{{ wi }}</li></sc-for>
+              </ul>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ showCard }}" hint-placeholder-val="{{ false }}">
+      <article id="sign-card" aria-labelledby="card-h" style="margin-top:{{ cardTop }};display:grid;grid-template-columns:{{ cardCols }};gap:clamp(20px,3vw,40px);padding:clamp(16px,2.4vw,28px);border:1.5px solid var(--ink);border-radius:var(--r-l);background:var(--surface)">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="position:relative;aspect-ratio:3/4;border-radius:16px;overflow:hidden;background:repeating-linear-gradient(135deg,var(--stage) 0 2px,var(--stage-2) 2px 14px)">
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;white-space:pre-line;font:500 11px/1.7 var(--mono);color:var(--stage-ink-2)">{{ cardVidLabel }}</div>
+            <span style="position:absolute;left:50%;bottom:12px;transform:translateX(-50%);padding:6px 12px;border-radius:8px;background:rgba(0,0,0,.75);color:#fff;font:600 15px var(--mono)">{{ card.gloss }}</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+            <button onClick="{{ toggleLoop }}" aria-pressed="{{ loop }}" style="min-height:44px;border:1.5px solid var(--ink);border-radius:12px;font-size:13px;font-weight:700;background:{{ loopBg }};color:{{ loopFg }}">{{ t.loop }}</button>
+            <button onClick="{{ toggleSlow }}" aria-pressed="{{ slow }}" style="min-height:44px;border:1.5px solid var(--ink);border-radius:12px;font:700 13px var(--mono);background:{{ slowBg }};color:{{ slowFg }}">0.75×</button>
+            <button onClick="{{ replayCard }}" style="min-height:44px;border:1.5px solid var(--ink);border-radius:12px;font-size:13px;font-weight:700;background:transparent">{{ t.replay }}</button>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:18px;min-width:0">
+          <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap">
+            <span style="font:500 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:5px 10px;border-radius:6px;background:var(--surface-2)">{{ cardTopic }}</span>
+            <sc-if value="{{ cardClosable }}" hint-placeholder-val="{{ false }}"><button onClick="{{ closeCard }}" style="min-height:44px;padding:0 14px;border:1px solid var(--line-strong);border-radius:var(--r-pill);background:transparent;font-weight:600;font-size:14px">{{ t.closeCard }}</button></sc-if>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <h2 id="card-h" lang="am" style="margin:0;font:600 clamp(36px,4vw,56px)/1.3 'Noto Serif Ethiopic',serif">{{ card.am }}</h2>
+            <span style="font:500 clamp(22px,2vw,28px)/1.3 var(--serif);color:var(--ink-2)">{{ card.en }}</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;padding:16px;border-radius:14px;background:var(--surface-2)">
+            <span style="font-size:13px;font-weight:600;color:var(--ink-3)">{{ t.example }}</span>
+            <span style="font-size:17px;line-height:1.6">{{ cardExample }}</span>
+            <button onClick="{{ signExample }}" style="align-self:flex-start;min-height:44px;padding:0 16px;border:0;border-radius:var(--r-pill);background:var(--ink);color:var(--bg);font-weight:700;font-size:14px">{{ t.signExample }}</button>
+          </div>
+          <p style="margin:0;display:flex;gap:8px;font-size:15px;line-height:1.5;color:var(--ink-2)"><span aria-hidden="true" style="color:var(--accent-soft-ink);font-weight:700">✓</span>{{ t.credit }}</p>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:14px;font-weight:700">{{ t.related }}</span>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <sc-for list="{{ related }}" as="r" hint-placeholder-count="3">
+                <button onClick="{{ r.open }}" style="min-height:44px;padding:0 14px;border:1px solid var(--line-strong);border-radius:var(--r-pill);background:transparent;font-size:15px">{{ r.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+          <button onClick="{{ openReport }}" style="align-self:flex-start;min-height:44px;padding:0;border:0;background:transparent;font-size:15px;font-weight:600;text-decoration:underline;text-underline-offset:3px;color:var(--ink-2)">⚑ {{ t.report }}</button>
+        </div>
+      </article>
+    </sc-if>
+
+    <sc-if value="{{ st.nosign }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:24px;align-items:center;padding:clamp(20px,3vw,32px);border:2px dashed var(--line-strong);border-radius:var(--r-l);background:var(--surface)">
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <span style="align-self:flex-start;display:flex;align-items:center;gap:8px;padding:6px 12px;border-radius:var(--r-pill);background:var(--warn-soft);color:var(--warn-ink);font-size:14px;font-weight:700"><span aria-hidden="true" style="font-family:var(--mono)">∅</span>{{ t.noSignBadge }}</span>
+          <h2 style="margin:0;font:500 clamp(28px,3vw,40px)/1.25 var(--serif)">“{{ res.input }}”</h2>
+          <p style="margin:0;font-size:17px;line-height:var(--lh);color:var(--ink-2)">{{ t.noSignB }}</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <button onClick="{{ fingerspell }}" style="min-height:52px;padding:0 20px;border:1.5px solid var(--ink);border-radius:var(--r-pill);background:transparent;font-weight:700">{{ t.fingerspell }}</button>
+          <button onClick="{{ openRequest }}" style="min-height:52px;padding:0 20px;border:0;border-radius:var(--r-pill);background:var(--accent);color:var(--accent-ink);font-weight:700">{{ t.request }}</button>
+        </div>
+      </div>
+    </sc-if>
+  </section>
+
+  <section aria-labelledby="dict-h" style="display:flex;flex-direction:column;gap:20px;border-top:1px solid var(--line);padding-top:clamp(32px,4vw,56px)">
+    <div style="display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <h2 id="dict-h" style="margin:0;font:500 clamp(30px,3.4vw,46px)/1.15 var(--serif);letter-spacing:-.01em">{{ t.dictH }}</h2>
+        <p style="margin:0;font-size:16px;color:var(--ink-2);line-height:1.5">{{ dictCount }}</p>
+      </div>
+      <button onClick="{{ openRequest }}" style="min-height:48px;padding:0 18px;border:1.5px solid var(--ink);border-radius:var(--r-pill);background:transparent;font-weight:700">{{ t.missing }} → {{ t.request }}</button>
+    </div>
+    <div role="tablist" aria-label="{{ t.topics }}" style="display:flex;gap:6px;overflow-x:auto;padding:4px 2px 8px;scrollbar-width:thin">
+      <sc-for list="{{ topics }}" as="tp" hint-placeholder-count="7">
+        <button role="tab" aria-selected="{{ tp.sel }}" onClick="{{ tp.pick }}" style="flex:none;min-height:44px;padding:0 16px;border:1.5px solid {{ tp.border }};border-radius:var(--r-pill);background:{{ tp.bg }};color:{{ tp.fg }};font-size:15px;font-weight:600;white-space:nowrap">{{ tp.label }} <span style="font:500 12px var(--mono);opacity:.8">{{ tp.n }}</span></button>
+      </sc-for>
+    </div>
+    <ul role="tabpanel" style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,168px),1fr));gap:12px">
+      <sc-for list="{{ dict }}" as="d" hint-placeholder-count="8">
+        <li style="display:flex;flex-direction:column;border:1px solid var(--line);border-radius:var(--r-m);background:var(--surface);overflow:hidden">
+          <div aria-hidden="true" style="aspect-ratio:4/3;background:repeating-linear-gradient(135deg,var(--stage) 0 2px,var(--stage-2) 2px 12px);display:flex;align-items:flex-end;justify-content:flex-start;padding:8px"><span style="font:600 11px var(--mono);color:#fff;background:rgba(0,0,0,.6);padding:3px 6px;border-radius:4px">{{ d.gloss }}</span></div>
+          <div style="padding:12px;display:flex;flex-direction:column;gap:2px;flex:1">
+            <span lang="am" style="font:600 19px/1.5 'Noto Sans Ethiopic'">{{ d.am }}</span>
+            <span style="font-size:15px;color:var(--ink-2)">{{ d.en }}</span>
+          </div>
+          <button onClick="{{ d.open }}" aria-label="{{ d.aria }}" style="min-height:44px;border:0;border-top:1px solid var(--line);background:transparent;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px" style-hover="background:var(--surface-2)">▶ {{ t.showSign }}</button>
+        </li>
+      </sc-for>
+    </ul>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--ink-3)">
+      <span style="font-family:var(--mono)">{{ t.demoStates }}</span>
+      <button onClick="{{ demoEmpty }}" style="min-height:36px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:transparent;font-size:13px">{{ t.stEmpty }}</button>
+      <button onClick="{{ demoLoading }}" style="min-height:36px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:transparent;font-size:13px">{{ t.stLoading }}</button>
+      <button onClick="{{ demoError }}" style="min-height:36px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:transparent;font-size:13px">{{ t.stError }}</button>
+    </div>
+  </section>
+
+  <sc-if value="{{ dialog }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeDialog }}" style="position:fixed;inset:0;z-index:90;background:var(--scrim)"></div>
+    <div role="dialog" aria-modal="true" aria-labelledby="req-h" style="position:fixed;z-index:91;left:50%;top:50%;transform:translate(-50%,-50%);width:min(520px,calc(100vw - 24px));max-height:calc(100vh - 24px);overflow:auto;background:var(--surface);border-radius:var(--r-l);box-shadow:var(--shadow);padding:24px;display:flex;flex-direction:column;gap:16px">
+      <h2 id="req-h" style="margin:0;font:500 26px/1.25 var(--serif)">{{ dialogTitle }}</h2>
+      <label for="req-word" style="font-size:15px;font-weight:600">{{ t.reqWord }}</label>
+      <input id="req-word" value="{{ reqWord }}" onInput="{{ onReqWord }}" style="min-height:52px;padding:0 14px;border:1.5px solid var(--line-strong);border-radius:12px;background:var(--bg);font-size:17px">
+      <label for="req-note" style="font-size:15px;font-weight:600">{{ t.reqNote }}</label>
+      <textarea id="req-note" rows="3" style="padding:12px 14px;border:1.5px solid var(--line-strong);border-radius:12px;background:var(--bg);font-size:16px;line-height:1.6;resize:vertical" placeholder="{{ t.reqNotePh }}"></textarea>
+      <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap">
+        <button onClick="{{ closeDialog }}" style="min-height:48px;padding:0 18px;border:1.5px solid var(--ink);border-radius:var(--r-pill);background:transparent;font-weight:700">{{ t.cancel }}</button>
+        <button onClick="{{ sendRequest }}" style="min-height:48px;padding:0 18px;border:0;border-radius:var(--r-pill);background:var(--accent);color:var(--accent-ink);font-weight:700">{{ t.send }}</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div role="status" style="position:fixed;z-index:95;left:50%;bottom:88px;transform:translateX(-50%);max-width:calc(100vw - 32px);display:flex;align-items:center;gap:10px;padding:14px 18px;border-radius:14px;background:var(--ink);color:var(--bg);font-size:15px;font-weight:600;box-shadow:var(--shadow)"><span aria-hidden="true">✓</span>{{ toast }}</div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const T = {
+  en: {
+    ey: 'Ask in sign · EthSL dictionary', h1: 'Sign studio', label: 'Type a word or a sentence in Amharic or English', ph: 'e.g. What is a variable?', btn: 'Sign it', clear: 'Clear',
+    groups: ['Questions', 'Commands', '“Not” sentences', 'Words with no sign yet'],
+    result: 'Result', emptyArt: 'POSTER · interpreter at rest\n(shown before any video loads)',
+    emptyH: 'Type something, and a real interpreter signs it.', emptyB: 'One word opens its dictionary sign. A sentence or question is signed in EthSL word order, from recorded interpreter clips.',
+    loading: 'Finding signs…', errH: 'We couldn’t reach the sign library.', errB: 'Check your connection. Signs you watched before still play offline.', retry: 'Try again',
+    speed: 'Speed', play: 'Play', pause: 'Pause', replay: 'Replay', typedEn: 'You typed · English', typedAm: 'You typed · Amharic',
+    recorded: 'Recorded phrase', automatic: 'Automatic sign (beta)', glossH: 'Signs, in EthSL order', glossHint: 'Tap a sign to open its card',
+    types: { sign: 'Sign', finger: 'Fingerspelled', point: 'Pointing', none: 'No sign yet', pause: 'Pause' },
+    eyebrows: 'Eyebrows raised: question', shake: 'Head shake: not',
+    source: 'Source', srcRec: 'Recorded phrase', srcAuto: 'Automatic', srcNone: 'Not signed', confidence: 'Confidence', wordsSigned: 'Words signed', of: 'of', signedW: 'words signed',
+    twinH: 'Same signs in Amharic', twinHEn: 'Same signs in English', askAm: 'Ask in Amharic', askEn: 'Ask in English',
+    lessonH: 'Where the lesson explains this', playPart: 'Play this part', feedbackQ: 'Was this clear?', understood: 'Understood', notClear: 'Not clear',
+    thanksYes: 'Thanks. This helps us keep good signs.', thanksNo: 'Thanks. Sent to Deaf review.',
+    whyH: 'Why this sign', whyRec: 'An interpreter recorded this whole sentence, so you see one natural recording, not joined clips.',
+    whyOrder: 'EthSL puts question words like WHAT at the end of the sentence.', whyNot: 'NOT comes after the verb, with a head shake.', whyAuto: 'Each word was matched to a reviewed dictionary sign and joined in EthSL order.', whyNone: 'Words with no sign yet stay in the captions and are sent to our recording queue.',
+    loop: 'Loop', example: 'Example sentence', signExample: 'Sign this example', credit: 'Signed by [interpreter name] · reviewed by Deaf co-designer', related: 'Related words', report: 'Report a problem', closeCard: 'Close card',
+    noSignBadge: 'No sign yet', noSignB: 'This word is not in our sign library yet. You can see it fingerspelled now, and request a recorded sign.', fingerspell: 'Fingerspell it', request: 'Request a sign',
+    dictH: 'EthSL dictionary', words: 'signs, reviewed with Deaf people', topics: 'Topics', all: 'All', showSign: 'Show sign', missing: 'Missing a sign?',
+    demoStates: 'Preview states:', stEmpty: 'Empty', stLoading: 'Loading', stError: 'Error',
+    reqTitle: 'Request a sign', reportTitle: 'Report a problem', reqWord: 'Word or phrase', reqNote: 'Where did you see it? (optional)', reqNotePh: 'e.g. Python lesson 2', cancel: 'Cancel', send: 'Send',
+    sentReq: 'Request sent to the recording queue.', sentReport: 'Report sent to Deaf review.',
+  },
+  am: {
+    ey: 'በምልክት ይጠይቁ · የምልክት ቋንቋ መዝገበ ቃላት', h1: 'የምልክት ስቱዲዮ', label: 'በአማርኛ ወይም በእንግሊዝኛ ቃል ወይም ዓረፍተ ነገር ይጻፉ', ph: 'ለምሳሌ፦ ተለዋዋጭ ምንድን ነው?', btn: 'በምልክት', clear: 'አጽዳ',
+    groups: ['ጥያቄዎች', 'ትዕዛዞች', '«አይ» ያላቸው ዓረፍተ ነገሮች', 'ገና ምልክት የሌላቸው ቃላት'],
+    result: 'ውጤት', emptyArt: 'POSTER · interpreter at rest',
+    emptyH: 'ይጻፉ፣ እውነተኛ አስተርጓሚ በምልክት ይተረጉመዋል።', emptyB: 'አንድ ቃል የመዝገበ ቃላት ምልክቱን ይከፍታል። ዓረፍተ ነገር ወይም ጥያቄ ከተቀረጹ የአስተርጓሚ ቅንጥቦች፣ በምልክት ቋንቋ ቅደም ተከተል ይተረጎማል።',
+    loading: 'ምልክቶች እየተፈለጉ ነው…', errH: 'የምልክት ቤተ መጻሕፍቱን ማግኘት አልቻልንም።', errB: 'ግንኙነትዎን ያረጋግጡ። ቀደም ብለው ያዩዋቸው ምልክቶች ያለ ኢንተርኔት ይጫወታሉ።', retry: 'እንደገና ሞክር',
+    speed: 'ፍጥነት', play: 'አጫውት', pause: 'ቆም', replay: 'እንደገና', typedEn: 'የጻፉት · እንግሊዝኛ', typedAm: 'የጻፉት · አማርኛ',
+    recorded: 'የተቀረጸ ሐረግ', automatic: 'ራስ-ሰር ምልክት (ቤታ)', glossH: 'ምልክቶች፣ በምልክት ቋንቋ ቅደም ተከተል', glossHint: 'ካርዱን ለመክፈት ምልክቱን ይንኩ',
+    types: { sign: 'ምልክት', finger: 'በጣት ፊደል', point: 'ማመልከት', none: 'ገና ምልክት የለውም', pause: 'ቆም' },
+    eyebrows: 'ቅንድብ ከፍ፦ ጥያቄ', shake: 'ራስ መነቅነቅ፦ አይ',
+    source: 'ምንጭ', srcRec: 'የተቀረጸ ሐረግ', srcAuto: 'ራስ-ሰር', srcNone: 'አልተተረጎመም', confidence: 'እርግጠኝነት', wordsSigned: 'የተተረጎሙ ቃላት', of: 'ከ', signedW: 'ቃላት ተተርጉመዋል',
+    twinH: 'በአማርኛ ተመሳሳይ ምልክቶች', twinHEn: 'በእንግሊዝኛ ተመሳሳይ ምልክቶች', askAm: 'በአማርኛ ጠይቅ', askEn: 'በእንግሊዝኛ ጠይቅ',
+    lessonH: 'ትምህርቱ ይህንን የሚያብራራበት', playPart: 'ይህንን ክፍል አጫውት', feedbackQ: 'ግልጽ ነበር?', understood: 'ገባኝ', notClear: 'ግልጽ አይደለም',
+    thanksYes: 'እናመሰግናለን። ጥሩ ምልክቶችን እንድንጠብቅ ይረዳናል።', thanksNo: 'እናመሰግናለን። ለግምገማ ተልኳል።',
+    whyH: 'ይህ ምልክት ለምን', whyRec: 'አስተርጓሚው ሙሉውን ዓረፍተ ነገር ቀርጾታል፤ ስለዚህ የተገናኙ ቅንጥቦች ሳይሆን አንድ ተፈጥሯዊ ቅጂ ያያሉ።',
+    whyOrder: 'የምልክት ቋንቋ እንደ «ምን» ያሉ የጥያቄ ቃላትን በዓረፍተ ነገሩ መጨረሻ ያስቀምጣል።', whyNot: '«አይ» ከግሱ በኋላ፣ ከራስ መነቅነቅ ጋር ይመጣል።', whyAuto: 'እያንዳንዱ ቃል ከተገመገመ የመዝገበ ቃላት ምልክት ጋር ተዛምዶ በምልክት ቋንቋ ቅደም ተከተል ተገናኝቷል።', whyNone: 'ምልክት የሌላቸው ቃላት በጽሑፍ ትርጉሙ ውስጥ ይቆያሉ፤ ወደ መቅረጫ ወረፋችንም ይላካሉ።',
+    loop: 'ድገም', example: 'ምሳሌ ዓረፍተ ነገር', signExample: 'ይህንን ምሳሌ በምልክት', credit: 'በ[የአስተርጓሚ ስም] የተሰራ · በመስማት የተሳነው ተባባሪ ዲዛይነር የተገመገመ', related: 'ተዛማጅ ቃላት', report: 'ችግር ሪፖርት አድርግ', closeCard: 'ካርዱን ዝጋ',
+    noSignBadge: 'ገና ምልክት የለውም', noSignB: 'ይህ ቃል ገና በምልክት ቤተ መጻሕፍታችን ውስጥ የለም። አሁን በጣት ፊደል ማየት እና የተቀረጸ ምልክት መጠየቅ ይችላሉ።', fingerspell: 'በጣት ፊደል አሳይ', request: 'ምልክት ይጠይቁ',
+    dictH: 'የምልክት ቋንቋ መዝገበ ቃላት', words: 'ምልክቶች፣ ከመስማት የተሳናቸው ጋር የተገመገሙ', topics: 'ርዕሶች', all: 'ሁሉም', showSign: 'ምልክቱን አሳይ', missing: 'ምልክት ጎደለ?',
+    demoStates: 'ሁኔታዎችን ይመልከቱ፦', stEmpty: 'ባዶ', stLoading: 'በመጫን ላይ', stError: 'ስህተት',
+    reqTitle: 'ምልክት ይጠይቁ', reportTitle: 'ችግር ሪፖርት አድርግ', reqWord: 'ቃል ወይም ሐረግ', reqNote: 'የት አዩት? (አማራጭ)', reqNotePh: 'ለምሳሌ፦ የፓይተን ትምህርት 2', cancel: 'ተው', send: 'ላክ',
+    sentReq: 'ጥያቄዎ ወደ መቅረጫ ወረፋ ተልኳል።', sentReport: 'ሪፖርትዎ ለግምገማ ተልኳል።',
+  },
+};
+const EX = [
+  ['What is a variable?', 'ተለዋዋጭ ምንድን ነው?', 'How do I print a value?'],
+  ['ኮዱ ካልሰራ፣ ስህተቱን አረጋግጡ።', 'Check the error.', 'Save your code.'],
+  ['If the code does not work, check the error.', 'Names cannot start with a number.'],
+  ['Indentation', 'Recursion'],
+];
+const TWINS = { 'what is a variable': 'ተለዋዋጭ ምንድን ነው?', 'ተለዋዋጭ ምንድን ነው': 'What is a variable?', 'if the code does not work check the error': 'ኮዱ ካልሰራ፣ ስህተቱን አረጋግጡ።', 'ኮዱ ካልሰራ ስህተቱን አረጋግጡ': 'If the code does not work, check the error.', 'names cannot start with a number': 'ስሞች በቁጥር መጀመር አይችሉም።', 'ስሞች በቁጥር መጀመር አይችሉም': 'Names cannot start with a number.' };
+const fmt = s => Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
+
+class Component extends DCLogic {
+  state = { input: '', res: null, mode: 'empty', idx: -1, playing: false, speed: 1, card: null, loop: true, slow: false, fb: null, why: false, topic: 'all', dialog: null, reqWord: '', toast: '' };
+  componentDidMount() { if (this.props.query) this.run(this.props.query); }
+  componentDidUpdate(pp) { if (pp.queryKey !== this.props.queryKey && this.props.query) this.run(this.props.query); }
+  componentWillUnmount() { clearTimeout(this._t); clearTimeout(this._toast); }
+  run(q) {
+    clearTimeout(this._t);
+    this.setState({ input: q, mode: 'loading', card: null, fb: null, why: false, idx: -1, playing: false });
+    this._t = setTimeout(() => {
+      const r = window.LH && window.LH.translate(q);
+      if (!r) { this.setState({ mode: 'empty' }); return; }
+      if (r.single) {
+        if (r.entry) this.setState({ res: r, mode: 'word', card: r.entry });
+        else this.setState({ res: r, mode: 'nosign' });
+      } else { this.setState({ res: r, mode: 'sentence', idx: 0, playing: true }, () => this.tick()); }
+    }, 650);
+  }
+  tick() {
+    clearTimeout(this._t);
+    this._t = setTimeout(() => {
+      const s = this.state; if (!s.playing || !s.res || !s.res.chips) return;
+      if (s.idx >= s.res.chips.length - 1) { this.setState({ playing: false, idx: s.res.chips.length }); return; }
+      this.setState({ idx: s.idx + 1 }, () => this.tick());
+    }, 900 / this.state.speed);
+  }
+  toastMsg(m) { clearTimeout(this._toast); this.setState({ toast: m }); this._toast = setTimeout(() => this.setState({ toast: '' }), 3200); }
+  openCard(entry) { this.setState({ card: entry }); setTimeout(() => { const el = document.getElementById('sign-card'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 100, behavior: 'smooth' }); }, 60); }
+
+  renderVals() {
+    const lang = this.props.lang || 'en', t = T[lang], s = this.state, w = this.props.w || 1440, LH = window.LH;
+    const res = s.res || { input: '', chips: [] };
+    const chipsRaw = res.chips || [];
+    const cur = chipsRaw[s.idx];
+    const typeStyle = {
+      sign: ['var(--accent)', 'var(--accent-ink)', '0', '●'], finger: ['var(--surface)', 'var(--ink)', '2px dashed var(--ink)', 'ABC'],
+      point: ['var(--surface)', 'var(--ink)', '2px solid var(--ink)', '→'], none: ['var(--warn-soft)', 'var(--warn-ink)', '2px dashed var(--warn-ink)', '∅'], pause: ['transparent', 'var(--ink-2)', '1px solid var(--line-strong)', '‖'],
+    };
+    const chips = chipsRaw.map((c, i) => {
+      const [bg, fg, border, icon] = typeStyle[c.type] || typeStyle.sign;
+      const entry = c.id && LH ? LH.byId[c.id] : null;
+      return { label: c.label, icon, typeLabel: t.types[c.type], bg, fg, border, ring: i === s.idx ? '0 0 0 3px var(--bg),0 0 0 6px var(--ink)' : 'none',
+        disabled: !entry && c.type !== 'none', cursor: entry || c.type === 'none' ? 'pointer' : 'default',
+        aria: t.types[c.type] + ': ' + c.label + (i === s.idx ? ' (now)' : ''),
+        open: () => { if (entry) this.openCard(entry); else if (c.type === 'none') this.setState({ dialog: 'req', reqWord: c.word || c.label }); } };
+    });
+    const n = LH ? LH.norm(res.input) : '';
+    const twinText = TWINS[n];
+    const lessonLine = res.line != null && LH ? LH.lesson.lines[res.line] : null;
+    const card = s.card;
+    const topicName = id => { const tp = LH && LH.topics.find(x => x.id === id); return tp ? tp[lang] : id; };
+    const lex = LH ? LH.lexicon : [];
+    const dictList = lex.filter(e => s.topic === 'all' || e.topic === s.topic);
+    const whyItems = [];
+    if (res.source === 'recorded') whyItems.push(t.whyRec);
+    else whyItems.push(t.whyAuto);
+    if (res.face === 'eyebrows') whyItems.push(t.whyOrder);
+    if (res.face === 'shake') whyItems.push(t.whyNot);
+    if (chipsRaw.some(c => c.type === 'none')) whyItems.push(t.whyNone);
+    const twoCol = w >= 900;
+
+    return {
+      t, input: s.input, hasInput: !!s.input, onInput: e => this.setState({ input: e.target.value }),
+      submit: e => { e.preventDefault(); if (s.input.trim()) this.run(s.input.trim()); },
+      clear: () => this.setState({ input: '', mode: 'empty', res: null, card: null }),
+      exGroups: t.groups.map((title, gi) => ({ title, items: EX[gi].map(label => ({ label, go: () => this.run(label) })) })),
+      st: { empty: s.mode === 'empty', loading: s.mode === 'loading', error: s.mode === 'error', sentence: s.mode === 'sentence', nosign: s.mode === 'nosign' },
+      retry: () => s.input ? this.run(s.input) : this.setState({ mode: 'empty' }),
+      resCols: twoCol ? 'minmax(260px,380px) minmax(0,1fr)' : 'minmax(0,1fr)',
+      res, chips,
+      sourceBadge: res.source === 'recorded' ? t.recorded : t.automatic,
+      curGloss: cur ? cur.label : '',
+      inputLangLabel: res.isAm ? t.typedAm : t.typedEn,
+      playBtn: s.playing ? t.pause : (s.idx >= chipsRaw.length ? t.replay : t.play),
+      replay: () => { if (s.playing) { clearTimeout(this._t); this.setState({ playing: false }); } else this.setState({ playing: true, idx: s.idx >= chipsRaw.length || s.idx < 0 ? 0 : s.idx }, () => this.tick()); },
+      speeds: [1, 0.75].map(v => ({ label: v + '×', sel: s.speed === v, bg: s.speed === v ? 'var(--stage-ink)' : 'transparent', fg: s.speed === v ? 'var(--stage)' : 'var(--stage-ink)', pick: () => this.setState({ speed: v }) })),
+      face: res.face === 'eyebrows' ? t.eyebrows : res.face === 'shake' ? t.shake : '', faceIcon: res.face === 'shake' ? '↔' : '◠',
+      statCards: [
+        { k: t.source, v: res.source === 'recorded' ? t.srcRec : res.source === 'none' ? t.srcNone : t.srcAuto },
+        { k: t.confidence, v: (res.confidence || 0) + '%' },
+        { k: t.wordsSigned, v: lang === 'am' ? (res.total + ' ' + t.of + ' ' + res.signed) : (res.signed + ' ' + t.of + ' ' + res.total + ' ' + t.signedW) },
+      ],
+      twin: twinText ? { text: twinText, btn: /[\u1200-\u137F]/.test(twinText) ? t.askAm : t.askEn, go: () => this.run(twinText) } : null,
+      lessonLine: lessonLine ? { time: fmt(lessonLine.s), text: lang === 'am' ? lessonLine.am : lessonLine.en } : null,
+      goLesson: () => this.props.go && this.props.go('lesson'),
+      fbIsYes: s.fb === 'yes', fbIsNo: s.fb === 'no',
+      fbYesBg: s.fb === 'yes' ? 'var(--ink)' : 'transparent', fbYesFg: s.fb === 'yes' ? 'var(--bg)' : 'var(--ink)',
+      fbNoBg: s.fb === 'no' ? 'var(--ink)' : 'transparent', fbNoFg: s.fb === 'no' ? 'var(--bg)' : 'var(--ink)',
+      fbYes: () => this.setState({ fb: 'yes' }), fbNo: () => this.setState({ fb: 'no' }), fbMsg: s.fb === 'yes' ? t.thanksYes : s.fb === 'no' ? t.thanksNo : '',
+      why: s.why, whyIcon: s.why ? '−' : '+', toggleWhy: () => this.setState({ why: !s.why }), whyItems,
+      showCard: !!card && (s.mode === 'word' || s.mode === 'sentence'), card: card || {},
+      cardTop: s.mode === 'sentence' ? '32px' : '0', cardClosable: s.mode === 'sentence', closeCard: () => this.setState({ card: null }),
+      cardCols: w >= 720 ? 'minmax(200px,300px) minmax(0,1fr)' : 'minmax(0,1fr)',
+      cardVidLabel: 'SIGN VIDEO · 3:4\n' + (s.loop ? 'looping' : 'once') + ' · ' + (s.slow ? '0.75×' : '1×'),
+      cardTopic: card ? topicName(card.topic) : '', cardExample: card ? card.example[lang] : '',
+      loop: s.loop, slow: s.slow, toggleLoop: () => this.setState({ loop: !s.loop }), toggleSlow: () => this.setState({ slow: !s.slow }),
+      loopBg: s.loop ? 'var(--ink)' : 'transparent', loopFg: s.loop ? 'var(--bg)' : 'var(--ink)', slowBg: s.slow ? 'var(--ink)' : 'transparent', slowFg: s.slow ? 'var(--bg)' : 'var(--ink)',
+      replayCard: () => this.toastMsg(t.replay + ' · ' + (card ? card.gloss : '')),
+      signExample: () => card && this.run(card.example[lang]),
+      related: card && LH ? card.related.map(id => LH.byId[id]).filter(Boolean).map(e => ({ label: lang === 'am' ? e.am : e.en, open: () => this.setState({ card: e }) })) : [],
+      openReport: () => this.setState({ dialog: 'report', reqWord: card ? card.en : '' }),
+      fingerspell: () => this.setState({ mode: 'sentence', res: { input: res.input, chips: [{ type: 'finger', label: res.input.toUpperCase().split('').join('-') }], source: 'automatic', confidence: 60, signed: 1, total: 1 }, idx: 0, playing: true }, () => this.tick()),
+      openRequest: () => this.setState({ dialog: 'req', reqWord: s.mode === 'nosign' ? res.input : '' }),
+      dictCount: lex.length + ' ' + t.words,
+      topics: [{ id: 'all', en: t.all, am: t.all }].concat(LH ? LH.topics : []).map(tp => {
+        const sel = s.topic === tp.id;
+        return { label: tp[lang] || tp.en, sel, n: tp.id === 'all' ? lex.length : lex.filter(e => e.topic === tp.id).length, bg: sel ? 'var(--ink)' : 'transparent', fg: sel ? 'var(--bg)' : 'var(--ink)', border: sel ? 'var(--ink)' : 'var(--line-strong)', pick: () => this.setState({ topic: tp.id }) };
+      }),
+      dict: dictList.map(e => ({ am: e.am, en: e.en, gloss: e.gloss, aria: t.showSign + ': ' + e.en, open: () => { this.setState({ input: lang === 'am' ? e.am : e.en, mode: 'word', res: { input: e.en, single: true, entry: e }, card: e }); window.scrollTo({ top: 0, behavior: 'smooth' }); } })),
+      demoEmpty: () => this.setState({ mode: 'empty', card: null }), demoLoading: () => this.setState({ mode: 'loading', card: null }), demoError: () => this.setState({ mode: 'error', card: null }),
+      dialog: !!s.dialog, dialogTitle: s.dialog === 'report' ? t.reportTitle : t.reqTitle, reqWord: s.reqWord, onReqWord: e => this.setState({ reqWord: e.target.value }),
+      closeDialog: () => this.setState({ dialog: null }),
+      sendRequest: () => { const m = s.dialog === 'report' ? t.sentReport : t.sentReq; this.setState({ dialog: null }); this.toastMsg(m); },
+      toast: s.toast,
+    };
+  }
+}
+</script>
+</body>
+</html>

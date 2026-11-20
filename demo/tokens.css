@@ -1,45 +1,255 @@
-/* NFR-A11Y-01: App v2 colour, type, space, radius, and focus tokens. */
-@font-face{font-family:"Bricolage Grotesque";font-weight:700;font-display:swap;src:url("fonts/bricolage-grotesque-700.woff2") format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+2000-206F}
-@font-face{font-family:"Bricolage Grotesque";font-weight:800;font-display:swap;src:url("fonts/bricolage-grotesque-800.woff2") format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+2000-206F}
-@font-face{font-family:"Atkinson Hyperlegible";font-weight:400;font-display:swap;src:url("fonts/atkinson-hyperlegible-400.woff2") format("woff2")}
-@font-face{font-family:"Atkinson Hyperlegible";font-weight:700;font-display:swap;src:url("fonts/atkinson-hyperlegible-700.woff2") format("woff2")}
-@font-face{font-family:"Noto Sans Ethiopic";font-weight:400;font-display:swap;src:url("fonts/noto-sans-ethiopic-400.woff2") format("woff2")}
-@font-face{font-family:"Noto Sans Ethiopic";font-weight:600;font-display:swap;src:url("fonts/noto-sans-ethiopic-600.woff2") format("woff2")}
-@font-face{font-family:"Noto Sans Ethiopic";font-weight:700;font-display:swap;src:url("fonts/noto-sans-ethiopic-700.woff2") format("woff2")}
-@font-face{font-family:"JetBrains Mono";font-weight:400;font-display:swap;src:url("fonts/jetbrains-mono-400.woff2") format("woff2")}
-@font-face{font-family:"JetBrains Mono";font-weight:600;font-display:swap;src:url("fonts/jetbrains-mono-600.woff2") format("woff2")}
-:root,[data-theme="dark"]{
-  --lh-bg:#0F0C0A;--lh-bg2:#161210;--lh-sf:#1D1815;--lh-sf2:#27201B;--lh-tx:#F7F1E8;--lh-mu:#D2C7B8;--lh-bd:#8E8274;--lh-ln:#3A312A;
-  --lh-pr:#F4B740;--lh-op:#1A1206;--lh-prh:#FFCB66;--lh-pr2:#FF8F66;--lh-prs:#3A2A12;--lh-prt:#FFD27A;--lh-lk:#FFD27A;
-  --lh-ok:#7EE0A6;--lh-okb:#132A1C;--lh-wn:#F7C66B;--lh-wnb:#30230E;--lh-er:#FF9AA8;--lh-erb:#3A1820;--lh-fc:#7FD6FF;
-  --lh-glow:rgba(244,183,64,.16);--lh-stage:#14110F;--lh-scrim:rgba(0,0,0,.72);--lh-sh:0 20px 60px rgba(0,0,0,.45);--lh-glass:rgba(29,24,21,.92)
+/* NFR-A11Y-01 NFR-PERF-01: v3 design-system tokens. Self-hosted fonts only — no CDN. */
+
+/* ── Instrument Sans ──────────────────────────────────────────── */
+@font-face{font-family:"Instrument Sans";font-weight:400;font-display:swap;
+  src:url("fonts/instrument-sans-400.woff2") format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+2000-206F}
+@font-face{font-family:"Instrument Sans";font-weight:600;font-display:swap;
+  src:url("fonts/instrument-sans-600.woff2") format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+2000-206F}
+@font-face{font-family:"Instrument Sans";font-weight:700;font-display:swap;
+  src:url("fonts/instrument-sans-700.woff2") format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+2000-206F}
+
+/* ── Literata ─────────────────────────────────────────────────── */
+@font-face{font-family:"Literata";font-weight:400;font-display:swap;
+  src:url("fonts/literata-400.woff2") format("woff2")}
+@font-face{font-family:"Literata";font-weight:700;font-display:swap;
+  src:url("fonts/literata-700.woff2") format("woff2")}
+
+/* ── Noto Sans Ethiopic ───────────────────────────────────────── */
+@font-face{font-family:"Noto Sans Ethiopic";font-weight:400;font-display:swap;
+  src:url("fonts/noto-sans-ethiopic-400.woff2") format("woff2")}
+@font-face{font-family:"Noto Sans Ethiopic";font-weight:600;font-display:swap;
+  src:url("fonts/noto-sans-ethiopic-600.woff2") format("woff2")}
+@font-face{font-family:"Noto Sans Ethiopic";font-weight:700;font-display:swap;
+  src:url("fonts/noto-sans-ethiopic-700.woff2") format("woff2")}
+
+/* ── Noto Serif Ethiopic ──────────────────────────────────────── */
+@font-face{font-family:"Noto Serif Ethiopic";font-weight:400;font-display:swap;
+  src:url("fonts/noto-serif-ethiopic-400.woff2") format("woff2")}
+@font-face{font-family:"Noto Serif Ethiopic";font-weight:700;font-display:swap;
+  src:url("fonts/noto-serif-ethiopic-700.woff2") format("woff2")}
+
+/* ── JetBrains Mono ───────────────────────────────────────────── */
+@font-face{font-family:"JetBrains Mono";font-weight:400;font-display:swap;
+  src:url("fonts/jetbrains-mono-400.woff2") format("woff2")}
+@font-face{font-family:"JetBrains Mono";font-weight:600;font-display:swap;
+  src:url("fonts/jetbrains-mono-600.woff2") format("woff2")}
+
+/* ── Legacy (compat — module CSS still references these) ─────── */
+@font-face{font-family:"Bricolage Grotesque";font-weight:700;font-display:swap;
+  src:url("fonts/bricolage-grotesque-700.woff2") format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+2000-206F}
+@font-face{font-family:"Bricolage Grotesque";font-weight:800;font-display:swap;
+  src:url("fonts/bricolage-grotesque-800.woff2") format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+2000-206F}
+@font-face{font-family:"Atkinson Hyperlegible";font-weight:400;font-display:swap;
+  src:url("fonts/atkinson-hyperlegible-400.woff2") format("woff2")}
+@font-face{font-family:"Atkinson Hyperlegible";font-weight:700;font-display:swap;
+  src:url("fonts/atkinson-hyperlegible-700.woff2") format("woff2")}
+
+/* ════════════════════════════════════════════════════════════════
+   v3 tokens — light (default)
+   Source: LE HULUM.dc.html :root
+   ════════════════════════════════════════════════════════════════ */
+:root {
+  --bg:#f6f7f9;--surface:#ffffff;--surface-2:#eef1f5;--surface-3:#e2e7ee;
+  --ink:#0e1525;--ink-2:#3a4356;--ink-3:#5a6377;--line:#e1e5ec;--line-strong:#8790a3;
+  --accent:#2747d6;--accent-ink:#ffffff;--accent-soft:#e7ecfd;--accent-soft-ink:#1c36a6;
+  --gold:#f2b544;--warn-soft:#fdf1d9;--warn-ink:#7a4d00;--err-soft:#fde7e4;--err-ink:#a3261a;
+  --stage:#0e1525;--stage-2:#182136;--stage-ink:#f3f5fb;--stage-ink-2:#b8c2dc;
+  --hl:#dbe4ff;--hl-ink:#0e1525;--focus:#2747d6;--scrim:rgba(8,13,30,.5);
+  --hero:#0b1430;--hero-2:#121d40;--hero-ink:#f3f5fb;--hero-ink-2:#b8c2dc;
+  --hero-accent:#8ea9ff;--hero-line:rgba(255,255,255,.14);
+  --shadow:0 1px 0 rgba(14,21,37,.04),0 12px 32px rgba(14,21,37,.10);
+  /* typography stacks */
+  --sans:'Instrument Sans','Noto Sans Ethiopic',system-ui,sans-serif;
+  --serif:'Literata','Noto Serif Ethiopic',Georgia,serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  /* rhythm */
+  --lh:1.55;--lh-tight:1.08;
+  /* radius scale */
+  --r-s:10px;--r-m:16px;--r-l:24px;--r-pill:999px;
 }
-[data-theme="light"]{
-  --lh-bg:#FBF7F1;--lh-bg2:#F3ECE2;--lh-sf:#FFFFFF;--lh-sf2:#F1E9DD;--lh-tx:#1A140F;--lh-mu:#574C41;--lh-bd:#85796C;--lh-ln:#E3D9CB;
-  --lh-pr:#8A3A0E;--lh-op:#FFFFFF;--lh-prh:#6E2E0B;--lh-pr2:#B23A12;--lh-prs:#FBE8D8;--lh-prt:#7A2F08;--lh-lk:#8A3A0E;
-  --lh-ok:#166534;--lh-okb:#E4F4EA;--lh-wn:#7A4A00;--lh-wnb:#FBEFD9;--lh-er:#A1122F;--lh-erb:#FBE4E8;--lh-fc:#1D4ED8;
-  --lh-glow:rgba(178,58,18,.12);--lh-stage:#1A140F;--lh-scrim:rgba(26,20,15,.55);--lh-sh:0 20px 50px rgba(26,20,15,.12);--lh-glass:rgba(255,255,255,.94)
+
+/* ── dark ─────────────────────────────────────────────────────── */
+html[data-theme=dark] {
+  --bg:#0a0e18;--surface:#111726;--surface-2:#192032;--surface-3:#222a3f;
+  --ink:#eef1f8;--ink-2:#c9cfdd;--ink-3:#9ba4b9;--line:#252d40;--line-strong:#5e6781;
+  --accent:#8ea9ff;--accent-ink:#0a0e18;--accent-soft:#1b2546;--accent-soft-ink:#b6c7ff;
+  --gold:#f2b544;--warn-soft:#3a2e14;--warn-ink:#f6d38d;--err-soft:#3d1f1c;--err-ink:#f7b0a5;
+  --stage:#070a12;--stage-2:#121828;--hl:#2b3b72;--hl-ink:#ffffff;--focus:#8ea9ff;
+  --scrim:rgba(0,0,0,.6);
+  --hero:#0d1733;--hero-2:#142045;
+  --shadow:0 1px 0 rgba(0,0,0,.3),0 16px 40px rgba(0,0,0,.45);
 }
-[data-theme="contrast"]{
-  --lh-bg:#000;--lh-bg2:#000;--lh-sf:#000;--lh-sf2:#0A0A0A;--lh-tx:#fff;--lh-mu:#fff;--lh-bd:#fff;--lh-ln:#fff;
-  --lh-pr:#FFE14D;--lh-op:#000;--lh-prh:#fff;--lh-pr2:#FFE14D;--lh-prs:#000;--lh-prt:#FFE14D;--lh-lk:#FFE14D;
-  --lh-ok:#7CFFB2;--lh-okb:#000;--lh-wn:#FFE14D;--lh-wnb:#000;--lh-er:#FF9AAE;--lh-erb:#000;--lh-fc:#00E5FF;
-  --lh-glow:transparent;--lh-stage:#000;--lh-scrim:rgba(0,0,0,.85);--lh-sh:none;--lh-glass:#000
+
+/* ── high-contrast ────────────────────────────────────────────── */
+html[data-theme=hc],
+html[data-theme=contrast] {
+  --bg:#000;--surface:#000;--surface-2:#0d0d0d;--surface-3:#1a1a1a;
+  --ink:#fff;--ink-2:#fff;--ink-3:#f0f0f0;--line:#fff;--line-strong:#fff;
+  --accent:#ffe14d;--accent-ink:#000;--accent-soft:#000;--accent-soft-ink:#ffe14d;
+  --gold:#ffe14d;--warn-soft:#000;--warn-ink:#ffe14d;--err-soft:#000;--err-ink:#ff9d8a;
+  --stage:#000;--stage-2:#111;--stage-ink:#fff;--stage-ink-2:#fff;
+  --hl:#ffe14d;--hl-ink:#000;--focus:#00e5ff;--scrim:rgba(0,0,0,.85);
+  --hero:#000;--hero-2:#000;--hero-ink:#fff;--hero-ink-2:#fff;
+  --hero-accent:#ffe14d;--hero-line:#fff;
+  --shadow:0 0 0 2px #fff;
 }
-:root{
-  --lh-font-display:"Bricolage Grotesque","Atkinson Hyperlegible",system-ui,sans-serif;
-  --lh-font-latin:"Atkinson Hyperlegible",system-ui,sans-serif;
-  --lh-font-ethiopic:"Noto Sans Ethiopic","Atkinson Hyperlegible",sans-serif;
-  --lh-font-code:"JetBrains Mono",ui-monospace,monospace;
-  --lh-space-1:4px;--lh-space-2:8px;--lh-space-3:12px;--lh-space-4:16px;--lh-space-5:24px;--lh-space-6:32px;--lh-space-8:48px;--lh-space-10:64px;--lh-space-13:104px;
-  --lh-radius-sm:12px;--lh-radius-md:20px;--lh-radius-lg:28px;--lh-radius-pill:999px;
-  --lh-target:44px;--lh-focus:var(--lh-fc);
-  --lh-text:var(--lh-tx);--lh-text-muted:var(--lh-mu);--lh-surface:var(--lh-sf);--lh-surface-2:var(--lh-sf2);
-  --lh-border:var(--lh-bd);--lh-line:var(--lh-ln);--lh-accent:var(--lh-pr);--lh-accent-hover:var(--lh-prh);--lh-on-accent:var(--lh-op);
-  --lh-highlight:var(--lh-prs);--lh-on-highlight:var(--lh-tx);--lh-code-bg:var(--lh-sf2);--lh-code-text:var(--lh-tx);
-  --lh-player-bg:var(--lh-stage);--lh-player-text:#F7F1E8;--lh-player-accent:var(--lh-pr);--lh-player-focus:var(--lh-fc);
-  --lh-player-track:#3A312A;--lh-player-border:#8E8274;
-  --lh-shadow-dialog:var(--lh-sh);
+
+/* ── Amharic rhythm overrides ─────────────────────────────────── */
+html[lang=am] {
+  --lh:1.8;
+  --lh-tight:1.32;
 }
-[data-theme="light"]{--lh-player-text:#F7F1E8}
-[data-theme="contrast"]{--lh-player-bg:#000;--lh-player-text:#fff;--lh-player-accent:#FFE14D;--lh-player-focus:#00E5FF;--lh-player-track:#000;--lh-player-border:#fff}
+
+/* ════════════════════════════════════════════════════════════════
+   --lh-* aliases — keep existing module/demo CSS working.
+   Each alias maps to the v3 flat token; dark/hc are inherited
+   automatically because the flat tokens change per-theme.
+   ════════════════════════════════════════════════════════════════ */
+:root {
+  /* backgrounds */
+  --lh-bg:var(--bg);
+  --lh-bg2:var(--surface-2);
+  --lh-sf:var(--surface);
+  --lh-sf2:var(--surface-2);
+  /* text */
+  --lh-tx:var(--ink);
+  --lh-mu:var(--ink-2);
+  /* borders */
+  --lh-bd:var(--line-strong);
+  --lh-ln:var(--line);
+  /* accent (old amber → new accent; kept functional) */
+  --lh-pr:var(--accent);
+  --lh-op:var(--accent-ink);
+  --lh-prh:var(--accent);
+  --lh-pr2:var(--accent);
+  --lh-prs:var(--accent-soft);
+  --lh-prt:var(--accent-soft-ink);
+  --lh-lk:var(--accent-soft-ink);
+  /* semantic */
+  --lh-ok:#166534;
+  --lh-okb:#e4f4ea;
+  --lh-wn:var(--warn-ink);
+  --lh-wnb:var(--warn-soft);
+  --lh-er:var(--err-ink);
+  --lh-erb:var(--err-soft);
+  /* focus / special */
+  --lh-fc:var(--focus);
+  --lh-stage:var(--stage);
+  --lh-scrim:var(--scrim);
+  --lh-sh:var(--shadow);
+  --lh-glass:color-mix(in oklab,var(--surface) 86%,transparent);
+  /* font families */
+  --lh-font-display:var(--sans);
+  --lh-font-latin:var(--sans);
+  --lh-font-ethiopic:"Noto Sans Ethiopic","Instrument Sans",system-ui,sans-serif;
+  --lh-font-code:var(--mono);
+  /* spacing (kept from v2) */
+  --lh-space-1:4px;--lh-space-2:8px;--lh-space-3:12px;--lh-space-4:16px;
+  --lh-space-5:24px;--lh-space-6:32px;--lh-space-8:48px;--lh-space-10:64px;
+  --lh-space-13:104px;
+  /* radii (v2 names → v3 values) */
+  --lh-radius-sm:var(--r-s);
+  --lh-radius-md:var(--r-m);
+  --lh-radius-lg:var(--r-l);
+  --lh-radius-pill:var(--r-pill);
+  /* targets & focus */
+  --lh-target:44px;
+  --lh-focus:var(--focus);
+  /* semantic surface aliases */
+  --lh-text:var(--ink);
+  --lh-text-muted:var(--ink-2);
+  --lh-surface:var(--surface);
+  --lh-surface-2:var(--surface-2);
+  --lh-border:var(--line-strong);
+  --lh-line:var(--line);
+  --lh-accent:var(--accent);
+  --lh-accent-hover:var(--accent);
+  --lh-on-accent:var(--accent-ink);
+  --lh-highlight:var(--accent-soft);
+  --lh-on-highlight:var(--ink);
+  --lh-code-bg:var(--surface-2);
+  --lh-code-text:var(--ink);
+  /* player (always dark stage) */
+  --lh-player-bg:var(--stage);
+  --lh-player-text:#f3f5fb;
+  --lh-player-accent:var(--accent);
+  --lh-player-focus:var(--focus);
+  --lh-player-track:var(--stage-2);
+  --lh-player-border:var(--line-strong);
+  --lh-shadow-dialog:var(--shadow);
+}
+
+/* hc overrides for player */
+html[data-theme=hc] .lh-player,
+html[data-theme=contrast] .lh-player {
+  --lh-player-bg:#000;
+  --lh-player-text:#fff;
+  --lh-player-accent:#ffe14d;
+  --lh-player-focus:#00e5ff;
+  --lh-player-track:#000;
+  --lh-player-border:#fff;
+}
+
+/* ── Amharic text: larger, taller, never transformed ─────────── */
+[lang=am] {
+  font-family:var(--lh-font-ethiopic);
+  line-height:var(--lh);
+  font-size:1.125em;
+  letter-spacing:0;
+  text-transform:none;
+  text-rendering:optimizeLegibility;
+}
+
+/* ── global reset essentials ─────────────────────────────────── */
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--sans);-webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--accent-soft-ink);text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+::selection{background:var(--hl);color:var(--hl-ink)}
+
+/* ── keyframes ───────────────────────────────────────────────── */
+@keyframes lh-pulse {
+  0%,100%{opacity:.35;transform:scale(.85)}
+  50%{opacity:1;transform:scale(1)}
+}
+@keyframes lh-rise {
+  from{opacity:0;transform:translateY(14px)}
+  to{opacity:1;transform:none}
+}
+@keyframes lh-shimmer {
+  from{background-position:-200px 0}
+  to{background-position:200px 0}
+}
+@keyframes lh-spin {
+  to{transform:rotate(360deg)}
+}
+@keyframes lh-wave {
+  0%,100%{transform:scaleY(.4)}
+  50%{transform:scaleY(1)}
+}
+
+/* ── reduced motion ──────────────────────────────────────────── */
+@media (prefers-reduced-motion:reduce) {
+  *,*::before,*::after {
+    animation:none !important;
+    transition:none !important;
+    scroll-behavior:auto !important;
+  }
+}
+html[data-motion=reduced] *,
+html[data-motion=reduced] *::before,
+html[data-motion=reduced] *::after {
+  animation:none !important;
+  transition:none !important;
+}

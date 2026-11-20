@@ -1,89 +1,271 @@
 <!DOCTYPE html>
+<!-- FR-01 NFR-A11Y-01: Unified lesson page — interpreter & auto modes via ?mode=auto. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Python: Your first variable — LE HULUM</title>
-<link rel="stylesheet" href="demo.css">
-<script>!function(){var q=new URLSearchParams(location.search),t=q.get("theme"),s;try{s=localStorage.getItem("db-demo:theme")}catch(e){}if(t==="light"||t==="dark"||t==="contrast")document.documentElement.dataset.theme=t;else if(s==="light"||s==="dark"||s==="contrast")document.documentElement.dataset.theme=s;else document.documentElement.dataset.theme="dark";var l=q.get("lang");try{l=l||localStorage.getItem("db-demo:lang")}catch(e){}document.documentElement.lang=l==="am"?"am":"en";}();</script>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="shell/shell.css">
+<link rel="stylesheet" href="lesson.css">
+<script type="module">
+  import { loadPrefs, applyToDocument } from './shell/prefs.js';
+  applyToDocument(loadPrefs());
+</script>
+<script type="module" src="shell/demo-shell.js"></script>
 </head>
-<body data-page="lesson">
-<main id="main" class="lesson">
-  <header class="ls-head">
-    <div>
-      <nav class="crumb" aria-label="Breadcrumb"><a href="index.html"><span class="en-only">Home</span><span class="am-only" lang="am">መነሻ</span></a> › Python basics › <span aria-current="page"><span class="en-only">Lesson 1</span><span class="am-only" lang="am">ትምህርት 1</span></span></nav>
-      <h1>Python: Your first variable <span class="am" lang="am">ፓይተን፡ የመጀመሪያ ተለዋዋጭዎ</span></h1>
-      <ul class="meta">
-        <li><span class="en-only">Python basics · Lesson 1 of 5</span><span class="am-only" lang="am">ፓይተን መሠረታዊ · ትምህርት 1 ከ 5</span></li>
-        <li><span class="en-only">1 min</span><span class="am-only" lang="am">1 ደቂቃ</span></li>
-        <li><span class="en-only">Amharic · English</span><span class="am-only" lang="am">አማርኛ · እንግሊዝኛ</span></li>
-        <li class="ok"><span class="en-only">Signed by a certified interpreter</span><span class="am-only" lang="am">በተረጋገጠ አስተርጓሚ</span></li>
-      </ul>
-    </div>
-    <div class="ls-tools">
-      <div class="seg" role="group" aria-label="Sign source">
-        <a href="lesson-video.html" aria-current="page"><span class="en-only">Human-signed</span><span class="am-only" lang="am">በሰው የተተረጎመ</span></a>
-        <a href="lesson-auto.html"><span class="en-only">Automatic</span><span class="am-only" lang="am">ራስ-ሰር</span></a>
-      </div>
-      <button type="button" class="btn alt save" id="save-off" aria-pressed="false"><span class="en-only">Save offline</span><span class="am-only" lang="am">ከመስመር ውጭ አስቀምጥ</span></button>
-      <button type="button" class="sq" id="share"><span class="sr-only"><span class="en-only">Share lesson</span><span class="am-only" lang="am">ትምህርቱን አጋራ</span></span><span aria-hidden="true">↗</span></button>
-    </div>
-  </header>
-  <p id="lesson-status" class="note" role="status"></p>
-  <div class="layout">
-    <div class="ls-main">
-      <div class="player-frame">
-        <div class="poster-card" id="poster-card">
-          <p class="poster-kicker"><span class="en-only">Signed by a certified EthSL interpreter</span><span class="am-only" lang="am">በተረጋገጠ የምልክት አስተርጓሚ</span></p>
-          <p class="poster-title">Your first variable</p>
-          <p class="poster-am" lang="am">የመጀመሪያ ተለዋዋጭዎ</p>
-          <p class="poster-intro en-only">Create a variable called name, store the text “Abebe” in it, and print it. Every line comes with sign, captions and audio description.</p>
-          <p class="poster-intro am-only" lang="am">name የሚባል ተለዋዋጭ ፈጥረው “Abebe” የሚለውን ጽሑፍ ያስቀምጡበታል፣ ከዚያም ያትሙታል።</p>
-          <div class="poster-row"><button type="button" id="poster-play"><span class="en-only">Play lesson</span><span class="am-only" lang="am">ትምህርቱን አጫውት</span></button><span id="poster-meta"><span class="en-only">1:00 · captions and audio description</span><span class="am-only" lang="am">1:00 · ግርጌ ጽሑፍ እና የድምፅ መግለጫ</span></span></div>
-        </div>
-        <db-player id="player" src="data/lesson.mp4" poster="data/lesson-poster.webp" captions="data/lesson.am.vtt,data/lesson.en.vtt" sign="data/sign.json" glossary="data/glossary.json" lang="am"></db-player>
-      </div>
-      <section class="now" aria-labelledby="now-t">
-        <div class="now-bar">
-          <h2 id="now-t"><span class="en-only">Now signing · Line 1</span><span class="am-only" lang="am">አሁን በምልክት · መስመር 1</span></h2>
-          <div class="line-nav">
-            <button type="button" id="line-prev" aria-label="Previous line">‹</button>
-            <button type="button" id="line-again"><span class="en-only">Say again</span><span class="am-only" lang="am">እንደገና</span></button>
-            <button type="button" id="line-next" aria-label="Next line">›</button>
+<body>
+<demo-shell page="lesson"></demo-shell>
+<main id="main" class="lesson" data-layout="lesson">
+
+  <div class="ls-hero">
+    <div class="ls-hero-in">
+      <div class="ls-hero-pad">
+
+        <!-- ── Top row: breadcrumb + title + mode switch ──────── -->
+        <div class="ls-hd">
+
+          <div class="ls-hd-l">
+            <nav aria-label="Breadcrumb">
+              <ol class="ls-crumb">
+                <li>
+                  <a href="index.html">Savanna demo</a>
+                  <span aria-hidden="true">/</span>
+                </li>
+                <li>
+                  <span>Python basics</span>
+                  <span aria-hidden="true">/</span>
+                </li>
+                <li aria-current="page">Lesson 1</li>
+              </ol>
+            </nav>
+            <h1 class="ls-h1">Python: Your first variable
+              <span class="ls-h1-am" lang="am">ፓይተን፡ የመጀመሪያ ተለዋዋጭዎ</span>
+            </h1>
+            <div class="ls-chips">
+              <span>Python basics · Lesson 1 of 5</span>
+              <span>1 min</span>
+              <span>Amharic · English</span>
+            </div>
           </div>
-        </div>
-        <p id="line-text" lang="en">Hello, and welcome.</p>
-        <ol class="gloss" id="line-gloss" aria-label="Gloss"><li>HELLO</li><li>WELCOME</li></ol>
-      </section>
-    </div>
-    <div class="ls-side">
-      <aside class="panel" aria-label="Lesson panels">
-        <div class="ptabs" role="tablist" aria-label="Lesson panels">
-          <button type="button" role="tab" id="tab-ch" aria-selected="true" aria-controls="panel-body"><span class="en-only">Chapters</span><span class="am-only" lang="am">ምዕራፎች</span></button>
-          <button type="button" role="tab" id="tab-wd" aria-selected="false" tabindex="-1" aria-controls="panel-body"><span class="en-only">Words</span><span class="am-only" lang="am">ቃላት</span></button>
-          <button type="button" role="tab" id="tab-tx" aria-selected="false" tabindex="-1" aria-controls="panel-body"><span class="en-only">Transcript</span><span class="am-only" lang="am">ግልባጭ</span></button>
-        </div>
-        <div id="panel-body" role="tabpanel" aria-labelledby="tab-ch">
-          <div id="chapters">
-            <button type="button" class="chapter" data-t="0" aria-current="true"><time>0:00</time><span class="en-only">What is a variable?</span><span class="am-only" lang="am">ተለዋዋጭ ምንድን ነው?</span></button>
-            <button type="button" class="chapter" data-t="18"><time>0:18</time><span class="en-only">Your first variable</span><span class="am-only" lang="am">የመጀመሪያ ተለዋዋጭዎ</span></button>
-            <button type="button" class="chapter" data-t="42"><time>0:42</time><span class="en-only">Printing the value</span><span class="am-only" lang="am">እሴቱን ማተም</span></button>
+
+          <div class="ls-hd-r">
+            <span class="ls-mode-lbl" id="mode-label">How this lesson is signed</span>
+            <div role="radiogroup" aria-labelledby="mode-label" class="ls-seg" id="mode-group">
+              <button role="radio" aria-checked="true" id="mode-interp" class="ls-radio">
+                <span aria-hidden="true">●</span>
+                <span class="en-only">Signed by interpreter</span>
+                <span class="am-only" lang="am">አስተርጓሚ ምልክት</span>
+              </button>
+              <button role="radio" aria-checked="false" id="mode-auto-btn" class="ls-radio">
+                <span aria-hidden="true">⚙</span>
+                <span class="en-only">Signed automatically</span>
+                <span class="am-only" lang="am">ራስ-ሰር ምልክት</span>
+              </button>
+            </div>
+            <span class="ls-coverage" id="coverage-pill" hidden aria-live="polite">
+              <span aria-hidden="true" class="ls-cov-bars">
+                <span class="ls-cov-bar" style="background:var(--hero-accent)"></span>
+                <span class="ls-cov-bar" style="background:var(--hero-accent)"></span>
+                <span class="ls-cov-bar" style="background:var(--hero-accent)"></span>
+                <span class="ls-cov-bar" style="background:var(--hero-accent)"></span>
+                <span class="ls-cov-bar" style="background:var(--hero-accent)"></span>
+                <span class="ls-cov-bar" style="background:var(--hero-accent)"></span>
+                <span class="ls-cov-bar" style="background:rgba(255,255,255,.18)"></span>
+                <span class="ls-cov-bar" style="background:rgba(255,255,255,.18)"></span>
+                <span class="ls-cov-bar" style="background:rgba(255,255,255,.18)"></span>
+                <span class="ls-cov-bar" style="background:rgba(255,255,255,.18)"></span>
+                <span class="ls-cov-bar" style="background:rgba(255,255,255,.18)"></span>
+                <span class="ls-cov-bar" style="background:rgba(255,255,255,.18)"></span>
+                <span class="ls-cov-bar" style="background:rgba(255,255,255,.18)"></span>
+                <span class="ls-cov-bar" style="background:rgba(255,255,255,.18)"></span>
+              </span>
+              <span class="en-only">6 of 14 lines signed</span>
+              <span class="am-only" lang="am">ከ14 ውስጥ 6 መስመር ተትርጉሟል</span>
+            </span>
           </div>
-          <div id="words" hidden></div>
-          <div id="transcript" hidden></div>
-        </div>
-      </aside>
-      <section class="code-card" aria-labelledby="os-t">
-        <div class="now-bar"><h2 id="os-t"><span class="en-only">On screen now</span><span class="am-only" lang="am">በማያ ላይ ያለው</span></h2><button type="button" id="copy-code"><span class="en-only">Copy</span><span class="am-only" lang="am">ቅዳ</span></button></div>
-        <p class="note" id="code-empty"><span class="en-only">When code appears in the video, the exact text shows here, ready for screen readers and copying.</span><span class="am-only" lang="am">ኮድ በማያ ላይ ሲታይ ትክክለኛው ጽሑፍ እዚህ ይታያል።</span></p>
-        <pre id="code-now" hidden lang="en"></pre>
-      </section>
-      <a class="up-next" href="lesson-text.html"><span class="up-mark" aria-hidden="true">Aa</span><span><b class="kicker"><span class="en-only">Prefer reading?</span><span class="am-only" lang="am">ማንበብ ይመርጣሉ?</span></b><strong><span class="en-only">The same lesson as text</span><span class="am-only" lang="am">የጽሑፍ ትምህርቱ</span></strong><span><span class="en-only">With “Sign this page”</span><span class="am-only" lang="am">ከ“ይህን ገጽ በምልክት” ጋር</span></span></span><span aria-hidden="true">→</span></a>
-    </div>
-  </div>
+
+        </div><!-- /.ls-hd -->
+
+        <!-- ── Content: player + side ────────────────────────── -->
+        <div class="ls-body">
+
+          <div class="ls-main">
+
+            <!-- Layout toggle + actions toolbar -->
+            <div class="ls-toolbar">
+              <div role="radiogroup" aria-label="Layout" class="ls-seg ls-seg-sm" id="layout-group">
+                <button role="radio" aria-checked="true" id="layout-lesson" class="ls-radio">
+                  <span class="ls-layout-ic" aria-hidden="true"></span>
+                  <span class="en-only">Lesson first</span>
+                  <span class="am-only" lang="am">ትምህርት ቅድሚያ</span>
+                </button>
+                <button role="radio" aria-checked="false" id="layout-sign" class="ls-radio">
+                  <span class="ls-layout-ic ls-layout-ic-sign" aria-hidden="true"></span>
+                  <span class="en-only">Sign first</span>
+                  <span class="am-only" lang="am">ምልክት ቅድሚያ</span>
+                </button>
+              </div>
+              <span class="ls-toolbar-r">
+                <button type="button" class="save" id="save-off" aria-pressed="false">
+                  <span class="en-only">Save offline</span>
+                  <span class="am-only" lang="am">ከመስመር ውጭ አስቀምጥ</span>
+                </button>
+                <button type="button" class="sq" id="share">
+                  <span class="sr-only">
+                    <span class="en-only">Share lesson</span>
+                    <span class="am-only" lang="am">ትምህርቱን አጋራ</span>
+                  </span>
+                  <span aria-hidden="true">↗</span>
+                </button>
+              </span>
+            </div>
+
+            <!-- Player -->
+            <div class="player-frame">
+              <div class="poster-card" id="poster-card">
+                <p class="poster-kicker" id="poster-kicker">
+                  <span class="en-only">Signed by a certified EthSL interpreter</span>
+                  <span class="am-only" lang="am">በተረጋገጠ የምልክት አስተርጓሚ</span>
+                </p>
+                <p class="poster-title">Your first variable</p>
+                <p class="poster-am" lang="am">የመጀመሪያ ተለዋዋጭዎ</p>
+                <p class="poster-intro en-only">Create a variable called name, store the text "Abebe" in it, and print it. Every line comes with sign, captions and audio description.</p>
+                <p class="poster-intro am-only" lang="am">name የሚባል ተለዋዋጭ ፈጥረው "Abebe" የሚለውን ጽሑፍ ያስቀምጡበታል፣ ከዚያም ያትሙታል።</p>
+                <div class="poster-row">
+                  <button type="button" id="poster-play">
+                    <span class="en-only">Play lesson</span>
+                    <span class="am-only" lang="am">ትምህርቱን አጫውት</span>
+                  </button>
+                  <span id="poster-meta">
+                    <span class="en-only">1:00 · captions and audio description</span>
+                    <span class="am-only" lang="am">1:00 · ግርጌ ጽሑፍ እና የድምፅ መግለጫ</span>
+                  </span>
+                </div>
+              </div>
+              <db-player id="player"
+                src="data/lesson.mp4"
+                poster="data/lesson-poster.webp"
+                captions="data/lesson.am.vtt,data/lesson.en.vtt"
+                sign="data/sign.json"
+                glossary="data/glossary.json"
+                lang="am">
+              </db-player>
+            </div>
+
+            <!-- Now signing -->
+            <section class="now" aria-labelledby="now-t">
+              <div class="now-bar">
+                <h2 id="now-t">
+                  <span class="en-only">Now signing · Line 1</span>
+                  <span class="am-only" lang="am">አሁን በምልክት · መስመር 1</span>
+                </h2>
+                <div class="line-nav">
+                  <button type="button" id="line-prev" aria-label="Previous line">‹</button>
+                  <button type="button" id="line-again">
+                    <span class="en-only">Say again</span>
+                    <span class="am-only" lang="am">እንደገና</span>
+                  </button>
+                  <button type="button" id="line-next" aria-label="Next line">›</button>
+                </div>
+              </div>
+              <p id="line-text" lang="en">Hello, and welcome.</p>
+              <ol class="gloss" id="line-gloss" aria-label="Gloss">
+                <li>HELLO</li><li>WELCOME</li>
+              </ol>
+            </section>
+
+          </div><!-- /.ls-main -->
+
+          <div class="ls-side">
+
+            <!-- Lesson chrome panels -->
+            <aside class="panel" aria-label="Lesson panels">
+              <div class="ptabs" role="tablist" aria-label="Lesson panels">
+                <button type="button" role="tab" id="tab-ch" aria-selected="true" aria-controls="panel-body">
+                  <span class="en-only">Chapters</span><span class="am-only" lang="am">ምዕራፎች</span>
+                </button>
+                <button type="button" role="tab" id="tab-wd" aria-selected="false" tabindex="-1" aria-controls="panel-body">
+                  <span class="en-only">Words</span><span class="am-only" lang="am">ቃላት</span>
+                </button>
+                <button type="button" role="tab" id="tab-tx" aria-selected="false" tabindex="-1" aria-controls="panel-body">
+                  <span class="en-only">Transcript</span><span class="am-only" lang="am">ግልባጭ</span>
+                </button>
+              </div>
+              <div id="panel-body" role="tabpanel" aria-labelledby="tab-ch">
+                <div id="chapters">
+                  <button type="button" class="chapter" data-t="0" aria-current="true">
+                    <time>0:00</time>
+                    <span class="en-only">What is a variable?</span>
+                    <span class="am-only" lang="am">ተለዋዋጭ ምንድን ነው?</span>
+                  </button>
+                  <button type="button" class="chapter" data-t="18">
+                    <time>0:18</time>
+                    <span class="en-only">Your first variable</span>
+                    <span class="am-only" lang="am">የመጀመሪያ ተለዋዋጭዎ</span>
+                  </button>
+                  <button type="button" class="chapter" data-t="42">
+                    <time>0:42</time>
+                    <span class="en-only">Printing the value</span>
+                    <span class="am-only" lang="am">እሴቱን ማተም</span>
+                  </button>
+                </div>
+                <div id="words" hidden></div>
+                <div id="transcript" hidden></div>
+              </div>
+            </aside>
+
+            <!-- On screen now -->
+            <section class="code-card" aria-labelledby="os-t">
+              <div class="now-bar">
+                <h2 id="os-t">
+                  <span class="en-only">On screen now</span>
+                  <span class="am-only" lang="am">በማያ ላይ ያለው</span>
+                </h2>
+                <button type="button" id="copy-code">
+                  <span class="en-only">Copy</span>
+                  <span class="am-only" lang="am">ቅዳ</span>
+                </button>
+              </div>
+              <p class="note" id="code-empty">
+                <span class="en-only">When code appears in the video, the exact text shows here, ready for screen readers and copying.</span>
+                <span class="am-only" lang="am">ኮድ በማያ ላይ ሲታይ ትክክለኛው ጽሑፍ እዚህ ይታያል።</span>
+              </p>
+              <pre id="code-now" hidden lang="en"></pre>
+            </section>
+
+            <!-- Up next -->
+            <a class="up-next" href="lesson-text.html">
+              <span class="up-mark" aria-hidden="true">Aa</span>
+              <span>
+                <b class="kicker">
+                  <span class="en-only">Prefer reading?</span>
+                  <span class="am-only" lang="am">ማንበብ ይመርጣሉ?</span>
+                </b>
+                <strong>
+                  <span class="en-only">The same lesson as text</span>
+                  <span class="am-only" lang="am">የጽሑፍ ትምህርቱ</span>
+                </strong>
+                <span>
+                  <span class="en-only">With "Sign this page"</span>
+                  <span class="am-only" lang="am">ከ"ይህን ገጽ በምልክት" ጋር</span>
+                </span>
+              </span>
+              <span aria-hidden="true">→</span>
+            </a>
+
+          </div><!-- /.ls-side -->
+        </div><!-- /.ls-body -->
+
+      </div><!-- /.ls-hero-pad -->
+    </div><!-- /.ls-hero-in -->
+  </div><!-- /.ls-hero -->
+
+  <p id="lesson-status" class="note" role="status" aria-live="polite"
+     style="padding:0 clamp(20px,3vw,56px) clamp(10px,2vw,24px)"></p>
+
 </main>
-<script type="module" src="demo.js"></script>
-<script type="module" src="lesson.js"></script>
 <script type="module" src="/module/db-player.js"></script>
+<script type="module" src="lesson.js"></script>
 </body>
 </html>

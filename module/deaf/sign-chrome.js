@@ -4,9 +4,9 @@ export const PLACES = [["tl", "move_top_left"], ["tr", "move_top_right"], ["bl",
 export const PACES = [["smooth", "pacing_smooth"], ["pause", "pacing_pause"], ["off", "pacing_off"]];
 export const ACTS = [...PLACES, ["larger", "larger"], ["smaller", "smaller"], ["opacity", "opacity"], ["speed", "signer_speed"]];
 
-export const CSS = `.sign-window{position:absolute;z-index:4;border:1px solid rgba(255,255,255,.14);border-radius:20px;box-shadow:0 8px 28px rgba(0,0,0,.45);background:radial-gradient(90% 70% at 50% 18%,#6B5039,#17120E 72%);overflow:visible;touch-action:none;cursor:grab;aspect-ratio:3/4}
+export const CSS = `.sign-window{position:absolute;z-index:4;border:1px solid rgba(255,255,255,.14);border-radius:var(--r-l,24px);box-shadow:0 8px 28px rgba(0,0,0,.45);background:radial-gradient(90% 70% at 50% 18%,#6B5039,#17120E 72%);overflow:visible;touch-action:none;cursor:grab;aspect-ratio:3/4}
 .sign-window:active{cursor:grabbing}.sign-window[hidden]{display:none}
-.sign-window video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;border-radius:18px;background:transparent;pointer-events:none}
+.sign-window video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;border-radius:calc(var(--r-l,24px) - 6px);background:transparent;pointer-events:none}
 .sign-bar{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;justify-content:flex-end;background:linear-gradient(rgba(0,0,0,.6),transparent);opacity:0;pointer-events:none;transition:opacity 150ms}
 .sign-window:hover>.sign-bar,.sign-window:focus-within>.sign-bar,.sign-window.show-ui>.sign-bar{opacity:1;pointer-events:auto}
 .sign-icon{width:44px;height:44px;display:grid;place-items:center;border:0;background:transparent;color:#fff;padding:0}
@@ -16,25 +16,25 @@ export const CSS = `.sign-window{position:absolute;z-index:4;border:1px solid rg
 .grip-tl{left:0;top:0}.grip-tr{right:0;top:0}.grip-bl{left:0;bottom:0}.grip-br{right:0;bottom:0}
 .grip-tl::after{left:8px;top:8px;border-right:0;border-bottom:0}.grip-tr::after{right:8px;top:8px;border-left:0;border-bottom:0}
 .grip-bl::after{left:8px;bottom:8px;border-right:0;border-top:0}.grip-br::after{right:8px;bottom:8px;border-left:0;border-top:0}
-.sign-menu{position:absolute;z-index:5;top:46px;left:8px;display:flex;flex-direction:column;min-width:12rem;padding:.25rem;border-radius:10px;background:#14130F;color:#fff;border:1px solid rgba(255,255,255,.2)}
+.sign-menu{position:absolute;z-index:5;top:46px;left:8px;display:flex;flex-direction:column;min-width:12rem;padding:.25rem;border-radius:var(--r-s,10px);background:#14130F;color:#fff;border:1px solid rgba(255,255,255,.2)}
 .sign-window.menu-in .sign-menu{left:auto;right:8px}
-.sign-none,.sign-missing{margin:.75rem 1rem;padding:.75rem 1rem;border:2px solid #FFD54A;border-radius:8px;background:#2A2721;color:#F3F0E8}
+.sign-none,.sign-missing{margin:.75rem 1rem;padding:.75rem 1rem;border:2px solid #FFD54A;border-radius:var(--r-s,10px);background:#2A2721;color:#F3F0E8}
 .sign-missing{position:absolute;left:.5rem;right:.5rem;bottom:.5rem;z-index:4;margin:0;pointer-events:none}
-.sign-wait{position:absolute;z-index:5;display:flex;align-items:center;gap:.35rem;margin:0;padding:.15rem .35rem .15rem .75rem;border-radius:999px;background:#14130F;color:#fff;border:1px solid rgba(255,255,255,.24);pointer-events:auto;animation:sign-fade 150ms ease}
+.sign-wait{position:absolute;z-index:5;display:flex;align-items:center;gap:.35rem;margin:0;padding:.15rem .35rem .15rem .75rem;border-radius:var(--r-pill,999px);background:#14130F;color:#fff;border:1px solid rgba(255,255,255,.24);pointer-events:auto;animation:sign-fade 150ms ease}
 .sign-wait[hidden],.sign-missing[hidden]{display:none}
-.sign-wait button{min-width:2.75rem;min-height:2.75rem;border:0;border-radius:999px;background:#F3F0E8;color:#14130F;font:inherit}
+.sign-wait button{min-width:2.75rem;min-height:2.75rem;border:0;border-radius:var(--r-pill,999px);background:#F3F0E8;color:#14130F;font:inherit}
 @keyframes sign-fade{from{opacity:0}to{opacity:1}}
 .sign-menu[hidden]{display:none}
-.sign-menu button{min-height:44px;text-align:start;padding:0 .75rem;border:0;border-radius:8px;background:transparent;color:inherit;font:inherit}
+.sign-menu button{min-height:44px;text-align:start;padding:0 .75rem;border:0;border-radius:var(--r-s,10px);background:transparent;color:inherit;font:inherit}
 .sign-pace{padding:.35rem .75rem .15rem;font-weight:700}
 [data-pace-note]{align-self:center;padding:0 .35rem;font-size:.75rem;opacity:.8}
-.sign-beta{position:absolute;left:.35rem;right:.35rem;bottom:.35rem;z-index:4;display:flex;flex-direction:column;gap:.25rem;padding:.35rem;border-radius:8px;background:rgba(20,19,15,.92);color:#fff}
+.sign-beta{position:absolute;left:.35rem;right:.35rem;bottom:.35rem;z-index:4;display:flex;flex-direction:column;gap:.25rem;padding:.35rem;border-radius:var(--r-s,10px);background:rgba(20,19,15,.92);color:#fff}
 .sign-beta[hidden],.sign-face[hidden]{display:none}
 .sign-beta p{margin:0;font-size:.8rem;line-height:1.3}
 .sign-beta .sign-votes{display:flex;gap:.25rem}
-.sign-beta button{flex:1;min-height:2.75rem;border:1px solid #fff;border-radius:8px;background:transparent;color:#fff;font:inherit}
+.sign-beta button{flex:1;min-height:2.75rem;border:1px solid #fff;border-radius:var(--r-s,10px);background:transparent;color:#fff;font:inherit}
 .sign-beta button[aria-pressed="true"]{background:#fff;color:#14130F}
-.sign-face{position:absolute;top:2.6rem;left:.4rem;z-index:4;max-width:calc(100% - .8rem);margin:0;padding:.15rem .4rem;border:1px solid #fff;border-radius:8px;background:#14130F;color:#fff;font-size:.8rem}
+.sign-face{position:absolute;top:2.6rem;left:.4rem;z-index:4;max-width:calc(100% - .8rem);margin:0;padding:.15rem .4rem;border:1px solid #fff;border-radius:var(--r-s,10px);background:#14130F;color:#fff;font-size:.8rem}
 .sign-window:focus-visible,.sign-icon:focus-visible,.sign-grip:focus-visible,.sign-menu button:focus-visible,.sign-wait button:focus-visible,.sign-beta button:focus-visible{outline:3px solid #FFD54A;outline-offset:2px}
 .stage.sign-first{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(8rem,.72fr);gap:.75rem;align-items:start;padding:.5rem}
 .stage.sign-first>.sign-window{position:relative;left:auto;top:auto;width:min(100%,46.5vh);height:auto;grid-column:1;grid-row:1;justify-self:start;cursor:default}

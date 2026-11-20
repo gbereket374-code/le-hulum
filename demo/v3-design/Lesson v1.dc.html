@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="max-width:1440px;margin:0 auto;padding:clamp(20px,3vw,40px) clamp(12px,3vw,56px) clamp(64px,8vw,120px);display:flex;flex-direction:column;gap:20px;color:var(--ink)">
+
+  <nav aria-label="{{ t.crumbL }}">
+    <ol style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 10px;font-size:15px;color:var(--ink-2)">
+      <li style="display:flex;gap:10px;align-items:center"><a href="#home" style="color:var(--ink-2);min-height:44px;display:flex;align-items:center">{{ t.crumb1 }}</a><span aria-hidden="true">›</span></li>
+      <li style="display:flex;gap:10px;align-items:center"><a href="#lesson" style="color:var(--ink-2);min-height:44px;display:flex;align-items:center">{{ t.crumb2 }}</a><span aria-hidden="true">›</span></li>
+      <li aria-current="page" style="display:flex;align-items:center;min-height:44px;font-weight:600;color:var(--ink)">{{ t.crumb3 }}</li>
+    </ol>
+  </nav>
+
+  <div style="display:flex;flex-wrap:wrap;gap:16px 32px;align-items:end;justify-content:space-between">
+    <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+      <h1 style="margin:0;font:500 clamp(30px,3.6vw,50px)/var(--lh-tight) var(--serif);letter-spacing:-.015em">{{ title }}</h1>
+      <p lang="{{ altLang }}" style="margin:0;font-size:18px;color:var(--ink-2);line-height:1.6">{{ altTitle }} · <span style="font-family:var(--mono);font-size:15px">0:46</span></p>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+      <div role="radiogroup" aria-label="{{ t.modeL }}" style="display:flex;padding:4px;border:1.5px solid var(--ink);border-radius:var(--r-pill);gap:2px">
+        <sc-for list="{{ modes }}" as="m" hint-placeholder-count="2">
+          <button role="radio" aria-checked="{{ m.sel }}" onClick="{{ m.pick }}" style="min-height:44px;padding:0 16px;border:0;border-radius:var(--r-pill);font-size:15px;font-weight:700;background:{{ m.bg }};color:{{ m.fg }};white-space:nowrap">{{ m.label }}</button>
+        </sc-for>
+      </div>
+      <sc-if value="{{ isAuto }}" hint-placeholder-val="{{ false }}">
+        <span style="display:flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border-radius:var(--r-pill);background:var(--warn-soft);color:var(--warn-ink);font-size:14px;font-weight:700"><span aria-hidden="true" style="font-family:var(--mono)">6/14</span>{{ t.coverage }}</span>
+      </sc-if>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:{{ pageCols }};gap:24px;align-items:start">
+    <div style="display:flex;flex-direction:column;gap:0;min-width:0">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px">
+        <div role="radiogroup" aria-label="{{ t.layoutL }}" style="display:flex;gap:4px;padding:4px;background:var(--surface-2);border-radius:14px">
+          <sc-for list="{{ layouts }}" as="l" hint-placeholder-count="2">
+            <button role="radio" aria-checked="{{ l.sel }}" onClick="{{ l.pick }}" style="min-height:44px;padding:0 14px;border:0;border-radius:10px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;background:{{ l.bg }};color:var(--ink);box-shadow:{{ l.shadow }}">
+              <span aria-hidden="true" style="position:relative;width:22px;height:16px;border:1.5px solid currentColor;border-radius:3px"><span style="position:absolute;{{ l.iconPos }};background:currentColor;border-radius:1px"></span></span>{{ l.label }}
+            </button>
+          </sc-for>
+        </div>
+        <span style="font-size:14px;color:var(--ink-3)">{{ t.layoutHint }}</span>
+      </div>
+
+      <div id="lh-player" style="background:var(--stage);border-radius:var(--r-l);overflow:hidden;color:var(--stage-ink)">
+        <div style="display:grid;grid-template-columns:{{ stageCols }};gap:{{ stageGap }};padding:{{ stagePad }}">
+          <sc-if value="{{ signFirstOn }}" hint-placeholder-val="{{ false }}">
+            <div style="position:relative;aspect-ratio:3/4;border-radius:16px;overflow:hidden;background:repeating-linear-gradient(135deg,#1b1a17 0 2px,#26241f 2px 14px)" onMouseEnter="{{ showCtl }}" onFocus="{{ showCtl }}" onClick="{{ showCtl }}">
+              <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;font:500 11px/1.7 var(--mono);color:#bfb9aa">INTERPRETER VIDEO · 3:4</div>
+              <div style="position:absolute;left:10px;top:10px;right:10px;display:flex;flex-wrap:wrap;gap:6px">
+                <sc-for list="{{ signerBadges }}" as="b" hint-placeholder-count="0"><span style="padding:5px 10px;border-radius:var(--r-pill);background:{{ b.bg }};color:{{ b.fg }};font-size:12px;font-weight:700;display:flex;gap:6px;align-items:center"><span aria-hidden="true" style="font-family:var(--mono)">{{ b.icon }}</span>{{ b.label }}</span></sc-for>
+              </div>
+              <sc-if value="{{ glossNow }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;left:50%;bottom:12px;transform:translateX(-50%);padding:6px 12px;border-radius:8px;background:rgba(0,0,0,.75);color:#fff;font:600 15px var(--mono);white-space:nowrap">{{ glossNow }}</span></sc-if>
+              <sc-if value="{{ noSignNow }}" hint-placeholder-val="{{ false }}">
+                <div style="position:absolute;left:10px;right:10px;bottom:10px;padding:12px;border-radius:12px;background:#fff6dc;color:#4d3608;font-size:14px;line-height:1.45;display:flex;gap:8px"><span aria-hidden="true" style="font-family:var(--mono);font-weight:700">∅</span><span><strong>{{ t.noSign }}</strong><br>{{ t.noSignB }}</span></div>
+              </sc-if>
+              <sc-if value="{{ ctlOn }}" hint-placeholder-val="{{ false }}">
+                <div style="position:absolute;right:8px;bottom:8px;display:flex;gap:4px">
+                  <button onClick="{{ swap }}" aria-label="{{ t.swap }}" title="{{ t.swap }}" style="min-width:44px;min-height:44px;border:0;border-radius:10px;background:rgba(0,0,0,.72);color:#fff;font-size:13px;font-weight:700">⇄</button>
+                  <button onClick="{{ toggleSignerMenu }}" aria-label="{{ t.signerMore }}" aria-expanded="{{ signerMenu }}" style="min-width:44px;min-height:44px;border:0;border-radius:10px;background:rgba(0,0,0,.72);color:#fff;font-size:18px;font-weight:700">⋯</button>
+                  <button onClick="{{ hideSigner }}" aria-label="{{ t.hideSigner }}" style="min-width:44px;min-height:44px;border:0;border-radius:10px;background:rgba(0,0,0,.72);color:#fff;font-size:20px">×</button>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+
+          <div style="position:relative;aspect-ratio:16/9;border-radius:{{ lessonRadius }};overflow:hidden;background:#ece7db;color:#1f1e1b;align-self:start">
+            <div style="position:absolute;inset:0;display:grid;grid-template-columns:38% 1fr">
+              <div style="background:repeating-linear-gradient(135deg,#d6cfbf 0 2px,#e3ddcf 2px 12px);display:flex;align-items:center;justify-content:center;text-align:center;font:500 10px/1.6 var(--mono);color:#5c584f;padding:8px">LESSON VIDEO<br>teacher</div>
+              <div style="background:#1e211e;color:#e8e4d8;padding:6% 7%;display:flex;flex-direction:column;gap:6%;font:400 clamp(9px,1.3vw,16px)/1.5 var(--mono)">
+                <span style="color:#8f9a8f">main.py</span>
+                <span style="opacity:{{ codeOp1 }}"><span style="color:#9fc9ad">name</span> = <span style="color:#e9c25c">"Abebe"</span></span>
+                <span style="opacity:{{ codeOp2 }}"><span style="color:#9fc9ad">print</span>(name)</span>
+                <span style="opacity:{{ codeOp2 }};color:#8f9a8f">&gt; Abebe</span>
+              </div>
+            </div>
+
+            <sc-if value="{{ floatOn }}" hint-placeholder-val="{{ false }}">
+              <div role="group" aria-label="{{ t.signerWin }}" onMouseEnter="{{ showCtl }}" onFocus="{{ showCtl }}" onClick="{{ showCtl }}" style="position:absolute;left:{{ fl.left }};top:{{ fl.top }};width:{{ fl.width }};aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:repeating-linear-gradient(135deg,#1b1a17 0 2px,#26241f 2px 12px);box-shadow:0 0 0 2px #fff,0 10px 30px rgba(0,0,0,.4);opacity:{{ fl.opacity }};touch-action:none">
+                <div onPointerDown="{{ dragStart }}" onKeyDown="{{ dragKey }}" tabindex="0" aria-label="{{ t.dragHandle }}" style="position:absolute;inset:0;cursor:move"></div>
+                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;font:500 9px/1.5 var(--mono);color:#bfb9aa;pointer-events:none">SIGNER<br>3:4</div>
+                <div style="position:absolute;left:6px;top:6px;right:6px;display:flex;flex-wrap:wrap;gap:4px;pointer-events:none">
+                  <sc-for list="{{ signerBadges }}" as="b" hint-placeholder-count="0"><span style="padding:3px 7px;border-radius:var(--r-pill);background:{{ b.bg }};color:{{ b.fg }};font-size:11px;font-weight:700">{{ b.icon }} {{ b.label }}</span></sc-for>
+                </div>
+                <sc-if value="{{ glossNow }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;left:50%;bottom:6px;transform:translateX(-50%);padding:3px 8px;border-radius:6px;background:rgba(0,0,0,.75);color:#fff;font:600 12px var(--mono);white-space:nowrap;pointer-events:none">{{ glossNow }}</span></sc-if>
+                <sc-if value="{{ noSignNow }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:6px;right:6px;bottom:6px;padding:6px 8px;border-radius:8px;background:#fff6dc;color:#4d3608;font-size:12px;font-weight:700;line-height:1.3;pointer-events:none">∅ {{ t.noSign }}</div></sc-if>
+                <sc-if value="{{ ctlOn }}" hint-placeholder-val="{{ false }}">
+                  <div style="position:absolute;right:4px;top:4px;display:flex;flex-direction:column;gap:3px">
+                    <button onClick="{{ swap }}" aria-label="{{ t.swap }}" title="{{ t.swap }}" style="min-width:44px;min-height:44px;border:0;border-radius:10px;background:rgba(0,0,0,.75);color:#fff;font-size:13px;font-weight:700">⇄</button>
+                    <button onClick="{{ toggleSignerMenu }}" aria-label="{{ t.signerMore }}" aria-expanded="{{ signerMenu }}" style="min-width:44px;min-height:44px;border:0;border-radius:10px;background:rgba(0,0,0,.75);color:#fff;font-size:18px;font-weight:700">⋯</button>
+                    <button onClick="{{ hideSigner }}" aria-label="{{ t.hideSigner }}" style="min-width:44px;min-height:44px;border:0;border-radius:10px;background:rgba(0,0,0,.75);color:#fff;font-size:20px">×</button>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ signerHidden }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ showSigner }}" style="position:absolute;right:12px;top:12px;min-height:44px;padding:0 14px;border:0;border-radius:var(--r-pill);background:rgba(0,0,0,.78);color:#fff;font-weight:700;font-size:14px">{{ t.showSigner }}</button>
+            </sc-if>
+
+            <sc-if value="{{ waiting }}" hint-placeholder-val="{{ false }}">
+              <div role="status" style="position:absolute;left:50%;top:12px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:4px 4px 4px 14px;border-radius:var(--r-pill);background:rgba(15,14,12,.88);color:#fff;font-size:14px;font-weight:600;white-space:nowrap">
+                <span aria-hidden="true" style="display:flex;gap:3px"><span style="width:6px;height:6px;border-radius:50%;background:#e9c25c;animation:lh-pulse 1s infinite"></span><span style="width:6px;height:6px;border-radius:50%;background:#e9c25c;animation:lh-pulse 1s .2s infinite"></span><span style="width:6px;height:6px;border-radius:50%;background:#e9c25c;animation:lh-pulse 1s .4s infinite"></span></span>{{ t.waiting }}
+                <button onClick="{{ skipWait }}" style="min-height:36px;padding:0 12px;border:0;border-radius:var(--r-pill);background:#fff;color:#1f1e1b;font-weight:700;font-size:13px">{{ t.skip }}</button>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isPoster }}" hint-placeholder-val="{{ true }}">
+              <div style="position:absolute;inset:0;background:rgba(20,18,14,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#fff;text-align:center;padding:16px">
+                <button onClick="{{ play }}" aria-label="{{ t.playLesson }}" style="width:clamp(64px,8vw,88px);height:clamp(64px,8vw,88px);border-radius:50%;border:3px solid #fff;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center"><span aria-hidden="true" style="width:0;height:0;border-left:22px solid #fff;border-top:14px solid transparent;border-bottom:14px solid transparent;margin-left:6px"></span></button>
+                <span style="font-size:clamp(15px,1.5vw,18px);font-weight:700">{{ t.playLesson }} · 0:46</span>
+              </div>
+            </sc-if>
+            <sc-if value="{{ isEnded }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;inset:0;background:rgba(20,18,14,.86);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#fff;text-align:center;padding:16px">
+                <span aria-hidden="true" style="width:48px;height:48px;border-radius:50%;background:#e9c25c;color:#1f1e1b;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700">✓</span>
+                <strong style="font:500 clamp(22px,2.6vw,32px)/1.25 var(--serif)">{{ t.complete }}</strong>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+                  <button onClick="{{ restart }}" style="min-height:44px;padding:0 16px;border:2px solid #fff;border-radius:var(--r-pill);background:transparent;color:#fff;font-weight:700">{{ t.replay }}</button>
+                  <button onClick="{{ goStudio }}" style="min-height:44px;padding:0 16px;border:0;border-radius:var(--r-pill);background:#fff;color:#1f1e1b;font-weight:700">{{ t.askStudio }}</button>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+
+        <sc-if value="{{ signerMenu }}" hint-placeholder-val="{{ false }}">
+          <div role="menu" aria-label="{{ t.signerMore }}" style="margin:0 12px 12px;padding:12px;border-radius:14px;background:#2d2b26;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+              <span style="font-size:13px;font-weight:600;color:#cfc9ba;min-width:110px">{{ t.moveTo }}</span>
+              <sc-for list="{{ corners }}" as="c" hint-placeholder-count="4"><button role="menuitem" onClick="{{ c.pick }}" style="min-height:44px;padding:0 12px;border:1px solid #6c6f69;border-radius:10px;background:{{ c.bg }};color:#fff;font-size:13px;font-weight:600">{{ c.label }}</button></sc-for>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+              <span style="font-size:13px;font-weight:600;color:#cfc9ba;min-width:110px">{{ t.sizeL }}</span>
+              <button role="menuitem" onClick="{{ smaller }}" style="min-height:44px;padding:0 14px;border:1px solid #6c6f69;border-radius:10px;background:transparent;color:#fff;font-weight:600;font-size:13px">－ {{ t.smaller }}</button>
+              <button role="menuitem" onClick="{{ larger }}" style="min-height:44px;padding:0 14px;border:1px solid #6c6f69;border-radius:10px;background:transparent;color:#fff;font-weight:600;font-size:13px">＋ {{ t.larger }}</button>
+              <button role="menuitem" onClick="{{ cycleOpacity }}" style="min-height:44px;padding:0 14px;border:1px solid #6c6f69;border-radius:10px;background:transparent;color:#fff;font-weight:600;font-size:13px">{{ t.opacity }} {{ opacityLabel }}</button>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+              <span style="font-size:13px;font-weight:600;color:#cfc9ba;min-width:110px">{{ t.signerSpeed }}</span>
+              <sc-for list="{{ signerSpeeds }}" as="sp" hint-placeholder-count="3"><button role="menuitemradio" aria-checked="{{ sp.sel }}" onClick="{{ sp.pick }}" style="min-height:44px;min-width:56px;border:1px solid #6c6f69;border-radius:10px;background:{{ sp.bg }};color:{{ sp.fg }};font:600 13px var(--mono)">{{ sp.label }}</button></sc-for>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+              <span style="font-size:13px;font-weight:600;color:#cfc9ba;min-width:110px">{{ t.pacing }}</span>
+              <sc-for list="{{ pacings }}" as="pc" hint-placeholder-count="3"><button role="menuitemradio" aria-checked="{{ pc.sel }}" onClick="{{ pc.pick }}" style="min-height:44px;padding:0 12px;border:1px solid #6c6f69;border-radius:10px;background:{{ pc.bg }};color:{{ pc.fg }};font-size:13px;font-weight:600">{{ pc.label }}</button></sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ capsOn }}" hint-placeholder-val="{{ true }}">
+          <div aria-live="polite" style="margin:0 12px;padding:14px 18px;border-radius:12px;background:{{ capBg }};color:{{ capFg }};min-height:76px;display:flex;flex-direction:column;justify-content:center;gap:2px">
+            <span style="font-size:{{ capLabelSize }};font-weight:700;opacity:.85">{{ t.teacher }}</span>
+            <sc-if value="{{ capPrimary }}" hint-placeholder-val="{{ false }}"><span style="font-size:{{ capSize }};font-weight:600;line-height:1.6">{{ capPrimary }}</span></sc-if>
+            <sc-if value="{{ capSecondary }}" hint-placeholder-val="{{ false }}"><span style="font-size:{{ capSize2 }};line-height:1.55;opacity:.88">{{ capSecondary }}</span></sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ feedbackOn }}" hint-placeholder-val="{{ false }}">
+          <div style="margin:10px 12px 0;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px">
+            <span style="display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:var(--r-pill);border:1.5px solid #e9c25c;color:#f2d78a;font-weight:700"><span aria-hidden="true">β</span>{{ t.autoBeta }}</span>
+            <button onClick="{{ fbYes }}" aria-pressed="{{ fbIsYes }}" style="min-height:44px;padding:0 14px;border:1.5px solid #fff;border-radius:var(--r-pill);background:{{ fbYesBg }};color:{{ fbYesFg }};font-weight:700">✓ {{ t.understood }}</button>
+            <button onClick="{{ fbNo }}" aria-pressed="{{ fbIsNo }}" style="min-height:44px;padding:0 14px;border:1.5px solid #fff;border-radius:var(--r-pill);background:{{ fbNoBg }};color:{{ fbNoFg }};font-weight:700">? {{ t.notClear }}</button>
+          </div>
+        </sc-if>
+
+        <div style="padding:10px 12px 12px;display:flex;flex-direction:column;gap:6px">
+          <div style="position:relative;height:28px;display:flex;align-items:center">
+            <input type="range" min="0" max="46" step="0.5" value="{{ tNow }}" onInput="{{ seek }}" aria-label="{{ t.progress }}" aria-valuetext="{{ timeText }}" style="width:100%;height:28px;accent-color:#e9c25c;margin:0">
+            <sc-for list="{{ chapterTicks }}" as="ct" hint-placeholder-count="3"><span aria-hidden="true" style="position:absolute;left:{{ ct }};top:4px;width:2px;height:6px;background:#fff;opacity:.7;pointer-events:none"></span></sc-for>
+          </div>
+          <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">
+            <button onClick="{{ togglePlay }}" aria-label="{{ playLabel }}" style="min-width:48px;min-height:48px;padding:0 14px;border:0;border-radius:var(--r-pill);background:#f4f1e8;color:#1f1e1b;font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px">
+              <sc-if value="{{ playing }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="display:flex;gap:3px"><span style="width:4px;height:14px;background:currentColor"></span><span style="width:4px;height:14px;background:currentColor"></span></span></sc-if>
+              <sc-if value="{{ notPlaying }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="width:0;height:0;border-left:11px solid currentColor;border-top:7px solid transparent;border-bottom:7px solid transparent"></span></sc-if>
+              <sc-if value="{{ showCtlLabels }}" hint-placeholder-val="{{ true }}"><span>{{ playLabel }}</span></sc-if>
+            </button>
+            <button onClick="{{ back10 }}" aria-label="{{ t.back10 }}" title="{{ t.back10 }}" style="min-width:48px;min-height:48px;border:0;border-radius:12px;background:transparent;color:#f4f1e8;font:600 13px var(--mono)" style-hover="background:rgba(255,255,255,.1)">−10</button>
+            <button onClick="{{ fwd10 }}" aria-label="{{ t.fwd10 }}" title="{{ t.fwd10 }}" style="min-width:48px;min-height:48px;border:0;border-radius:12px;background:transparent;color:#f4f1e8;font:600 13px var(--mono)" style-hover="background:rgba(255,255,255,.1)">+10</button>
+            <span style="font:500 13px var(--mono);color:#cfc9ba;padding:0 8px;white-space:nowrap">{{ timeText }}</span>
+            <span style="flex:1"></span>
+            <button onClick="{{ toggleCaps }}" aria-pressed="{{ capsOn }}" aria-label="{{ t.captions }}" title="{{ t.captions }}" style="min-width:48px;min-height:48px;padding:0 10px;border:1.5px solid {{ capsBorder }};border-radius:12px;background:transparent;color:#f4f1e8;font:700 13px var(--mono)">CC</button>
+            <button onClick="{{ toggleSign }}" aria-pressed="{{ signOn }}" aria-label="{{ t.signLang }}" title="{{ t.signLang }}" style="min-width:48px;min-height:48px;padding:0 10px;border:1.5px solid {{ signBorder }};border-radius:12px;background:transparent;color:#f4f1e8;font-size:13px;font-weight:700">EthSL</button>
+            <div style="position:relative">
+              <button onClick="{{ toggleMore }}" aria-expanded="{{ moreOpen }}" aria-haspopup="menu" style="min-width:48px;min-height:48px;padding:0 12px;border:0;border-radius:12px;background:rgba(255,255,255,.1);color:#f4f1e8;font-size:14px;font-weight:700">{{ t.more }}</button>
+              <sc-if value="{{ moreOpen }}" hint-placeholder-val="{{ false }}">
+                <div role="menu" style="position:absolute;right:0;bottom:calc(100% + 8px);width:min(300px,86vw);padding:8px;border-radius:14px;background:var(--surface);color:var(--ink);box-shadow:var(--shadow);border:1px solid var(--line-strong);z-index:20;display:flex;flex-direction:column;gap:6px">
+                  <span style="font-size:12px;font-weight:700;color:var(--ink-3);padding:4px 8px 0">{{ t.speed }}</span>
+                  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px">
+                    <sc-for list="{{ rates }}" as="r" hint-placeholder-count="4"><button role="menuitemradio" aria-checked="{{ r.sel }}" onClick="{{ r.pick }}" style="min-height:44px;border:1px solid var(--line-strong);border-radius:10px;background:{{ r.bg }};color:{{ r.fg }};font:600 13px var(--mono)">{{ r.label }}</button></sc-for>
+                  </div>
+                  <span style="font-size:12px;font-weight:700;color:var(--ink-3);padding:4px 8px 0">{{ t.capLang }}</span>
+                  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px">
+                    <sc-for list="{{ capLangs }}" as="cl" hint-placeholder-count="3"><button role="menuitemradio" aria-checked="{{ cl.sel }}" onClick="{{ cl.pick }}" style="min-height:44px;border:1px solid var(--line-strong);border-radius:10px;background:{{ cl.bg }};color:{{ cl.fg }};font-size:13px;font-weight:600">{{ cl.label }}</button></sc-for>
+                  </div>
+                  <button role="menuitem" onClick="{{ openWords }}" style="min-height:48px;padding:0 12px;border:0;border-radius:10px;background:transparent;text-align:left;font-weight:600;font-size:15px" style-hover="background:var(--surface-2)">{{ t.wordList }}</button>
+                  <button role="menuitem" onClick="{{ openSettings }}" style="min-height:48px;padding:0 12px;border:0;border-radius:10px;background:transparent;text-align:left;font-weight:600;font-size:15px" style-hover="background:var(--surface-2)">{{ t.settings }}</button>
+                </div>
+              </sc-if>
+            </div>
+            <button onClick="{{ fullscreen }}" aria-label="{{ t.fullscreen }}" title="{{ t.fullscreen }}" style="min-width:48px;min-height:48px;border:0;border-radius:12px;background:transparent;color:#f4f1e8;display:flex;align-items:center;justify-content:center" style-hover="background:rgba(255,255,255,.1)"><span aria-hidden="true" style="width:16px;height:16px;border:2px solid currentColor;border-radius:2px;outline:2px solid #22211d;outline-offset:-6px"></span></button>
+          </div>
+        </div>
+      </div>
+      <p style="margin:12px 0 0;font-size:14px;color:var(--ink-3);line-height:1.5">{{ t.kbdHint }}</p>
+    </div>
+
+    <aside aria-label="{{ t.panelL }}" style="border:1px solid var(--line);border-radius:var(--r-l);background:var(--surface);overflow:hidden;display:flex;flex-direction:column;max-height:{{ panelMax }}">
+      <div role="tablist" aria-label="{{ t.panelL }}" style="display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--line)">
+        <sc-for list="{{ tabs }}" as="tb" hint-placeholder-count="3">
+          <button role="tab" aria-selected="{{ tb.sel }}" onClick="{{ tb.pick }}" style="min-height:56px;padding:0 6px;border:0;background:transparent;font-size:14px;font-weight:700;color:{{ tb.fg }};box-shadow:inset 0 -3px 0 {{ tb.bar }}">{{ tb.label }}</button>
+        </sc-for>
+      </div>
+      <div role="tabpanel" style="overflow:auto;padding:8px">
+        <sc-if value="{{ tab.chapters }}" hint-placeholder-val="{{ true }}">
+          <ol style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px">
+            <sc-for list="{{ chapters }}" as="c" hint-placeholder-count="3">
+              <li><button onClick="{{ c.go }}" aria-current="{{ c.cur }}" style="width:100%;min-height:64px;display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center;padding:8px 12px;border:0;border-radius:12px;background:{{ c.bg }};text-align:left">
+                <span style="font:500 13px var(--mono);color:var(--ink-2)">{{ c.time }}</span>
+                <span style="font-size:16px;font-weight:{{ c.weight }};line-height:1.45;display:flex;gap:8px;align-items:center">{{ c.title }}<sc-if value="{{ c.isCur }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;font-weight:700;padding:2px 8px;border-radius:var(--r-pill);background:var(--ink);color:var(--bg)">{{ t.now }}</span></sc-if></span>
+              </button></li>
+            </sc-for>
+          </ol>
+        </sc-if>
+        <sc-if value="{{ tab.words }}" hint-placeholder-val="{{ false }}">
+          <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column">
+            <sc-for list="{{ words }}" as="wd" hint-placeholder-count="6">
+              <li style="padding:12px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap">
+                  <span style="display:flex;gap:10px;align-items:baseline;flex-wrap:wrap"><span lang="am" style="font:600 19px/1.5 'Noto Sans Ethiopic'">{{ wd.am }}</span><span style="font-size:15px;color:var(--ink-2)">{{ wd.en }}</span></span>
+                  <span style="font-size:13px;color:var(--ink-3)">{{ wd.linesLabel }}</span>
+                </div>
+                <sc-if value="{{ wd.open }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:grid;grid-template-columns:72px 1fr;gap:10px;align-items:center;padding:8px;border-radius:10px;background:var(--surface-2)">
+                    <span aria-hidden="true" style="aspect-ratio:3/4;border-radius:8px;background:repeating-linear-gradient(135deg,var(--stage) 0 2px,var(--stage-2) 2px 9px);display:flex;align-items:flex-end;justify-content:center;padding:4px"><span style="font:600 9px var(--mono);color:#fff">{{ wd.gloss }}</span></span>
+                    <span style="font-size:13px;line-height:1.5;color:var(--ink-2)">{{ t.loopingSlow }}</span>
+                  </div>
+                </sc-if>
+                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                  <button onClick="{{ wd.toggle }}" aria-expanded="{{ wd.open }}" style="min-height:44px;padding:0 12px;border:1.5px solid var(--ink);border-radius:var(--r-pill);background:transparent;font-size:13px;font-weight:700">▶ {{ t.showSign }}</button>
+                  <button onClick="{{ wd.goLine }}" style="min-height:44px;padding:0 12px;border:1px solid var(--line-strong);border-radius:var(--r-pill);background:transparent;font-size:13px;font-weight:600">{{ t.goLine }} {{ wd.first }}</button>
+                </div>
+              </li>
+            </sc-for>
+          </ul>
+        </sc-if>
+        <sc-if value="{{ tab.transcript }}" hint-placeholder-val="{{ false }}">
+          <ol style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px">
+            <sc-for list="{{ transcript }}" as="tr" hint-placeholder-count="8">
+              <li><button onClick="{{ tr.go }}" aria-current="{{ tr.cur }}" style="width:100%;min-height:52px;display:grid;grid-template-columns:44px 1fr;gap:10px;padding:10px 12px 10px 9px;border:0;border-left:3px solid {{ tr.bar }};border-radius:0 10px 10px 0;background:{{ tr.bg }};color:{{ tr.fg }};text-align:left;align-items:start">
+                <span style="font:500 12px/1.9 var(--mono)">{{ tr.time }}</span>
+                <span style="display:flex;flex-direction:column;gap:4px">
+                  <span style="font-size:15px;line-height:1.55;font-weight:{{ tr.weight }}">{{ tr.text }}</span>
+                  <span style="font-size:12px;font-weight:600;display:flex;gap:6px;align-items:center;opacity:.85"><span aria-hidden="true" style="font-family:var(--mono)">{{ tr.icon }}</span>{{ tr.status }}</span>
+                </span>
+              </button></li>
+            </sc-for>
+          </ol>
+        </sc-if>
+      </div>
+    </aside>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const T = {
+  en: {
+    crumbL: 'Breadcrumb', crumb1: 'Savanna demo', crumb2: 'Python basics', crumb3: 'Lesson 1',
+    title: 'Python: Your first variable', alt: 'ፓይተን፦ የመጀመሪያ ተለዋዋጭዎ',
+    modeL: 'How this lesson is signed', interp: 'Signed by interpreter', auto: 'Signed automatically', coverage: '6 of 14 lines signed',
+    layoutL: 'Layout', lessonFirst: 'Lesson first', signFirst: 'Sign first', layoutHint: 'Drag the signer, or use ⋯ to move it to a corner.',
+    signerWin: 'Signer window', dragHandle: 'Signer window. Drag, or use arrow keys to move.', swap: 'Swap layout', signerMore: 'Signer options', hideSigner: 'Hide signer', showSigner: 'Show signer',
+    moveTo: 'Move to corner', tl: 'Top left', tr: 'Top right', bl: 'Bottom left', br: 'Bottom right', sizeL: 'Size', smaller: 'Smaller', larger: 'Larger', opacity: 'Opacity',
+    signerSpeed: 'Signer speed', pacing: 'Pacing', smooth: 'Smooth', pauseEnds: 'Pause at ends', off: 'Off',
+    waiting: 'Waiting for signer…', skip: 'Skip', noSign: 'No sign for this line yet', noSignB: 'Follow the captions below.',
+    autoBeta: 'Automatic sign (beta)', understood: 'Understood', notClear: 'Not clear', eyebrows: 'Eyebrows: question', shake: 'Head shake: not',
+    playLesson: 'Play lesson', complete: 'Lesson complete', replay: 'Replay', askStudio: 'Ask a question in Sign studio',
+    teacher: 'Teacher', progress: 'Lesson progress', play: 'Play', pause: 'Pause', back10: 'Back 10 seconds', fwd10: 'Forward 10 seconds',
+    captions: 'Captions on or off', signLang: 'Sign language on or off', more: 'More', speed: 'Playback speed', capLang: 'Caption language', amharic: 'Amharic', english: 'English', bothL: 'Both',
+    wordList: 'Word list', settings: 'Learner settings', fullscreen: 'Fullscreen',
+    kbdHint: 'Keyboard: Space play/pause · ← → 10 seconds · C captions · S signer.',
+    panelL: 'Lesson panel', chapters: 'Chapters', words: 'Words', transcript: 'Transcript', now: 'Now',
+    showSign: 'Show sign', goLine: 'Go to line', lines: 'Lines', loopingSlow: 'Looping at 0.75× · signed by [interpreter name]',
+    stSigned: 'Signed', stAuto: 'Automatic sign', stNone: 'No sign yet',
+  },
+  am: {
+    crumbL: 'የገጽ መንገድ', crumb1: 'የSavanna ማሳያ', crumb2: 'የፓይተን መሠረታዊያን', crumb3: 'ትምህርት 1',
+    title: 'ፓይተን፦ የመጀመሪያ ተለዋዋጭዎ', alt: 'Python: Your first variable',
+    modeL: 'ይህ ትምህርት እንዴት እንደሚተረጎም', interp: 'በአስተርጓሚ የተተረጎመ', auto: 'በራስ-ሰር የተተረጎመ', coverage: 'ከ14 መስመሮች 6ቱ ተተርጉመዋል',
+    layoutL: 'አቀማመጥ', lessonFirst: 'ትምህርቱ መጀመሪያ', signFirst: 'ምልክቱ መጀመሪያ', layoutHint: 'አስተርጓሚውን ይጎትቱ፣ ወይም ⋯ ተጠቅመው ወደ ጥግ ያንቀሳቅሱ።',
+    signerWin: 'የአስተርጓሚ መስኮት', dragHandle: 'የአስተርጓሚ መስኮት። ይጎትቱ ወይም በቀስት ቁልፎች ያንቀሳቅሱ።', swap: 'አቀማመጥ ቀይር', signerMore: 'የአስተርጓሚ አማራጮች', hideSigner: 'አስተርጓሚውን ደብቅ', showSigner: 'አስተርጓሚውን አሳይ',
+    moveTo: 'ወደ ጥግ', tl: 'ላይ ግራ', tr: 'ላይ ቀኝ', bl: 'ታች ግራ', br: 'ታች ቀኝ', sizeL: 'መጠን', smaller: 'አሳንስ', larger: 'አሳድግ', opacity: 'ግልጽነት',
+    signerSpeed: 'የአስተርጓሚ ፍጥነት', pacing: 'ቆም ማለት', smooth: 'ለስላሳ', pauseEnds: 'በመጨረሻ ቆም', off: 'ጠፍቷል',
+    waiting: 'አስተርጓሚውን በመጠበቅ ላይ…', skip: 'ዝለል', noSign: 'ይህ መስመር ገና ምልክት የለውም', noSignB: 'ከታች ያለውን ጽሑፍ ይከተሉ።',
+    autoBeta: 'ራስ-ሰር ምልክት (ቤታ)', understood: 'ገባኝ', notClear: 'ግልጽ አይደለም', eyebrows: 'ቅንድብ፦ ጥያቄ', shake: 'ራስ መነቅነቅ፦ አይ',
+    playLesson: 'ትምህርቱን አጫውት', complete: 'ትምህርቱ ተጠናቋል', replay: 'እንደገና', askStudio: 'በምልክት ስቱዲዮ ጥያቄ ይጠይቁ',
+    teacher: 'መምህር', progress: 'የትምህርቱ ሂደት', play: 'አጫውት', pause: 'ቆም', back10: '10 ሰከንድ ወደ ኋላ', fwd10: '10 ሰከንድ ወደ ፊት',
+    captions: 'ጽሑፍ አብራ ወይም አጥፋ', signLang: 'ምልክት ቋንቋ አብራ ወይም አጥፋ', more: 'ተጨማሪ', speed: 'የማጫወቻ ፍጥነት', capLang: 'የጽሑፍ ቋንቋ', amharic: 'አማርኛ', english: 'English', bothL: 'ሁለቱም',
+    wordList: 'የቃላት ዝርዝር', settings: 'የተማሪ ቅንብሮች', fullscreen: 'ሙሉ ስክሪን',
+    kbdHint: 'ቁልፎች፦ Space አጫውት/ቆም · ← → 10 ሰከንድ · C ጽሑፍ · S አስተርጓሚ።',
+    panelL: 'የትምህርት ፓነል', chapters: 'ምዕራፎች', words: 'ቃላት', transcript: 'ሙሉ ጽሑፍ', now: 'አሁን',
+    showSign: 'ምልክቱን አሳይ', goLine: 'ወደ መስመር', lines: 'መስመሮች', loopingSlow: 'በ0.75× እየተደገመ · በ[የአስተርጓሚ ስም]',
+    stSigned: 'ተተርጉሟል', stAuto: 'ራስ-ሰር ምልክት', stNone: 'ገና ምልክት የለውም',
+  },
+};
+const fmt = s => Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
+const WAIT_LINES = [1, 9];
+const SIZES = { s: 22, m: 30, l: 38 };
+
+class Component extends DCLogic {
+  state = { t: 0, status: 'poster', mode: 'interp', layout: null, rate: 1, caps: true, sign: true, capLang: null, more: false,
+    signerMenu: false, ctl: false, size: null, pos: { x: 74, y: 4 }, opacity: 1, waiting: false, waited: {}, tab: 'chapters', openWord: null, fb: {}, pacing: null, sSpeed: null };
+  componentDidMount() {
+    this._k = e => {
+      if (/INPUT|TEXTAREA/.test(document.activeElement && document.activeElement.tagName)) return;
+      if (!document.getElementById('lh-player')) return;
+      if (e.key === ' ' && !/BUTTON/.test(document.activeElement.tagName)) { e.preventDefault(); this.togglePlay(); }
+      else if (e.key === 'ArrowLeft' && document.activeElement === document.body) this.seekTo(this.state.t - 10);
+      else if (e.key === 'ArrowRight' && document.activeElement === document.body) this.seekTo(this.state.t + 10);
+      else if (e.key === 'c' || e.key === 'C') this.setState(s => ({ caps: !s.caps }));
+      else if (e.key === 's' || e.key === 'S') this.setState(s => ({ sign: !s.sign }));
+    };
+    window.addEventListener('keydown', this._k);
+  }
+  componentWillUnmount() { clearInterval(this._i); clearTimeout(this._w); clearTimeout(this._c); window.removeEventListener('keydown', this._k); window.removeEventListener('pointermove', this._pm); }
+  prefs() { return this.props.prefs || {}; }
+  pacing() { return this.state.pacing || this.prefs().pacing || 'pause'; }
+  togglePlay() { this.state.status === 'playing' ? this.pause() : this.play(); }
+  play() {
+    if (this.state.status === 'ended') this.setState({ t: 0, waited: {} });
+    this.setState({ status: 'playing' });
+    clearInterval(this._i);
+    this._i = setInterval(() => this.step(), 100);
+  }
+  pause() { clearInterval(this._i); this.setState({ status: 'paused' }); }
+  step() {
+    const s = this.state; if (s.waiting) return;
+    const LH = window.LH; const lines = LH ? LH.lesson.lines : [];
+    const nt = Math.min(46, s.t + 0.1 * s.rate);
+    if (s.mode === 'interp' && s.sign && this.pacing() === 'pause') {
+      const wl = WAIT_LINES.find(i => lines[i] && s.t < lines[i].e && nt >= lines[i].e && !s.waited[i]);
+      if (wl != null) {
+        this.setState({ t: lines[wl].e - 0.01, waiting: true, waited: { ...s.waited, [wl]: true } });
+        clearTimeout(this._w); this._w = setTimeout(() => this.setState({ waiting: false }), 1800 / (this.state.sSpeed || this.prefs().speed || 1));
+        return;
+      }
+    }
+    if (nt >= 46) { clearInterval(this._i); this.setState({ t: 46, status: 'ended' }); return; }
+    this.setState({ t: nt });
+  }
+  seekTo(v) { const t = Math.max(0, Math.min(46, v)); this.setState({ t, waiting: false, status: this.state.status === 'poster' || this.state.status === 'ended' ? 'paused' : this.state.status }); }
+  showCtl() { this.setState({ ctl: true }); clearTimeout(this._c); this._c = setTimeout(() => { if (!this.state.signerMenu) this.setState({ ctl: false }); }, 4000); }
+
+  renderVals() {
+    const lang = this.props.lang || 'en', t = T[lang], s = this.state, w = this.props.w || 1440, p = this.prefs(), LH = window.LH;
+    const lesson = LH ? LH.lesson : { lines: [], chapters: [], words: [] };
+    const layout = s.layout || (p.mode === 'sign' ? 'sign' : 'lesson');
+    const size = s.size || p.signerSize || 'm';
+    const capLang = s.capLang || 'both';
+    const li = lesson.lines.findIndex(l => s.t >= l.s && s.t < l.e);
+    const lineIdx = li < 0 ? (s.t >= 46 ? lesson.lines.length - 1 : 0) : li;
+    const line = lesson.lines[lineIdx] || {};
+    const started = s.status !== 'poster';
+    const isAuto = s.mode === 'auto';
+    const signerVisible = s.sign && p.mode !== 'captions';
+    const capsOn = s.caps;
+    const glossIdx = line.gloss && line.gloss.length ? Math.min(line.gloss.length - 1, Math.floor((s.t - line.s) / ((line.e - line.s) / line.gloss.length))) : -1;
+    const glossNow = started && isAuto && line.auto && glossIdx >= 0 ? line.gloss[glossIdx] : '';
+    const noSignNow = started && isAuto && !line.auto;
+    const face = started && line.face && (!isAuto || line.auto) ? (line.face === 'shake' ? { icon: '↔', label: t.shake } : { icon: '◠', label: t.eyebrows }) : null;
+    const signerBadges = [];
+    if (isAuto && started && line.auto) signerBadges.push({ icon: 'β', label: t.autoBeta, bg: '#e9c25c', fg: '#1f1e1b' });
+    if (face) signerBadges.push({ icon: face.icon, label: face.label, bg: '#fff', fg: '#1f1e1b' });
+    const capSz = (p.capSize || 100) / 100;
+    const capColors = { dark: ['#11100e', '#ffffff'], light: ['#ffffff', '#1f1e1b'], yellow: ['#000000', '#ffe14d'] }[p.capStyle || 'dark'];
+    const prim = lang === 'am' ? 'am' : 'en', sec = prim === 'am' ? 'en' : 'am';
+    let capPrimary = '', capSecondary = '';
+    if (started) {
+      if (capLang === 'both') { capPrimary = line[prim]; capSecondary = line[sec]; }
+      else capPrimary = line[capLang];
+    }
+    const wide = w >= 1100, phone = w < 640;
+    const signFirstOn = signerVisible && layout === 'sign';
+    const floatOn = signerVisible && layout === 'lesson';
+    const sw = SIZES[size] * (phone ? 1.25 : 1);
+    const pos = s.pos;
+    const sel = (on) => ({ bg: on ? 'var(--ink)' : 'transparent', fg: on ? 'var(--bg)' : 'var(--ink)' });
+    const dsel = (on) => ({ bg: on ? '#f4f1e8' : 'transparent', fg: on ? '#1f1e1b' : '#fff' });
+    const curChapter = [...lesson.chapters].reverse().findIndex(c => s.t >= c.t);
+    const chIdx = curChapter < 0 ? 0 : lesson.chapters.length - 1 - curChapter;
+    const fbv = s.fb[lineIdx];
+    const sSpeed = s.sSpeed || p.speed || 1;
+
+    return {
+      t, title: t.title, altTitle: t.alt, altLang: lang === 'en' ? 'am' : 'en',
+      modes: [['interp', t.interp], ['auto', t.auto]].map(([id, label]) => ({ label, sel: s.mode === id, ...sel(s.mode === id), pick: () => this.setState({ mode: id, waiting: false }) })),
+      isAuto,
+      layouts: [['lesson', t.lessonFirst, 'right:2px;bottom:2px;width:7px;height:8px'], ['sign', t.signFirst, 'left:2px;top:2px;width:8px;bottom:2px']].map(([id, label, iconPos]) => ({ label, iconPos, sel: layout === id, bg: layout === id ? 'var(--surface)' : 'transparent', shadow: layout === id ? '0 1px 3px rgba(0,0,0,.15)' : 'none', pick: () => this.setState({ layout: id, signerMenu: false }) })),
+      pageCols: wide ? 'minmax(0,1fr) 380px' : 'minmax(0,1fr)',
+      stageCols: signFirstOn ? (phone ? 'minmax(0,1fr)' : 'minmax(0,1.1fr) minmax(0,1fr)') : 'minmax(0,1fr)',
+      stageGap: signFirstOn ? '12px' : '0', stagePad: signFirstOn ? '12px 12px 12px' : '0 0 12px', lessonRadius: signFirstOn ? '16px' : '0',
+      signFirstOn, floatOn, signerHidden: !signerVisible,
+      fl: { left: Math.min(pos.x, 100 - sw - 1) + '%', top: pos.y + '%', width: sw + '%', opacity: s.opacity },
+      signerBadges, glossNow, noSignNow,
+      ctlOn: s.ctl || s.signerMenu, showCtl: () => this.showCtl(),
+      swap: e => { e.stopPropagation(); this.setState({ layout: layout === 'lesson' ? 'sign' : 'lesson' }); },
+      signerMenu: s.signerMenu, toggleSignerMenu: e => { e.stopPropagation(); this.setState({ signerMenu: !s.signerMenu }); },
+      hideSigner: e => { e.stopPropagation(); this.setState({ sign: false, signerMenu: false }); }, showSigner: () => this.setState({ sign: true }),
+      corners: [['tl', 2, 4], ['tr', 100 - sw - 2, 4], ['bl', 2, null], ['br', 100 - sw - 2, null]].map(([id, x, y]) => ({ label: t[id], bg: 'transparent', pick: () => this.setState({ pos: { x, y: y == null ? Math.max(4, 96 - sw * 16 / 9 * 4 / 3) : y } }) })),
+      smaller: () => this.setState({ size: size === 'l' ? 'm' : 's' }), larger: () => this.setState({ size: size === 's' ? 'm' : 'l' }),
+      cycleOpacity: () => this.setState({ opacity: s.opacity === 1 ? 0.8 : s.opacity === 0.8 ? 0.6 : 1 }), opacityLabel: Math.round(s.opacity * 100) + '%',
+      signerSpeeds: [0.75, 1, 1.25].map(v => ({ label: v + '×', sel: sSpeed === v, ...dsel(sSpeed === v), pick: () => this.setState({ sSpeed: v }) })),
+      pacings: [['smooth', t.smooth], ['pause', t.pauseEnds], ['off', t.off]].map(([id, label]) => ({ label, sel: this.pacing() === id, ...dsel(this.pacing() === id), pick: () => this.setState({ pacing: id }) })),
+      dragStart: e => {
+        const box = e.currentTarget.parentElement.parentElement.getBoundingClientRect();
+        const sx = e.clientX, sy = e.clientY, ox = pos.x, oy = pos.y;
+        this._pm = ev => this.setState({ pos: { x: Math.max(0, Math.min(100 - sw, ox + (ev.clientX - sx) / box.width * 100)), y: Math.max(0, Math.min(60, oy + (ev.clientY - sy) / box.height * 100)) } });
+        const up = () => { window.removeEventListener('pointermove', this._pm); window.removeEventListener('pointerup', up); };
+        window.addEventListener('pointermove', this._pm); window.addEventListener('pointerup', up);
+      },
+      dragKey: e => {
+        const d = { ArrowLeft: [-4, 0], ArrowRight: [4, 0], ArrowUp: [0, -4], ArrowDown: [0, 4] }[e.key]; if (!d) return;
+        e.preventDefault(); e.stopPropagation();
+        this.setState({ pos: { x: Math.max(0, Math.min(100 - sw, pos.x + d[0])), y: Math.max(0, Math.min(60, pos.y + d[1])) } });
+      },
+      waiting: s.waiting, skipWait: () => { clearTimeout(this._w); this.setState({ waiting: false }); },
+      isPoster: s.status === 'poster', isEnded: s.status === 'ended',
+      play: () => this.play(), restart: () => { this.setState({ t: 0, waited: {} }); this.play(); },
+      goStudio: () => this.props.go && this.props.go('studio'),
+      codeOp1: s.t >= 21 ? 1 : 0.15, codeOp2: s.t >= 42 ? 1 : 0.15,
+      capsOn, capBg: capColors[0], capFg: capColors[1],
+      capSize: Math.round((phone ? 17 : 20) * capSz) + 'px', capSize2: Math.round((phone ? 15 : 17) * capSz) + 'px', capLabelSize: Math.round(13 * capSz) + 'px',
+      capPrimary: capPrimary || (started ? '' : ''), capSecondary,
+      feedbackOn: started && isAuto && line.auto,
+      fbIsYes: fbv === 'yes', fbIsNo: fbv === 'no',
+      fbYesBg: fbv === 'yes' ? '#fff' : 'transparent', fbYesFg: fbv === 'yes' ? '#1f1e1b' : '#fff', fbNoBg: fbv === 'no' ? '#fff' : 'transparent', fbNoFg: fbv === 'no' ? '#1f1e1b' : '#fff',
+      fbYes: () => this.setState({ fb: { ...s.fb, [lineIdx]: 'yes' } }), fbNo: () => this.setState({ fb: { ...s.fb, [lineIdx]: 'no' } }),
+      tNow: s.t, seek: e => this.seekTo(+e.target.value), timeText: fmt(s.t) + ' / 0:46',
+      chapterTicks: lesson.chapters.slice(1).map(c => (c.t / 46 * 100) + '%'),
+      playing: s.status === 'playing', notPlaying: s.status !== 'playing', playLabel: s.status === 'playing' ? t.pause : t.play, showCtlLabels: !phone,
+      togglePlay: () => this.togglePlay(), back10: () => this.seekTo(s.t - 10), fwd10: () => this.seekTo(s.t + 10),
+      toggleCaps: () => this.setState({ caps: !s.caps }), toggleSign: () => this.setState({ sign: !s.sign }), signOn: signerVisible,
+      capsBorder: s.caps ? '#e9c25c' : 'rgba(255,255,255,.35)', signBorder: signerVisible ? '#e9c25c' : 'rgba(255,255,255,.35)',
+      moreOpen: s.more, toggleMore: () => this.setState({ more: !s.more }),
+      rates: [0.75, 1, 1.25, 1.5].map(v => ({ label: v + '×', sel: s.rate === v, ...sel(s.rate === v), pick: () => this.setState({ rate: v }) })),
+      capLangs: [['am', t.amharic], ['en', t.english], ['both', t.bothL]].map(([id, label]) => ({ label, sel: capLang === id, ...sel(capLang === id), pick: () => this.setState({ capLang: id, caps: true }) })),
+      openWords: () => this.setState({ tab: 'words', more: false }), openSettings: () => { this.setState({ more: false }); this.props.openSettings && this.props.openSettings(); },
+      fullscreen: () => { const el = document.getElementById('lh-player'); if (document.fullscreenElement) document.exitFullscreen(); else if (el && el.requestFullscreen) el.requestFullscreen(); },
+      panelMax: wide ? '760px' : 'none',
+      tabs: [['chapters', t.chapters], ['words', t.words], ['transcript', t.transcript]].map(([id, label]) => ({ label, sel: s.tab === id, fg: s.tab === id ? 'var(--ink)' : 'var(--ink-2)', bar: s.tab === id ? 'var(--accent)' : 'transparent', pick: () => this.setState({ tab: id }) })),
+      tab: { chapters: s.tab === 'chapters', words: s.tab === 'words', transcript: s.tab === 'transcript' },
+      chapters: lesson.chapters.map((c, i) => ({ time: fmt(c.t), title: c[lang], cur: i === chIdx && started ? 'step' : undefined, isCur: i === chIdx && started, bg: i === chIdx && started ? 'var(--surface-2)' : 'transparent', weight: i === chIdx ? 700 : 500, go: () => this.seekTo(c.t + 0.01) })),
+      words: lesson.words.map(wd => { const e = LH.byId[wd.id]; return { am: e.am, en: e.en, gloss: e.gloss, first: wd.lines[0], linesLabel: t.lines + ' ' + wd.lines.join(', '), open: s.openWord === wd.id, toggle: () => this.setState({ openWord: s.openWord === wd.id ? null : wd.id }), goLine: () => this.seekTo(lesson.lines[wd.lines[0] - 1].s + 0.01) }; }),
+      transcript: lesson.lines.map((l, i) => { const cur = i === lineIdx && started; const st = isAuto ? (l.auto ? ['β', t.stAuto] : ['∅', t.stNone]) : ['●', t.stSigned];
+        return { time: fmt(l.s), text: l[prim], cur: cur ? 'true' : undefined, bg: cur ? 'var(--hl)' : 'transparent', fg: cur ? 'var(--hl-ink)' : 'var(--ink)', bar: cur ? 'var(--ink)' : 'transparent', weight: cur ? 700 : 400, icon: st[0], status: st[1], go: () => this.seekTo(l.s + 0.01) }; }),
+    };
+  }
+}
+</script>
+</body>
+</html>

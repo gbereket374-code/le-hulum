@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<!-- FR-07: Asayegn entry → design SPA #studio. Passes ?q= into hash query. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Asayegn — LE HULUM</title>
+<script>
+(function () {
+  var q = new URLSearchParams(location.search).get('q');
+  var hash = '#studio' + (q ? ('?q=' + encodeURIComponent(q)) : '');
+  location.replace('v3-design/LE%20HULUM.dc.html' + hash);
+})();
+</script>
+<meta http-equiv="refresh" content="0;url=v3-design/LE%20HULUM.dc.html#studio">
+</head>
+<body>
+<p><a href="v3-design/LE%20HULUM.dc.html#studio">Asayegn</a></p>
+</body>
+</html>

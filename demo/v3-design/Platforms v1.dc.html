@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="color:var(--ink)">
+  <section aria-labelledby="pl-h" style="max-width:1440px;margin:0 auto;padding:clamp(28px,5vw,64px) clamp(12px,4vw,56px) clamp(40px,5vw,64px);display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;flex-wrap:wrap;gap:20px 48px;align-items:end;justify-content:space-between">
+      <div style="display:flex;flex-direction:column;gap:12px;max-width:820px">
+        <span style="font:500 13px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent-soft-ink)">{{ t.ey }}</span>
+        <h1 id="pl-h" style="margin:0;font:500 clamp(36px,4.6vw,64px)/var(--lh-tight) var(--serif);letter-spacing:-.02em;text-wrap:balance">{{ t.h1 }}</h1>
+        <p style="margin:0;font-size:18px;line-height:var(--lh);color:var(--ink-2);max-width:60ch">{{ t.lede }}</p>
+      </div>
+      <div role="radiogroup" aria-label="{{ t.hostL }}" style="display:flex;gap:4px;padding:4px;border:1.5px solid var(--ink);border-radius:var(--r-pill)">
+        <sc-for list="{{ hosts }}" as="h" hint-placeholder-count="2"><button role="radio" aria-checked="{{ h.sel }}" onClick="{{ h.pick }}" style="min-height:44px;padding:0 16px;border:0;border-radius:var(--r-pill);font-size:14px;font-weight:700;background:{{ h.bg }};color:{{ h.fg }};white-space:nowrap">{{ h.label }}</button></sc-for>
+      </div>
+    </div>
+
+    <div style="border:1.5px solid var(--ink);border-radius:var(--r-l);overflow:hidden;background:var(--surface)">
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--surface-2);flex-wrap:wrap">
+        <span aria-hidden="true" style="display:flex;gap:6px"><span style="width:10px;height:10px;border-radius:50%;border:1.5px solid var(--ink-3)"></span><span style="width:10px;height:10px;border-radius:50%;border:1.5px solid var(--ink-3)"></span><span style="width:10px;height:10px;border-radius:50%;border:1.5px solid var(--ink-3)"></span></span>
+        <span style="flex:1 1 200px;min-width:0;padding:6px 12px;border-radius:8px;background:var(--surface);font:500 13px var(--mono);color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">savanna.alx.example/learn/python/variables</span>
+        <span style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;padding:6px 10px;border-radius:8px;border:1.5px dashed var(--ink-2)"><span aria-hidden="true" style="font-family:var(--mono)">&lt;/&gt;</span>{{ t.onlyTag }}</span>
+      </div>
+
+      <div style="position:relative;background:{{ host.bg }};color:{{ host.fg }}">
+        <div style="display:flex;align-items:center;gap:16px;padding:12px clamp(12px,3vw,32px);border-bottom:1px solid {{ host.line }};font-size:14px;flex-wrap:wrap">
+          <strong style="font-size:16px;letter-spacing:.02em">Savanna</strong>
+          <span style="opacity:.85">Dashboard</span><span style="opacity:.85">Projects</span><span style="font-weight:700;border-bottom:2px solid currentColor">Curriculum</span><span style="opacity:.85">Community</span>
+          <span style="margin-left:auto;padding:4px 10px;border-radius:6px;background:{{ host.chip }};font-size:12px;font-weight:700">Week 2 · 64%</span>
+        </div>
+
+        <div id="pl-scroll" onMouseUp="{{ onSelect }}" onKeyUp="{{ onSelect }}" style="height:{{ frameH }};overflow:auto;position:relative">
+          <div style="display:grid;grid-template-columns:{{ hostCols }};gap:28px;padding:clamp(20px,3vw,36px) clamp(12px,3vw,32px) {{ articlePadB }}">
+            <sc-if value="{{ showHostSide }}" hint-placeholder-val="{{ true }}">
+              <div aria-hidden="true" style="display:flex;flex-direction:column;gap:8px;font-size:13px">
+                <span style="font-weight:700;opacity:.9">Python basics</span>
+                <span style="padding:8px 10px;border-radius:8px;background:{{ host.chip }}">1. Variables</span>
+                <span style="padding:8px 10px;opacity:.85">2. Data types</span><span style="padding:8px 10px;opacity:.85">3. Strings</span><span style="padding:8px 10px;opacity:.85">4. Lists</span>
+                <span style="margin-top:12px;height:64px;border-radius:8px;background:{{ host.chip }}"></span>
+                <span style="height:40px;border-radius:8px;background:{{ host.chip }}"></span>
+              </div>
+            </sc-if>
+            <article id="lh-platform-article" lang="en" style="max-width:640px;padding-left:52px;display:flex;flex-direction:column;gap:16px">
+              <sc-for list="{{ blocks }}" as="b" hint-placeholder-count="8">
+                <div data-block="{{ b.i }}" tabindex="{{ b.tab }}" onMouseEnter="{{ b.enter }}" onMouseLeave="{{ b.leave }}" onFocus="{{ b.enter }}" onKeyDown="{{ b.key }}" aria-label="{{ b.aria }}" style="position:relative;border-radius:12px;padding:{{ b.pad }};background:{{ b.bg }};box-shadow:{{ b.ring }};outline-offset:4px">
+                  <sc-if value="{{ b.btnOn }}" hint-placeholder-val="{{ false }}">
+                    <div style="position:absolute;left:-52px;top:{{ b.btnTop }};display:flex;flex-direction:column;align-items:center;gap:4px;z-index:2">
+                      <button onClick="{{ b.act }}" aria-label="{{ b.btnAria }}" title="{{ b.btnTitle }}" style="width:44px;height:44px;border-radius:50%;border:2px solid {{ host.fg }};background:{{ b.btnBg }};color:{{ b.btnFg }};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;padding:0;box-shadow:0 2px 8px rgba(0,0,0,.18)">
+                        <sc-if value="{{ b.icoSign }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="position:relative;width:18px;height:18px"><span style="position:absolute;left:2px;top:1px;width:6px;height:15px;border-radius:3px;background:currentColor;transform:rotate(-14deg)"></span><span style="position:absolute;right:2px;top:1px;width:6px;height:15px;border-radius:3px;background:currentColor;opacity:.6;transform:rotate(14deg)"></span></span></sc-if>
+                        <sc-if value="{{ b.icoLoad }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="width:18px;height:18px;border:2.5px solid currentColor;border-top-color:transparent;border-radius:50%;animation:lh-spin .8s linear infinite"></span></sc-if>
+                        <sc-if value="{{ b.icoPause }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="display:flex;gap:3px"><span style="width:4px;height:14px;background:currentColor"></span><span style="width:4px;height:14px;background:currentColor"></span></span></sc-if>
+                        <sc-if value="{{ b.icoPlay }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="width:0;height:0;border-left:11px solid currentColor;border-top:7px solid transparent;border-bottom:7px solid transparent;margin-left:3px"></span></sc-if>
+                        <sc-if value="{{ b.icoReplay }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="font-size:18px;line-height:1">↻</span></sc-if>
+                      </button>
+                      <span style="font:700 10px var(--mono);padding:2px 5px;border-radius:4px;background:{{ b.covBg }};color:{{ b.covFg }};white-space:nowrap">{{ b.cov }}</span>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ b.tipOn }}" hint-placeholder-val="{{ false }}">
+                    <span role="tooltip" style="position:absolute;left:0;top:calc(100% + 4px);z-index:3;padding:6px 10px;border-radius:8px;background:var(--ink);color:var(--bg);font-size:13px;font-weight:600;white-space:nowrap">∅ {{ b.tip }}</span>
+                  </sc-if>
+                  <sc-if value="{{ b.isH }}" hint-placeholder-val="{{ false }}">
+                    <h2 style="margin:0;font:600 clamp(24px,2.6vw,32px)/1.3 var(--sans)"><sc-for list="{{ b.sents }}" as="s" hint-placeholder-count="1"><span data-b="{{ b.i }}" data-s="{{ s.i }}" style="background:{{ s.bg }};color:{{ s.fg }};text-decoration:{{ s.deco }};text-decoration-thickness:3px;text-underline-offset:5px;border-radius:4px;box-decoration-break:clone;-webkit-box-decoration-break:clone;padding:{{ s.pad }}">{{ s.pin }}{{ s.text }} </span></sc-for></h2>
+                  </sc-if>
+                  <sc-if value="{{ b.isP }}" hint-placeholder-val="{{ false }}">
+                    <p lang="{{ b.lang }}" style="margin:0;font-size:{{ b.fs }};line-height:{{ b.lh }};display:flex;gap:10px"><sc-if value="{{ b.bullet }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true">•</span></sc-if><span><sc-for list="{{ b.sents }}" as="s" hint-placeholder-count="2"><span data-b="{{ b.i }}" data-s="{{ s.i }}" style="background:{{ s.bg }};color:{{ s.fg }};text-decoration:{{ s.deco }};text-decoration-thickness:3px;text-underline-offset:5px;border-radius:4px;box-decoration-break:clone;-webkit-box-decoration-break:clone;padding:{{ s.pad }}">{{ s.pin }}{{ s.text }} </span></sc-for></span></p>
+                  </sc-if>
+                  <sc-if value="{{ b.isCode }}" hint-placeholder-val="{{ false }}">
+                    <pre style="margin:0;padding:16px;border-radius:10px;background:#1e211e;color:#e8e4d8;font:400 15px/1.7 var(--mono);overflow:auto"><code>{{ b.text }}</code></pre>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </article>
+          </div>
+        </div>
+
+        <sc-if value="{{ selBtn }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ signSelection }}" style="position:absolute;left:{{ selBtn.x }};top:{{ selBtn.y }};z-index:6;min-height:44px;padding:0 14px;border:0;border-radius:var(--r-pill);background:var(--ink);color:var(--bg);font-size:14px;font-weight:700;box-shadow:var(--shadow);white-space:nowrap">{{ t.signSel }}</button>
+        </sc-if>
+
+        <sc-if value="{{ pop }}" hint-placeholder-val="{{ false }}">
+          <div role="dialog" aria-label="{{ pop.word }}" style="position:absolute;left:{{ pop.x }};top:{{ pop.y }};z-index:7;width:260px;padding:12px;border-radius:16px;background:var(--surface);color:var(--ink);border:1.5px solid var(--ink);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px">
+            <div style="display:grid;grid-template-columns:84px 1fr;gap:12px;align-items:start">
+              <span style="aspect-ratio:3/4;border-radius:10px;background:repeating-linear-gradient(135deg,var(--stage) 0 2px,var(--stage-2) 2px 9px);display:flex;align-items:flex-end;justify-content:center;padding:4px"><span style="font:600 9px var(--mono);color:#fff;background:rgba(0,0,0,.6);padding:2px 4px;border-radius:3px">{{ pop.gloss }}</span></span>
+              <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+                <span lang="am" style="font:600 20px/1.5 'Noto Sans Ethiopic'">{{ pop.am }}</span>
+                <span style="font-size:15px;color:var(--ink-2)">{{ pop.en }}</span>
+                <sc-if value="{{ pop.none }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;font-weight:700;color:var(--warn-ink)">∅ {{ t.noSignYet }}</span></sc-if>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px">
+              <button style="min-height:44px;border:1.5px solid var(--ink);border-radius:10px;background:var(--ink);color:var(--bg);font-size:12px;font-weight:700">{{ t.loop }}</button>
+              <button style="min-height:44px;border:1.5px solid var(--ink);border-radius:10px;background:transparent;font:700 12px var(--mono)">0.75×</button>
+              <button style="min-height:44px;border:1.5px solid var(--ink);border-radius:10px;background:transparent;font-size:12px;font-weight:700">{{ t.replay }}</button>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button onClick="{{ pop.open }}" style="flex:1;min-height:44px;border:0;border-radius:var(--r-pill);background:var(--accent);color:var(--accent-ink);font-size:13px;font-weight:700">{{ t.openStudio }}</button>
+              <button onClick="{{ closePop }}" aria-label="{{ t.close }}" style="min-width:44px;min-height:44px;border:1px solid var(--line-strong);border-radius:50%;background:transparent;font-size:18px">×</button>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ kbPanel }}" hint-placeholder-val="{{ false }}">
+          <div role="dialog" aria-label="{{ t.kbTitle }}" style="position:absolute;left:12px;bottom:76px;z-index:8;width:min(340px,calc(100% - 24px));max-height:60%;overflow:auto;padding:12px;border-radius:16px;background:var(--surface);color:var(--ink);border:1.5px solid var(--ink);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;justify-content:space-between;align-items:center"><strong style="font-size:15px">{{ t.kbTitle }}</strong><button onClick="{{ toggleKb }}" aria-label="{{ t.close }}" style="min-width:44px;min-height:44px;border:0;background:transparent;font-size:20px">×</button></div>
+            <span style="font-size:13px;color:var(--ink-2);line-height:1.5">{{ t.kbHelp }}</span>
+            <sc-for list="{{ kbItems }}" as="k" hint-placeholder-count="5">
+              <button onClick="{{ k.go }}" style="min-height:48px;padding:6px 10px;border:1px solid var(--line);border-radius:10px;background:transparent;text-align:left;font-size:14px;line-height:1.4;display:flex;gap:10px;align-items:center"><span style="font:600 12px var(--mono);color:var(--ink-3)">{{ k.n }}</span><span style="overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">{{ k.text }}</span></button>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ toolsOn }}" hint-placeholder-val="{{ true }}">
+          <div style="position:absolute;left:12px;bottom:12px;z-index:5;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <button onPointerDown="{{ pinDown }}" onKeyDown="{{ pinKey }}" aria-label="{{ t.pinAria }}" title="{{ t.pinAria }}" style="min-height:48px;padding:0 14px 0 10px;border:2px solid var(--ink);border-radius:var(--r-pill);background:var(--surface);color:var(--ink);font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;cursor:grab;touch-action:none">
+              <span aria-hidden="true" style="width:16px;height:16px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--accent);border:2px solid var(--ink)"></span>{{ t.pin }}
+            </button>
+            <button onClick="{{ toggleKb }}" aria-expanded="{{ kbPanel }}" style="min-height:48px;padding:0 14px;border:2px solid var(--ink);border-radius:var(--r-pill);background:var(--surface);color:var(--ink);font-size:14px;font-weight:700">{{ t.kbBtn }}</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ launcherOn }}" hint-placeholder-val="{{ true }}">
+          <button onClick="{{ openSigner }}" style="position:absolute;right:12px;bottom:12px;z-index:5;min-height:52px;padding:0 18px 0 8px;border:0;border-radius:var(--r-pill);background:var(--ink);color:var(--bg);font-size:15px;font-weight:700;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow)">
+            <span aria-hidden="true" style="width:34px;height:34px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;overflow:hidden"><svg class="logo-svg" aria-hidden="true" width="26" height="26" viewBox="0 0 48 48"><defs><linearGradient id="lhgPl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--accent)"/><stop offset="1" style="stop-color:var(--gold)"/></linearGradient></defs><rect x="1" y="1" width="46" height="46" rx="14" fill="url(#lhgPl)"/><rect x="1.5" y="1.5" width="45" height="45" rx="13.5" fill="none" stroke="rgba(255,255,255,.35)"/><path d="M11.5 11.5 L24 37.5 L36.5 11.5" fill="none" stroke="var(--accent-ink)" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.2 23.5 H31.8" stroke="var(--accent-ink)" stroke-width="3.8" stroke-linecap="round"/><circle cx="24" cy="12.6" r="3.6" fill="var(--accent-ink)"/></svg></span>
+            <span style="display:flex;flex-direction:column;align-items:flex-start;line-height:1.15"><span>EthSL</span><span style="font-size:12px;font-weight:500;opacity:.85">{{ t.signPage }}</span></span>
+          </button>
+        </sc-if>
+
+        <sc-if value="{{ signerOn }}" hint-placeholder-val="{{ false }}">
+          <div role="region" aria-label="LE HULUM EthSL signer" style="position:absolute;z-index:9;right:{{ sw.right }};left:{{ sw.left }};bottom:{{ sw.bottom }};width:{{ sw.width }};background:var(--surface);color:var(--ink);border:1.5px solid var(--ink);border-radius:{{ sw.radius }};box-shadow:var(--shadow);overflow:hidden;display:flex">
+            <div style="position:relative;flex:none;width:{{ sw.vidW }};aspect-ratio:3/4;background:repeating-linear-gradient(135deg,var(--stage) 0 2px,var(--stage-2) 2px 12px)">
+              <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:500 10px var(--mono);color:var(--stage-ink-2)">SIGNER 3:4</span>
+              <sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center"><span aria-label="{{ t.loading }}" style="width:24px;height:24px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:lh-spin .9s linear infinite"></span></span></sc-if>
+              <sc-if value="{{ curGloss }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;left:50%;bottom:8px;transform:translateX(-50%);padding:4px 8px;border-radius:6px;background:rgba(0,0,0,.75);color:#fff;font:600 12px var(--mono);white-space:nowrap">{{ curGloss }}</span></sc-if>
+            </div>
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+              <div style="display:flex;align-items:center;padding:2px 2px 2px 10px;border-bottom:1px solid var(--line)">
+                <span style="flex:1;font:500 11px var(--mono);letter-spacing:.05em;color:var(--ink-2)">LE HULUM · EthSL</span>
+                <button onClick="{{ stop }}" aria-label="{{ t.close }}" style="min-width:44px;min-height:44px;border:0;background:transparent;font-size:20px">×</button>
+              </div>
+              <div style="padding:8px 10px;display:flex;flex-direction:column;gap:6px">
+                <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--ink-3);gap:6px;flex-wrap:wrap"><span>{{ sentLabel }}</span><span style="font-weight:700;color:var(--ink-2)">{{ coverage }}</span></div>
+                <div style="height:4px;border-radius:2px;background:var(--surface-3)"><div style="height:100%;border-radius:2px;background:var(--accent);width:{{ pct }}"></div></div>
+                <div style="display:flex;flex-wrap:wrap;gap:4px;max-height:76px;overflow:auto">
+                  <sc-for list="{{ chips }}" as="c" hint-placeholder-count="3"><span style="min-height:28px;display:flex;align-items:center;gap:4px;padding:0 7px;border-radius:6px;border:{{ c.border }};background:{{ c.bg }};color:{{ c.fg }};font:600 11px var(--mono);box-shadow:{{ c.ring }}"><span aria-hidden="true">{{ c.icon }}</span>{{ c.label }}</span></sc-for>
+                </div>
+              </div>
+              <div style="display:flex;gap:4px;padding:4px 8px 8px;margin-top:auto">
+                <button onClick="{{ prev }}" aria-label="{{ t.prev }}" title="{{ t.prev }}" style="flex:1;min-height:44px;border:1px solid var(--line-strong);border-radius:10px;background:transparent;font-weight:700">⏮︎</button>
+                <button onClick="{{ playPause }}" aria-label="{{ ppLabel }}" style="flex:1.4;min-height:44px;border:0;border-radius:10px;background:var(--ink);color:var(--bg);font-size:13px;font-weight:700">{{ ppLabel }}</button>
+                <button onClick="{{ next }}" aria-label="{{ t.next }}" title="{{ t.next }}" style="flex:1;min-height:44px;border:1px solid var(--line-strong);border-radius:10px;background:transparent;font-weight:700">⏭︎</button>
+                <button onClick="{{ stop }}" aria-label="{{ t.stop }}" title="{{ t.stop }}" style="flex:1;min-height:44px;border:1px solid var(--line-strong);border-radius:10px;background:transparent;display:flex;align-items:center;justify-content:center"><span aria-hidden="true" style="width:12px;height:12px;background:currentColor;border-radius:2px"></span></button>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ dragPin }}" hint-placeholder-val="{{ false }}">
+          <span aria-hidden="true" style="position:fixed;left:{{ dragPin.x }};top:{{ dragPin.y }};z-index:100;width:28px;height:28px;border-radius:50% 50% 50% 0;transform:translate(-50%,-100%) rotate(-45deg);background:var(--accent);border:3px solid var(--ink);pointer-events:none;box-shadow:0 6px 16px rgba(0,0,0,.3)"></span>
+        </sc-if>
+      </div>
+    </div>
+    <p style="margin:0;font-size:15px;line-height:1.6;color:var(--ink-2);max-width:90ch">{{ t.demoHelp }}</p>
+  </section>
+
+  <section aria-labelledby="install-h" style="background:var(--surface-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+    <div style="max-width:1440px;margin:0 auto;padding:clamp(56px,7vw,112px) clamp(16px,4vw,56px);display:flex;flex-direction:column;gap:40px">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:32px 64px;align-items:start">
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <span style="font:500 13px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent-soft-ink)">{{ t.devEy }}</span>
+          <h2 id="install-h" style="margin:0;font:500 clamp(32px,4vw,56px)/var(--lh-tight) var(--serif);letter-spacing:-.02em;text-wrap:balance">{{ t.oneLineH }}</h2>
+          <p style="margin:0;font-size:17px;line-height:var(--lh);color:var(--ink-2)">{{ t.oneLineB }}</p>
+        </div>
+        <div style="border-radius:var(--r-l);overflow:hidden;background:#1a1c1a;color:#ece8dc;border:1px solid #333;min-width:0">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 6px 6px 16px;border-bottom:1px solid #333">
+            <span style="font:500 12px var(--mono);color:#b9b4a6">lesson.html</span>
+            <button onClick="{{ copy }}" style="min-height:44px;padding:0 16px;border:1.5px solid #ece8dc;border-radius:var(--r-pill);background:{{ copyBg }};color:{{ copyFg }};font-size:14px;font-weight:700">{{ copyLabel }}</button>
+          </div>
+          <pre style="margin:0;padding:20px;overflow:auto;font:400 14px/1.8 var(--mono)"><code><span style="color:#9fc9ad">&lt;script</span> <span style="color:#e9c25c">type</span>="module" <span style="color:#e9c25c">src</span>="{{ host }}/module/db-player.js"<span style="color:#9fc9ad">&gt;&lt;/script&gt;</span>
+<span style="color:#9fc9ad">&lt;db-player</span> <span style="color:#e9c25c">src</span>="lesson.mp4" <span style="color:#e9c25c">captions</span>="lesson.am.vtt,lesson.en.vtt"
+  <span style="color:#e9c25c">api</span>="{{ host }}/api/v1" <span style="color:#e9c25c">lesson-id</span>="demo"<span style="color:#9fc9ad">&gt;&lt;/db-player&gt;</span>
+<span style="color:#9fc9ad">&lt;db-sign-pin</span> <span style="color:#e9c25c">api</span>="{{ host }}/api/v1" <span style="color:#e9c25c">lang</span>="am"<span style="color:#9fc9ad">&gt;&lt;/db-sign-pin&gt;</span></code></pre>
+          <div style="padding:10px 16px;border-top:1px solid #333;font:500 12px var(--mono);color:#b9b4a6">HOST = {{ host }}</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:16px">
+        <sc-for list="{{ levels }}" as="lv" hint-placeholder-count="3">
+          <div style="display:flex;flex-direction:column;gap:10px;padding:24px;border-radius:var(--r-l);background:var(--surface);border:1px solid var(--line)">
+            <span style="font:500 13px var(--mono);color:var(--ink-3)">{{ lv.n }}</span>
+            <h3 style="margin:0;font-size:22px;font-weight:700">{{ lv.h }}</h3>
+            <p style="margin:0;font-size:16px;line-height:var(--lh);color:var(--ink-2)">{{ lv.b }}</p>
+            <code style="margin-top:auto;align-self:flex-start;padding:6px 10px;border-radius:8px;background:var(--surface-2);font:500 13px var(--mono)">{{ lv.code }}</code>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="guide-h" style="max-width:1440px;margin:0 auto;padding:clamp(56px,7vw,112px) clamp(16px,4vw,56px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:48px clamp(40px,6vw,96px);align-items:start">
+    <div style="display:flex;flex-direction:column;gap:24px">
+      <h2 id="guide-h" style="margin:0;font:500 clamp(30px,3.4vw,46px)/1.15 var(--serif)">{{ t.guideH }}</h2>
+      <ol style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column">
+        <sc-for list="{{ steps }}" as="st" hint-placeholder-count="3">
+          <li style="display:grid;grid-template-columns:48px 1fr;gap:16px;padding:20px 0;border-top:1px solid var(--line)">
+            <span style="width:48px;height:48px;border-radius:50%;background:var(--ink);color:var(--bg);display:flex;align-items:center;justify-content:center;font:600 16px var(--mono)">{{ st.n }}</span>
+            <div style="display:flex;flex-direction:column;gap:6px;min-width:0"><h3 style="margin:0;font-size:19px;font-weight:700;line-height:1.4">{{ st.h }}</h3><p style="margin:0;font-size:16px;line-height:var(--lh);color:var(--ink-2)">{{ st.b }}</p></div>
+          </li>
+        </sc-for>
+      </ol>
+    </div>
+    <figure style="margin:0;display:flex;flex-direction:column;gap:12px">
+      <div style="aspect-ratio:16/10;border-radius:var(--r-l);border:1.5px solid var(--ink);background:repeating-linear-gradient(135deg,var(--surface-2) 0 2px,var(--surface) 2px 14px);display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;font:500 12px/1.7 var(--mono);color:var(--ink-3)">SCREENSHOT · Savanna lesson page<br>with db-player + signer running</div>
+      <figcaption style="display:flex;gap:10px;align-items:flex-start;font-size:16px;line-height:1.5"><span aria-hidden="true" style="flex:none;width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">✓</span><span><strong>{{ t.savannaH }}</strong> {{ t.savannaB }}</span></figcaption>
+    </figure>
+  </section>
+
+  <section aria-labelledby="ref-h" style="border-top:1px solid var(--line)">
+    <div style="max-width:1440px;margin:0 auto;padding:clamp(56px,7vw,112px) clamp(16px,4vw,56px);display:flex;flex-direction:column;gap:32px">
+      <h2 id="ref-h" style="margin:0;font:500 clamp(30px,3.4vw,46px)/1.15 var(--serif)">{{ t.refH }}</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:32px 48px;align-items:start">
+        <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+          <h3 style="margin:0;font-size:19px;font-weight:700">{{ t.attrsH }} <code style="font:500 15px var(--mono);color:var(--ink-2)">&lt;db-player&gt;</code></h3>
+          <div style="overflow-x:auto;border:1px solid var(--line);border-radius:var(--r-m)">
+            <table style="width:100%;border-collapse:collapse;font-size:15px">
+              <thead><tr style="background:var(--surface-2);text-align:left"><th scope="col" style="padding:12px 14px;font-weight:700">{{ t.attr }}</th><th scope="col" style="padding:12px 14px;font-weight:700">{{ t.desc }}</th><th scope="col" style="padding:12px 14px;font-weight:700">{{ t.example }}</th></tr></thead>
+              <tbody>
+                <sc-for list="{{ attrs }}" as="a" hint-placeholder-count="8">
+                  <tr style="border-top:1px solid var(--line)"><th scope="row" style="padding:12px 14px;text-align:left;font:600 14px var(--mono);white-space:nowrap;vertical-align:top">{{ a.k }}</th><td style="padding:12px 14px;line-height:1.5;color:var(--ink-2);vertical-align:top">{{ a.d }}</td><td style="padding:12px 14px;font:400 13px var(--mono);color:var(--ink-2);word-break:break-all;vertical-align:top">{{ a.e }}</td></tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+          <h3 style="margin:16px 0 0;font-size:19px;font-weight:700">{{ t.eventsH }}</h3>
+          <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+            <sc-for list="{{ events }}" as="ev" hint-placeholder-count="2"><li style="display:grid;grid-template-columns:minmax(80px,110px) 1fr;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;font-size:15px;line-height:1.5"><code style="font:600 14px var(--mono)">{{ ev.k }}</code><span style="color:var(--ink-2)">{{ ev.d }}</span></li></sc-for>
+          </ul>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+          <h3 style="margin:0;font-size:19px;font-weight:700">{{ t.apiH }}</h3>
+          <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:var(--r-m);overflow:hidden">
+            <sc-for list="{{ endpoints }}" as="ep" hint-placeholder-count="5">
+              <li style="display:grid;grid-template-columns:64px minmax(0,1fr);gap:4px 12px;padding:14px;border-top:1px solid var(--line);background:var(--surface)">
+                <span style="align-self:start;justify-self:start;padding:3px 8px;border-radius:6px;font:700 12px var(--mono);border:1.5px solid var(--ink);background:{{ ep.bg }};color:{{ ep.fg }}">{{ ep.m }}</span>
+                <code style="font:600 15px var(--mono);word-break:break-all">{{ ep.p }}</code>
+                <span style="grid-column:2;font-size:15px;line-height:1.5;color:var(--ink-2)">{{ ep.d }}</span>
+              </li>
+            </sc-for>
+          </ul>
+          <a href="#platforms" style="align-self:flex-start;min-height:52px;padding:0 22px;border-radius:var(--r-pill);background:var(--ink);color:var(--bg);text-decoration:none;font-weight:700;display:flex;align-items:center;gap:8px">{{ t.openDocs }} →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const T = {
+  en: {
+    ey: 'For platforms · live demo', h1: 'Sign any page. Try it on this one.', lede: 'Below is a normal lesson page. The only thing we added is our script tag. Hover or tab to a paragraph and press its Sign button, drop the pin on a sentence, or select text.',
+    hostL: 'Host page style', hostLight: 'Light host page', hostDark: 'Dark host page', onlyTag: 'This article is a normal web page with only our script tag',
+    signPage: 'Sign this page', signSel: 'Sign selection', pin: 'Drag pin', pinAria: 'Sign pin. Drag onto a sentence, or press Enter to start signing from the first paragraph.',
+    kbBtn: 'Paragraphs', kbTitle: 'Sign by paragraph', kbHelp: 'Pick a paragraph to start signing there. In Sign mode: Tab moves between blocks, Enter signs, Space pauses, arrows change sentence, Escape stops.',
+    signBlock: 'Sign this block', pause: 'Pause', play: 'Play', replay: 'Replay', loading: 'Loading signs', stop: 'Stop', prev: 'Previous sentence', next: 'Next sentence', close: 'Close',
+    sentence: 'Sentence', of: 'of', wordsSigned: 'words signed', noSignYet: 'No sign yet', noWords: 'words have no sign yet', loop: 'Loop', openStudio: 'Open in Sign studio',
+    demoHelp: 'Word level: double-click (or long-press) a word to see its sign. Every drag has a button alternative: the Paragraphs list and the Sign buttons do everything the pin does.',
+    devEy: 'Developer guide', oneLineH: 'Add Ethiopian Sign Language in one line', oneLineB: 'Load the module once. Use <db-player> for video lessons and <db-sign-pin> for text pages. Both work without a framework, and the player falls back to a normal video if our server can’t be reached.',
+    copy: 'Copy code', copied: 'Copied ✓',
+    levels: [['Script tag', 'Drop-in web components for lesson videos and text pages. Best for most platforms.', '<db-player>'], ['REST API', 'Send text or lesson captions, get back sign clips, gloss and coverage. For native apps and custom players.', 'POST /sign/translate'], ['Open file formats', 'Sign timing ships as WebVTT next to your captions, and the lexicon as JSON, so you are never locked in.', 'lesson.sign.vtt']],
+    guideH: 'Install guide', steps: [['Add the script tag', 'Paste the module script once in your page template.'], ['Wrap your lesson video', 'Replace <video> with <db-player> and point captions at your Amharic and English .vtt files.'], ['Turn on the sign pin for text', 'Add <db-sign-pin> to article pages. Learners get the Sign button on every block.']],
+    savannaH: 'Works inside Savanna.', savannaB: 'This demo runs inside ALX’s Savanna learning platform with no changes to its code beyond our tag.',
+    refH: 'Reference', attrsH: 'Attributes', attr: 'Attribute', desc: 'What it does', example: 'Example', eventsH: 'Events', apiH: 'API endpoints', openDocs: 'Open API docs',
+    attrs: [['src', 'Lesson video file', 'lesson.mp4'], ['captions', 'Comma-separated caption files', 'lesson.am.vtt,lesson.en.vtt'], ['sign', 'Recorded interpreter track (optional)', 'lesson.sign.vtt'], ['glossary', 'Words in this lesson', 'glossary.json'], ['api', 'LE HULUM API base URL', '{{ host }}/api/v1'], ['lesson-id', 'Lesson identifier for feedback', 'demo'], ['lang', 'Default caption language', 'am | en'], ['theme', 'Player theme', 'light | dark | contrast']],
+    events: [['progress', 'Fires as the learner moves through lines: { line, time, signed }.'], ['complete', 'Fires when the lesson ends: { lessonId, understood }.']],
+    endpoints: [['POST', '/sign/translate', 'Text in Amharic or English → gloss, clips, coverage, face signals.'], ['POST', '/sign/lesson', 'Caption file → signed lesson track with pacing.'], ['GET', '/lexicon', 'All published signs with topics and credits.'], ['GET', '/glossary', 'Words for a lesson, with lines they appear in.'], ['POST', '/sign/review', 'Send “Understood / Not clear” feedback for review.']],
+  },
+  am: {
+    ey: 'ለመድረኮች · የቀጥታ ማሳያ', h1: 'ማንኛውንም ገጽ በምልክት። በዚህኛው ይሞክሩት።', lede: 'ከታች ያለው መደበኛ የትምህርት ገጽ ነው። የጨመርነው የእኛን script tag ብቻ ነው። ወደ አንቀጽ ይጠጉ ወይም Tab ይጫኑ እና የምልክት ቁልፉን ይጫኑ፣ ፒኑን በዓረፍተ ነገር ላይ ይጣሉ፣ ወይም ጽሑፍ ይምረጡ።',
+    hostL: 'የገጹ ገጽታ', hostLight: 'ብሩህ ገጽ', hostDark: 'ጨለማ ገጽ', onlyTag: 'ይህ ጽሑፍ የእኛ script tag ብቻ የተጨመረበት መደበኛ ድረ-ገጽ ነው',
+    signPage: 'ይህንን ገጽ በምልክት', signSel: 'የተመረጠውን በምልክት', pin: 'ፒኑን ይጎትቱ', pinAria: 'የምልክት ፒን። ወደ ዓረፍተ ነገር ይጎትቱ፣ ወይም ከመጀመሪያው አንቀጽ ለመጀመር Enter ይጫኑ።',
+    kbBtn: 'አንቀጾች', kbTitle: 'በአንቀጽ በምልክት', kbHelp: 'ከዚያ ለመጀመር አንቀጽ ይምረጡ። በምልክት ሁነታ፦ Tab በክፍሎች መካከል፣ Enter በምልክት፣ Space ቆም፣ ቀስቶች ዓረፍተ ነገር ይቀይራሉ፣ Escape ያቆማል።',
+    signBlock: 'ይህንን ክፍል በምልክት', pause: 'ቆም', play: 'አጫውት', replay: 'እንደገና', loading: 'ምልክቶች እየተጫኑ ነው', stop: 'አቁም', prev: 'ቀዳሚ ዓረፍተ ነገር', next: 'ቀጣይ ዓረፍተ ነገር', close: 'ዝጋ',
+    sentence: 'ዓረፍተ ነገር', of: 'ከ', wordsSigned: 'ቃላት ተተርጉመዋል', noSignYet: 'ገና ምልክት የለውም', noWords: 'ቃላት ገና ምልክት የላቸውም', loop: 'ድገም', openStudio: 'በምልክት ስቱዲዮ ክፈት',
+    demoHelp: 'በቃል ደረጃ፦ ምልክቱን ለማየት ቃሉን ሁለቴ ይጫኑ (ወይም ረጅም ጊዜ ይጫኑ)። እያንዳንዱ መጎተት የቁልፍ አማራጭ አለው፦ የአንቀጾች ዝርዝር እና የምልክት ቁልፎች ፒኑ የሚሰራውን ሁሉ ይሰራሉ።',
+    devEy: 'የገንቢዎች መመሪያ', oneLineH: 'የኢትዮጵያ ምልክት ቋንቋን በአንድ መስመር ያክሉ', oneLineB: 'ሞጁሉን አንድ ጊዜ ይጫኑ። ለቪዲዮ ትምህርቶች <db-player>፣ ለጽሑፍ ገጾች <db-sign-pin> ይጠቀሙ። ሁለቱም ያለ framework ይሰራሉ፤ አገልጋያችን ካልተገኘ ማጫወቻው እንደ መደበኛ ቪዲዮ ይሰራል።',
+    copy: 'ኮዱን ቅዳ', copied: 'ተቀድቷል ✓',
+    levels: [['Script tag', 'ለቪዲዮ ትምህርቶች እና ለጽሑፍ ገጾች ዝግጁ የweb components። ለአብዛኞቹ መድረኮች ምርጥ።', '<db-player>'], ['REST API', 'ጽሑፍ ወይም የትምህርት ጽሑፍ ይላኩ፣ የምልክት ቅንጥቦችን፣ gloss እና ሽፋን ይቀበሉ። ለመተግበሪያዎች እና ለብጁ ማጫወቻዎች።', 'POST /sign/translate'], ['ክፍት የፋይል ቅርጸቶች', 'የምልክት ጊዜ በWebVTT፣ መዝገበ ቃላቱ በJSON ይቀርባል፤ ስለዚህ በፍጹም አይታሰሩም።', 'lesson.sign.vtt']],
+    guideH: 'የመጫኛ መመሪያ', steps: [['script tag ያክሉ', 'የሞጁሉን script በገጽ አብነትዎ ውስጥ አንድ ጊዜ ይለጥፉ።'], ['የትምህርት ቪዲዮዎን ይጠቅልሉ', '<video>ን በ<db-player> ይተኩ፣ captions ን ወደ አማርኛ እና እንግሊዝኛ .vtt ፋይሎችዎ ያመልክቱ።'], ['ለጽሑፍ የምልክት ፒኑን ያብሩ', '<db-sign-pin>ን ወደ ጽሑፍ ገጾች ያክሉ። ተማሪዎች በእያንዳንዱ ክፍል ላይ የምልክት ቁልፍ ያገኛሉ።']],
+    savannaH: 'በSavanna ውስጥ ይሰራል።', savannaB: 'ይህ ማሳያ በALX የSavanna የመማሪያ መድረክ ውስጥ ይሰራል፤ ከእኛ tag ውጪ በኮዱ ላይ ምንም ለውጥ የለም።',
+    refH: 'ማጣቀሻ', attrsH: 'ባህሪያት', attr: 'ባህሪ', desc: 'የሚሰራው', example: 'ምሳሌ', eventsH: 'ክስተቶች', apiH: 'የAPI መዳረሻዎች', openDocs: 'የAPI ሰነዶችን ክፈት',
+    attrs: [['src', 'የትምህርት ቪዲዮ ፋይል', 'lesson.mp4'], ['captions', 'በኮማ የተለዩ የጽሑፍ ፋይሎች', 'lesson.am.vtt,lesson.en.vtt'], ['sign', 'የተቀረጸ የአስተርጓሚ ትራክ (አማራጭ)', 'lesson.sign.vtt'], ['glossary', 'በዚህ ትምህርት ያሉ ቃላት', 'glossary.json'], ['api', 'የLE HULUM API መነሻ URL', '{{ host }}/api/v1'], ['lesson-id', 'ለአስተያየት የትምህርት መለያ', 'demo'], ['lang', 'ነባሪ የጽሑፍ ቋንቋ', 'am | en'], ['theme', 'የማጫወቻ ገጽታ', 'light | dark | contrast']],
+    events: [['progress', 'ተማሪው በመስመሮች ሲያልፍ ይነሳል፦ { line, time, signed }።'], ['complete', 'ትምህርቱ ሲያልቅ ይነሳል፦ { lessonId, understood }።']],
+    endpoints: [['POST', '/sign/translate', 'አማርኛ ወይም እንግሊዝኛ ጽሑፍ → gloss፣ ቅንጥቦች፣ ሽፋን፣ የፊት ምልክቶች።'], ['POST', '/sign/lesson', 'የጽሑፍ ፋይል → ከፍጥነት ማስተካከያ ጋር የተተረጎመ ትራክ።'], ['GET', '/lexicon', 'ሁሉም የታተሙ ምልክቶች ከርዕሶች እና ምስጋናዎች ጋር።'], ['GET', '/glossary', 'የአንድ ትምህርት ቃላት፣ ከሚገኙባቸው መስመሮች ጋር።'], ['POST', '/sign/review', '«ገባኝ / ግልጽ አይደለም» አስተያየት ለግምገማ ይላኩ።']],
+  },
+};
+const BLOCKS = [
+  { type: 'h', text: 'Variables in Python' },
+  { type: 'p', text: 'A variable is a name that stores a value. You can change the value later.' },
+  { type: 'p', lang: 'am', text: 'ተለዋዋጭ እሴትን የሚያስቀምጥ ስም ነው። እሴቱን በኋላ መቀየር ይችላሉ።' },
+  { type: 'code', text: 'name = "Abebe"\nprint(name)' },
+  { type: 'p', text: 'Names cannot start with a number. If the code does not work, check the error.' },
+  { type: 'li', text: 'Write the name on the left.' },
+  { type: 'li', text: 'Put the value on the right.' },
+  { type: 'p', text: 'Python uses indentation to group lines.' },
+  { type: 'p', lang: 'am', text: 'ኮዱ ካልሰራ፣ ስህተቱን አረጋግጡ።' },
+];
+const host = (typeof location !== 'undefined' && location.origin) ? location.origin : 'https://HOST';
+const SNIPPET = '\u003cscript type="module" src="' + host + '/module/db-player.js">\u003c/script>\n\u003cdb-player src="lesson.mp4" captions="lesson.am.vtt,lesson.en.vtt"\n  api="' + host + '/api/v1" lesson-id="demo">\u003c/db-player>\n\u003cdb-sign-pin api="' + host + '/api/v1" lang="am">\u003c/db-sign-pin>';
+const splitS = s => s.split(/(?<=[.?!።])\s+/).filter(Boolean);
+
+class Component extends DCLogic {
+  state = { host: 'light', hover: null, active: null, status: 'idle', chipIdx: 0, signer: false, sel: null, selText: '', pop: null, kb: false, drag: null, pinAt: null, copied: false, selSign: null, doneBlock: null };
+  componentDidMount() {
+    const API = (window.LH_BRIDGE && window.LH_BRIDGE.API) || ((location.origin || '') + '/api/v1');
+    let pin = document.getElementById('lh-platform-pin');
+    if (!pin) {
+      pin = document.createElement('db-sign-pin');
+      pin.id = 'lh-platform-pin';
+      pin.setAttribute('api', API);
+      pin.setAttribute('lang', document.documentElement.lang === 'am' ? 'am' : 'en');
+      pin.setAttribute('for', 'lh-platform-article');
+      const art = document.getElementById('lh-platform-article');
+      if (art && art.parentNode) art.parentNode.appendChild(pin);
+      else document.body.appendChild(pin);
+    }
+  }
+  componentWillUnmount() { clearTimeout(this._t); clearTimeout(this._cp); }
+  data() {
+    if (this._data) return this._data;
+    const LH = window.LH; if (!LH) return [];
+    this._data = BLOCKS.map((b, i) => {
+      if (b.type === 'code') return { ...b, i, sents: [], signable: false };
+      const sents = splitS(b.text).map((text, si) => { const r = LH.translate(text) || {}; return { i: si, text, chips: r.chips || [], signed: r.signed || 0, total: r.total || 0 }; });
+      return { ...b, i, sents, signable: true, signed: sents.reduce((a, s) => a + s.signed, 0), total: sents.reduce((a, s) => a + s.total, 0) };
+    });
+    return this._data;
+  }
+  signable() { return this.data().filter(b => b.signable).map(b => b.i); }
+  start(b, s = 0) {
+    clearTimeout(this._t);
+    this.setState({ active: { b, s }, status: 'loading', chipIdx: 0, signer: true, selSign: null, pop: null, sel: null, doneBlock: null });
+    this.scrollToSent(b, s);
+    this._t = setTimeout(() => { this.setState({ status: 'playing' }); this.tick(); }, 800);
+  }
+  cur() { const s = this.state; if (s.selSign) return s.selSign; const d = this.data(); return s.active && d[s.active.b] ? d[s.active.b].sents[s.active.s] : null; }
+  tick() {
+    clearTimeout(this._t);
+    this._t = setTimeout(() => {
+      const s = this.state; if (s.status !== 'playing') return;
+      const sent = this.cur(); if (!sent) return;
+      if (s.chipIdx < sent.chips.length - 1) { this.setState({ chipIdx: s.chipIdx + 1 }); this.tick(); return; }
+      if (s.selSign) { this.setState({ status: 'done' }); return; }
+      this.advance(1, true);
+    }, 750);
+  }
+  advance(dir, auto) {
+    const s = this.state, d = this.data(); if (!s.active) return;
+    let { b, s: si } = s.active; si += dir;
+    const order = this.signable();
+    if (si >= d[b].sents.length) {
+      const nb = order[order.indexOf(b) + 1];
+      if (nb == null) { this.setState({ status: 'done', doneBlock: b }); return; }
+      b = nb; si = 0;
+    } else if (si < 0) {
+      const pb = order[order.indexOf(b) - 1];
+      if (pb == null) si = 0; else { b = pb; si = d[pb].sents.length - 1; }
+    }
+    const playing = auto || s.status === 'playing';
+    this.setState({ active: { b, s: si }, chipIdx: 0, status: playing ? 'playing' : (s.status === 'done' ? 'paused' : s.status) });
+    this.scrollToSent(b, si);
+    if (playing) this.tick();
+  }
+  scrollToSent(b, s) {
+    setTimeout(() => {
+      const box = document.getElementById('pl-scroll'); const el = box && box.querySelector('[data-b="' + b + '"][data-s="' + s + '"]');
+      if (!box || !el) return;
+      const r = el.getBoundingClientRect(), br = box.getBoundingClientRect();
+      const safeBottom = br.bottom - (this.isPhone() ? 240 : 40);
+      if (r.top < br.top + 16 || r.bottom > safeBottom) box.scrollTo({ top: box.scrollTop + r.top - br.top - 60, behavior: 'smooth' });
+    }, 30);
+  }
+  isPhone() { return (this.props.w || 1440) < 760; }
+  pauseResume() {
+    const s = this.state;
+    if (s.status === 'playing' || s.status === 'loading') { clearTimeout(this._t); this.setState({ status: 'paused' }); }
+    else if (s.status === 'paused') { this.setState({ status: 'playing' }); this.tick(); }
+    else if (s.status === 'done' && s.active) this.start(s.active.b, 0);
+  }
+  stop() { clearTimeout(this._t); this.setState({ status: 'idle', active: null, signer: false, selSign: null, pinAt: null, doneBlock: null }); }
+
+  renderVals() {
+    const lang = this.props.lang || 'en', t = T[lang], s = this.state, w = this.props.w || 1440, LH = window.LH;
+    const phone = w < 760, signMode = !!this.props.signMode || phone;
+    const d = this.data();
+    const H = s.host === 'dark' ? { bg: '#15181d', fg: '#eef0f3', line: '#2c3139', chip: '#232831' } : { bg: '#ffffff', fg: '#1b1e23', line: '#e3e5e8', chip: '#eef1f4' };
+    const typeStyle = { sign: ['var(--accent)', 'var(--accent-ink)', '0', '●'], finger: ['transparent', 'var(--ink)', '1.5px dashed var(--ink)', 'ABC'], point: ['transparent', 'var(--ink)', '1.5px solid var(--ink)', '→'], none: ['var(--warn-soft)', 'var(--warn-ink)', '1.5px dashed var(--warn-ink)', '∅'], pause: ['transparent', 'var(--ink-2)', '1px solid var(--line-strong)', '‖'] };
+    const cur = this.cur();
+    const blocks = d.map(b => {
+      const isActive = !!s.active && s.active.b === b.i && !s.selSign && s.status !== 'done';
+      const isDone = s.status === 'done' && s.doneBlock === b.i;
+      const st = isActive ? s.status : isDone ? 'done' : 'idle';
+      const hasNone = b.signable && b.signed < b.total;
+      const btnOn = b.signable && (signMode || s.hover === b.i || isActive || isDone);
+      const ico = st === 'loading' ? 'load' : st === 'playing' ? 'pause' : st === 'paused' ? 'play' : st === 'done' ? 'replay' : 'sign';
+      const hlSoft = s.host === 'dark' ? 'rgba(233,194,92,.12)' : 'rgba(45,106,74,.07)';
+      return {
+        i: b.i, isH: b.type === 'h', isP: b.type === 'p' || b.type === 'li', isCode: b.type === 'code', bullet: b.type === 'li', lang: b.lang || 'en', text: b.text,
+        fs: b.lang === 'am' ? '19px' : '18px', lh: b.lang === 'am' ? '1.85' : '1.65',
+        tab: b.signable && signMode ? 0 : -1, aria: b.signable && signMode ? t.signBlock + ': ' + b.text : undefined,
+        pad: isActive ? '10px 12px' : '0', bg: isActive ? hlSoft : 'transparent', ring: isActive ? '0 0 0 1.5px ' + (s.host === 'dark' ? '#e9c25c' : '#2d6a4a') : 'none',
+        btnOn, btnTop: isActive ? '6px' : (b.type === 'h' ? '-2px' : '0'),
+        btnBg: isActive ? H.fg : H.bg, btnFg: isActive ? H.bg : H.fg,
+        icoSign: ico === 'sign', icoLoad: ico === 'load', icoPause: ico === 'pause', icoPlay: ico === 'play', icoReplay: ico === 'replay',
+        btnAria: ({ sign: t.signBlock, load: t.loading, pause: t.pause, play: t.play, replay: t.replay })[ico], btnTitle: hasNone ? (b.total - b.signed) + ' ' + t.noWords : t.signBlock,
+        cov: b.signable ? (hasNone ? '∅ ' : '') + b.signed + '/' + b.total : '', covBg: hasNone ? 'var(--warn-soft)' : H.chip, covFg: hasNone ? 'var(--warn-ink)' : H.fg,
+        tipOn: hasNone && s.hover === b.i && !isActive, tip: (b.total - b.signed) + ' ' + t.noWords,
+        enter: () => this.setState({ hover: b.i }), leave: () => this.setState(st2 => st2.hover === b.i ? { hover: null } : null),
+        act: () => { if (st === 'idle' || st === 'done') this.start(b.i, 0); else this.pauseResume(); },
+        key: e => {
+          if (!b.signable || e.target !== e.currentTarget) return;
+          if (e.key === 'Enter') { e.preventDefault(); this.start(b.i, 0); }
+          else if (e.key === ' ') { e.preventDefault(); this.pauseResume(); }
+          else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { if (s.active) { e.preventDefault(); this.advance(1); } }
+          else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { if (s.active) { e.preventDefault(); this.advance(-1); } }
+          else if (e.key === 'Escape') this.stop();
+        },
+        sents: b.sents.map(se => { const on = isActive && s.active.s === se.i;
+          const pinned = s.pinAt && s.pinAt.b === b.i && s.pinAt.s === se.i;
+          return { i: se.i, text: se.text, pin: pinned ? '◆ ' : '', bg: on ? 'var(--hl)' : 'transparent', fg: on ? 'var(--hl-ink)' : 'inherit', deco: on ? 'underline' : 'none', pad: on ? '2px 3px' : '0' }; }),
+      };
+    });
+    const chips = (cur ? cur.chips : []).map((c, i) => { const [bg, fg, border, icon] = typeStyle[c.type] || typeStyle.sign; return { label: c.label, bg, fg, border, icon, ring: i === s.chipIdx && s.status !== 'loading' ? '0 0 0 2px var(--surface),0 0 0 4px var(--ink)' : 'none' }; });
+    const order = this.signable();
+    const totalSents = order.reduce((a, i) => a + d[i].sents.length, 0);
+    const sentNo = s.active ? order.slice(0, order.indexOf(s.active.b)).reduce((a, i) => a + d[i].sents.length, 0) + s.active.s + 1 : 1;
+    return {
+      t, hosts: [['light', t.hostLight], ['dark', t.hostDark]].map(([id, label]) => ({ label, sel: s.host === id, bg: s.host === id ? 'var(--ink)' : 'transparent', fg: s.host === id ? 'var(--bg)' : 'var(--ink)', pick: () => this.setState({ host: id }) })),
+      host: H, frameH: phone ? '640px' : '660px', hostCols: w >= 1100 ? '180px minmax(0,1fr)' : 'minmax(0,1fr)', showHostSide: w >= 1100,
+      articlePadB: phone && s.signer ? '280px' : '120px',
+      blocks,
+      onSelect: e => {
+        const selObj = window.getSelection(); const text = selObj ? selObj.toString().trim() : '';
+        const wrap = e.currentTarget.parentElement.getBoundingClientRect();
+        if (!text || !selObj.rangeCount) { if (s.sel) this.setState({ sel: null }); return; }
+        const r = selObj.getRangeAt(0).getBoundingClientRect();
+        if (!/\s/.test(text)) {
+          const clean = text.replace(/[.,?!።፣"()]/g, ''); const r2 = LH && LH.translate(clean); const entry = r2 && r2.entry;
+          this.setState({ sel: null, pop: { x: Math.max(8, Math.min(r.left - wrap.left, wrap.width - 276)) + 'px', y: (r.bottom - wrap.top + 8) + 'px', word: clean, entry } });
+        } else this.setState({ pop: null, sel: { x: Math.max(8, Math.min(r.right - wrap.left - 60, wrap.width - 200)) + 'px', y: Math.max(8, r.top - wrap.top - 52) + 'px' }, selText: text });
+      },
+      selBtn: s.sel, signSelection: () => {
+        const r = (LH && LH.translate(s.selText)) || {}; const chipsS = r.single ? [{ type: r.entry ? 'sign' : 'none', label: r.entry ? r.entry.gloss : s.selText }] : (r.chips || []);
+        clearTimeout(this._t);
+        this.setState({ sel: null, signer: true, status: 'loading', chipIdx: 0, selSign: { text: s.selText, chips: chipsS, signed: r.signed || 0, total: r.total || chipsS.length }, active: null });
+        this._t = setTimeout(() => { this.setState({ status: 'playing' }); this.tick(); }, 700);
+      },
+      pop: s.pop ? { x: s.pop.x, y: s.pop.y, word: s.pop.word, am: s.pop.entry ? s.pop.entry.am : s.pop.word, en: s.pop.entry ? s.pop.entry.en : '', gloss: s.pop.entry ? s.pop.entry.gloss : '∅', none: !s.pop.entry, open: () => this.props.go && this.props.go('studio') } : null,
+      closePop: () => this.setState({ pop: null }),
+      kbPanel: s.kb, toggleKb: () => this.setState({ kb: !s.kb }),
+      kbItems: order.map((i, n) => ({ n: String(n + 1).padStart(2, '0'), text: d[i].text, go: () => { this.setState({ kb: false }); this.start(i, 0); } })),
+      toolsOn: !(phone && s.signer),
+      pinDown: e => {
+        if (e.button && e.button !== 0) return;
+        e.preventDefault();
+        const move = ev => this.setState({ drag: { x: ev.clientX + 'px', y: ev.clientY + 'px' } });
+        const up = ev => {
+          window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up);
+          this.setState({ drag: null });
+          const el = document.elementFromPoint(ev.clientX, ev.clientY); const sp = el && el.closest && el.closest('[data-s]');
+          if (sp) { const b = +sp.dataset.b, si = +sp.dataset.s; this.setState({ pinAt: { b, s: si } }); this.start(b, si); }
+        };
+        move(e); window.addEventListener('pointermove', move); window.addEventListener('pointerup', up);
+      },
+      pinKey: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.start(order[0], 0); } },
+      dragPin: s.drag,
+      launcherOn: !s.signer, openSigner: () => this.start(order[0], 0),
+      signerOn: s.signer,
+      sw: phone ? { right: '0', left: '0', bottom: '0', width: 'auto', radius: '18px 18px 0 0', vidW: '34%' } : { right: '16px', left: 'auto', bottom: '16px', width: '400px', radius: '18px', vidW: '150px' },
+      loading: s.status === 'loading', curGloss: s.status !== 'loading' && cur && cur.chips[s.chipIdx] ? cur.chips[s.chipIdx].label : '',
+      chips, sentLabel: s.selSign ? t.signSel : t.sentence + ' ' + sentNo + ' ' + t.of + ' ' + totalSents,
+      coverage: cur ? (lang === 'am' ? cur.total + ' ' + t.of + ' ' + cur.signed + ' ' + t.wordsSigned : cur.signed + ' ' + t.of + ' ' + cur.total + ' ' + t.wordsSigned) : '',
+      pct: cur && cur.chips.length ? Math.round((s.chipIdx + 1) / cur.chips.length * 100) + '%' : '0%',
+      ppLabel: s.status === 'playing' || s.status === 'loading' ? t.pause : s.status === 'done' ? t.replay : t.play,
+      playPause: () => this.pauseResume(), prev: () => this.advance(-1), next: () => this.advance(1), stop: () => this.stop(),
+      host,
+      copy: () => { try { navigator.clipboard.writeText(SNIPPET); } catch (e) {} this.setState({ copied: true }); clearTimeout(this._cp); this._cp = setTimeout(() => this.setState({ copied: false }), 2200); },
+      copyLabel: s.copied ? t.copied : t.copy, copyBg: s.copied ? '#ece8dc' : 'transparent', copyFg: s.copied ? '#1a1c1a' : '#ece8dc',
+      levels: t.levels.map(([h, b, code], i) => ({ n: '0' + (i + 1), h, b, code })),
+      steps: t.steps.map(([h, b], i) => ({ n: i + 1, h, b })),
+      attrs: t.attrs.map(([k, dd, e]) => ({ k, d: dd, e })), events: t.events.map(([k, dd]) => ({ k, d: dd })),
+      endpoints: t.endpoints.map(([m, p, dd]) => ({ m, p, d: dd, bg: m === 'POST' ? 'var(--ink)' : 'transparent', fg: m === 'POST' ? 'var(--bg)' : 'var(--ink)' })),
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -48,7 +48,7 @@ const SHELL = `<style>
 :host([lang="am"]){font-family:var(--lh-font-ethiopic,"Noto Sans Ethiopic","Atkinson Hyperlegible",sans-serif);line-height:1.7;letter-spacing:normal;text-transform:none}
 :host([lang="am"]) *{letter-spacing:normal;text-transform:none}
 *,*::before,*::after{box-sizing:border-box}
-.player{max-width:100%;background:var(--lh-player-bg,#14130F);border-radius:12px;overflow:hidden}
+.player{max-width:100%;background:var(--lh-player-bg,#14130F);border-radius:var(--r-m,16px);overflow:hidden}
 .player:fullscreen{width:100%;height:100%;overflow:auto;border-radius:0}
 .stage{position:relative;aspect-ratio:16/9;background:var(--lh-stage,#14110F)}
 video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:var(--lh-stage,#14110F)}
@@ -63,7 +63,7 @@ video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;backgr
 .seek::-moz-range-track{height:6px;border-radius:3px;background:var(--lh-player-track,#2A2721);border:1px solid var(--lh-player-border,#8C8678)}
 .seek::-moz-range-thumb{width:22px;height:22px;border:3px solid var(--lh-player-accent,#62D6AA);border-radius:50%;background:var(--lh-player-text,#F3F0E8)}
 .btns{display:flex;flex-wrap:wrap}
-.controls button{flex:1 1 3.5rem;min-width:2.75rem;min-height:3.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.15rem;padding:.25rem;background:transparent;color:inherit;border:0;border-radius:12px;font:700 .85rem/1.2 var(--lh-font-latin,"Atkinson Hyperlegible",system-ui,sans-serif)}
+.controls button{flex:1 1 3.5rem;min-width:2.75rem;min-height:3.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.15rem;padding:.25rem;background:transparent;color:inherit;border:0;border-radius:var(--r-s,10px);font:700 .85rem/1.2 var(--lh-font-latin,"Atkinson Hyperlegible",system-ui,sans-serif);transition:background-color .15s,color .15s}
 :host([lang="am"]) .controls button{font-family:var(--lh-font-ethiopic,"Noto Sans Ethiopic",sans-serif);line-height:1.4}
 .controls button::before{font-weight:700;font-size:1rem;line-height:1}
 [data-id="play"][data-state="play"]::before{content:"▶"}
@@ -77,12 +77,12 @@ video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;backgr
 [data-id="help"]::before{content:"⌨"}
 [data-id="sign"]::before{content:"✋"}
 [data-id="glossary"]::before{content:"Aa"}
-.controls button[aria-pressed="true"]{background:var(--lh-player-accent,#F4B740);color:var(--lh-on-accent,#1A1206)}
+.controls button[aria-pressed="true"]{background:var(--lh-player-accent,#F4B740);color:var(--lh-on-accent,#1A1206);border-radius:var(--r-pill,999px)}
 button:focus-visible,.seek:focus-visible{outline:3px solid var(--lh-player-focus,#FFD54A);outline-offset:2px}
 .below,.panels{max-width:100%}
-dialog{max-width:min(32rem,calc(100vw - 2rem));padding:1.25rem;border:1px solid var(--lh-border,#8A8478);border-radius:12px;color:var(--lh-text,#1C1B18);background:var(--lh-surface,#fff);box-shadow:var(--lh-shadow-dialog,0 12px 32px rgba(0,0,0,.25))}
+dialog{max-width:min(32rem,calc(100vw - 2rem));padding:1.25rem;border:1px solid var(--lh-border,#8A8478);border-radius:var(--r-m,16px);color:var(--lh-text,#1C1B18);background:var(--lh-surface,#fff);box-shadow:var(--lh-shadow-dialog,0 12px 32px rgba(0,0,0,.25))}
 dialog::backdrop{background:var(--lh-scrim,rgba(28,27,24,.6))}
-dialog button{min-height:2.75rem;margin:.25rem .5rem .25rem 0;padding:0 1rem;border-radius:8px;border:1px solid var(--lh-border,#8A8478);background:var(--lh-surface,#fff);color:var(--lh-text,#1C1B18);font:inherit}
+dialog button{min-height:2.75rem;margin:.25rem .5rem .25rem 0;padding:0 1rem;border-radius:var(--r-s,10px);border:1px solid var(--lh-border,#8A8478);background:var(--lh-surface,#fff);color:var(--lh-text,#1C1B18);font:inherit}
 dialog button:focus-visible{outline:3px solid var(--lh-focus,#1C1B18);outline-offset:2px}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none;animation:none}}

@@ -4,11 +4,27 @@
 <meta charset="utf-8">
 <link rel="icon" href="data:,">
 <title>LE HULUM plugin test</title>
+<script type="module">
+  import { HOST, API, MODULE } from './config.js';
+  await import(MODULE);
+  const p = document.createElement('db-player');
+  p.setAttribute('src', `${HOST}/demo/data/lesson.mp4`);
+  p.setAttribute('poster', `${HOST}/demo/data/lesson-poster.webp`);
+  p.setAttribute('captions', `${HOST}/demo/data/lesson.am.vtt,${HOST}/demo/data/lesson.en.vtt`);
+  p.setAttribute('sign', `${HOST}/demo/data/sign.json`);
+  p.setAttribute('glossary', `${HOST}/demo/data/glossary.json`);
+  p.setAttribute('lang', 'am');
+  document.getElementById('mount').prepend(p);
+  const pin = document.createElement('db-sign-pin');
+  pin.setAttribute('api', API);
+  pin.setAttribute('lang', 'am');
+  pin.setAttribute('scope', '#line');
+  document.getElementById('mount').appendChild(pin);
+</script>
 </head>
 <body>
-<script type="module" src="http://localhost:8080/module/db-player.js"></script>
-<db-player src="http://localhost:8080/demo/data/lesson.mp4" poster="http://localhost:8080/demo/data/lesson-poster.webp" captions="http://localhost:8080/demo/data/lesson.am.vtt,http://localhost:8080/demo/data/lesson.en.vtt" sign="http://localhost:8080/demo/data/sign.json" glossary="http://localhost:8080/demo/data/glossary.json" lang="am"></db-player>
-<article id="line"><p>ኮዱ ካልሰራ፣ ስህተቱን አረጋግጡ።</p></article>
-<db-sign-pin api="http://localhost:8080/api/v1" lang="am" scope="#line"></db-sign-pin>
+<div id="mount">
+  <article id="line"><p>ኮዱ ካልሰራ፣ ስህተቱን አረጋግጡ።</p></article>
+</div>
 </body>
 </html>

@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="display:flex;height:{{ pageH }};min-height:320px;background:var(--bg);color:var(--ink);position:relative;overflow:hidden">
+
+  <sc-if value="{{ drawerScrim }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeDrawer }}" style="position:absolute;inset:0;z-index:29;background:var(--scrim)"></div>
+  </sc-if>
+
+  <sc-if value="{{ sideVisible }}" hint-placeholder-val="{{ true }}">
+    <aside aria-label="{{ t.sideL }}" style="position:{{ sidePos }};z-index:30;top:0;bottom:0;left:0;width:{{ sideW }};flex:none;display:flex;flex-direction:column;gap:6px;padding:14px 12px;background:var(--surface);border-right:1px solid var(--line);box-shadow:{{ sideShadow }};overflow:hidden">
+      <div style="display:flex;align-items:center;gap:10px;padding:4px 4px 10px;min-height:52px">
+        <span aria-hidden="true" style="flex:none;width:40px;height:40px;border-radius:12px;background:var(--hero);display:flex;align-items:center;justify-content:center;overflow:hidden"><svg class="logo-svg" aria-hidden="true" width="28" height="28" viewBox="0 0 48 48"><defs><linearGradient id="lhgAs" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--accent)"/><stop offset="1" style="stop-color:var(--gold)"/></linearGradient></defs><rect x="1" y="1" width="46" height="46" rx="14" fill="url(#lhgAs)"/><rect x="1.5" y="1.5" width="45" height="45" rx="13.5" fill="none" stroke="rgba(255,255,255,.35)"/><path d="M11.5 11.5 L24 37.5 L36.5 11.5" fill="none" stroke="var(--accent-ink)" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.2 23.5 H31.8" stroke="var(--accent-ink)" stroke-width="3.8" stroke-linecap="round"/><circle cx="24" cy="12.6" r="3.6" fill="var(--accent-ink)"/></svg></span>
+        <sc-if value="{{ sideFull }}" hint-placeholder-val="{{ true }}">
+          <span style="flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.25">
+            <span style="font:600 21px/1.2 var(--serif);letter-spacing:-.01em">Asayegn <span lang="am" style="font-family:'Noto Serif Ethiopic';font-size:18px;color:var(--accent-soft-ink)">አሳየኝ</span></span>
+            <span style="font-size:13px;color:var(--ink-3)">{{ t.showMe }}</span>
+          </span>
+        </sc-if>
+        <button onClick="{{ toggleSide }}" aria-label="{{ sideToggleL }}" title="{{ sideToggleL }}" style="flex:none;width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:transparent;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700">{{ sideToggleIcon }}</button>
+      </div>
+
+      <button onClick="{{ newChat }}" style="min-height:48px;display:flex;align-items:center;gap:12px;padding:0 14px;justify-content:{{ sideJustify }};border:0;border-radius:14px;background:var(--ink);color:var(--bg);font-size:15px;font-weight:700" title="{{ t.newChat }}">
+        <span aria-hidden="true" style="font-size:20px;line-height:1">＋</span><sc-if value="{{ sideFull }}" hint-placeholder-val="{{ true }}"><span>{{ t.newChat }}</span></sc-if>
+      </button>
+      <button onClick="{{ openBrowse }}" aria-pressed="{{ isBrowse }}" style="min-height:48px;display:flex;align-items:center;gap:12px;padding:0 14px;justify-content:{{ sideJustify }};border:1px solid {{ browseBorder }};border-radius:14px;background:{{ browseBg }};color:var(--ink);font-size:15px;font-weight:600" title="{{ t.browse }}">
+        <span aria-hidden="true" style="display:grid;grid-template-columns:repeat(2,7px);gap:3px"><span style="height:7px;border-radius:2px;background:currentColor"></span><span style="height:7px;border-radius:2px;background:currentColor"></span><span style="height:7px;border-radius:2px;background:currentColor"></span><span style="height:7px;border-radius:2px;background:currentColor;opacity:.4"></span></span>
+        <sc-if value="{{ sideFull }}" hint-placeholder-val="{{ true }}"><span>{{ t.browse }}</span></sc-if>
+      </button>
+
+      <sc-if value="{{ sideFull }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:4px;margin-top:14px;flex:1;min-height:0">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:0 6px">
+            <h2 style="margin:0;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)">{{ t.history }}</h2>
+            <sc-if value="{{ hasHistory }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clearHistory }}" style="min-height:44px;padding:0 6px;border:0;background:transparent;font-size:12px;font-weight:600;color:var(--ink-3);text-decoration:underline;text-underline-offset:3px">{{ t.clear }}</button></sc-if>
+          </div>
+          <sc-if value="{{ noHistory }}" hint-placeholder-val="{{ true }}">
+            <p style="margin:6px;padding:14px;border-radius:12px;border:1px dashed var(--line-strong);font-size:14px;line-height:1.5;color:var(--ink-3)">{{ t.historyEmpty }}</p>
+          </sc-if>
+          <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;overflow:auto">
+            <sc-for list="{{ history }}" as="hi" hint-placeholder-count="0">
+              <li><button onClick="{{ hi.go }}" style="width:100%;min-height:44px;padding:8px 10px;border:0;border-radius:10px;background:transparent;text-align:left;font-size:14px;line-height:1.4;color:var(--ink-2);display:flex;gap:8px;align-items:center" style-hover="background:var(--surface-2);color:var(--ink)"><span aria-hidden="true" style="flex:none;font:500 10px var(--mono);padding:2px 5px;border-radius:4px;border:1px solid var(--line-strong)">{{ hi.lang }}</span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ hi.text }}</span></button></li>
+            </sc-for>
+          </ul>
+          <p style="margin:auto 6px 0;padding-top:8px;font-size:12px;line-height:1.5;color:var(--ink-3)">{{ t.historyNote }}</p>
+        </div>
+      </sc-if>
+      <sc-if value="{{ sideRail }}" hint-placeholder-val="{{ false }}"><span style="flex:1"></span></sc-if>
+
+      <div style="border-top:1px solid var(--line);padding-top:8px;display:flex;flex-direction:column;gap:2px">
+        <button onClick="{{ openSettings }}" title="{{ t.settings }}" style="min-height:44px;display:flex;align-items:center;gap:12px;padding:0 12px;justify-content:{{ sideJustify }};border:0;border-radius:10px;background:transparent;font-size:14px;font-weight:600;color:var(--ink-2)" style-hover="background:var(--surface-2)"><span aria-hidden="true" style="width:18px;height:18px;border-radius:50%;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">i</span><sc-if value="{{ sideFull }}" hint-placeholder-val="{{ true }}"><span>{{ t.settings }}</span></sc-if></button>
+        <button onClick="{{ helpFeedback }}" title="{{ t.help }}" style="min-height:44px;display:flex;align-items:center;gap:12px;padding:0 12px;justify-content:{{ sideJustify }};border:0;border-radius:10px;background:transparent;font-size:14px;font-weight:600;color:var(--ink-2)" style-hover="background:var(--surface-2)"><span aria-hidden="true" style="width:18px;height:16px;border:2px solid currentColor;border-radius:4px 4px 4px 0"></span><sc-if value="{{ sideFull }}" hint-placeholder-val="{{ true }}"><span>{{ t.help }}</span></sc-if></button>
+        <a href="#platforms" onClick="{{ goPlatforms }}" title="{{ t.forPlatforms }}" style="min-height:44px;display:flex;align-items:center;gap:12px;padding:0 12px;justify-content:{{ sideJustify }};border-radius:10px;font-size:14px;font-weight:600;color:var(--ink-2);text-decoration:none" style-hover="background:var(--surface-2)"><span aria-hidden="true" style="font:700 12px var(--mono)">&lt;/&gt;</span><sc-if value="{{ sideFull }}" hint-placeholder-val="{{ true }}"><span>{{ t.forPlatforms }}</span></sc-if></a>
+      </div>
+    </aside>
+  </sc-if>
+
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column;position:relative">
+    <div style="flex:none;display:flex;align-items:center;gap:8px;padding:10px clamp(10px,2vw,24px);border-bottom:1px solid var(--line);background:var(--bg);flex-wrap:wrap;position:relative;z-index:5">
+      <sc-if value="{{ showMenuBtn }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ openDrawer }}" aria-label="{{ t.openSide }}" style="min-width:44px;min-height:44px;border:1px solid var(--line-strong);border-radius:50%;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px"><span aria-hidden="true" style="width:16px;height:2px;background:var(--ink)"></span><span aria-hidden="true" style="width:16px;height:2px;background:var(--ink)"></span></button>
+      </sc-if>
+      <span style="min-height:40px;display:flex;align-items:center;gap:8px;padding:0 14px;border-radius:var(--r-pill);background:var(--hero);color:var(--hero-ink);font-size:14px;font-weight:700"><span aria-hidden="true" style="width:8px;height:8px;border-radius:50%;background:var(--hero-accent)"></span>EthSL</span>
+      <div style="position:relative">
+        <button onClick="{{ toggleInterp }}" aria-expanded="{{ interpMenu }}" aria-haspopup="listbox" style="min-height:40px;display:flex;align-items:center;gap:8px;padding:0 12px 0 6px;border:1px solid var(--line-strong);border-radius:var(--r-pill);background:var(--surface);font-size:14px;font-weight:600">
+          <span aria-hidden="true" style="width:28px;height:28px;border-radius:50%;background:repeating-linear-gradient(135deg,var(--stage) 0 2px,var(--stage-2) 2px 6px)"></span>{{ t.interpName }} <span aria-hidden="true" style="font-size:10px">▾</span>
+        </button>
+        <sc-if value="{{ interpMenu }}" hint-placeholder-val="{{ false }}">
+          <div role="listbox" aria-label="{{ t.interpL }}" style="position:absolute;left:0;top:calc(100% + 6px);z-index:20;width:260px;padding:6px;border-radius:14px;background:var(--surface);border:1px solid var(--line-strong);box-shadow:var(--shadow)">
+            <button role="option" aria-selected="true" onClick="{{ toggleInterp }}" style="width:100%;min-height:52px;display:flex;align-items:center;gap:10px;padding:0 10px;border:0;border-radius:10px;background:var(--surface-2);text-align:left;font-size:14px;font-weight:600"><span aria-hidden="true">✓</span><span style="display:flex;flex-direction:column">{{ t.interpName }}<span style="font-size:12px;font-weight:400;color:var(--ink-3)">{{ t.interpRole }}</span></span></button>
+            <div style="padding:10px;font-size:13px;color:var(--ink-3)">{{ t.moreInterp }}</div>
+          </div>
+        </sc-if>
+      </div>
+      <div role="radiogroup" aria-label="{{ t.inputLang }}" style="display:flex;gap:2px;padding:3px;border:1px solid var(--line-strong);border-radius:var(--r-pill);background:var(--surface)">
+        <sc-for list="{{ langOpts }}" as="lo" hint-placeholder-count="3">
+          <button role="radio" aria-checked="{{ lo.sel }}" onClick="{{ lo.pick }}" style="min-height:36px;padding:0 12px;border:0;border-radius:var(--r-pill);font-size:13px;font-weight:700;background:{{ lo.bg }};color:{{ lo.fg }};white-space:nowrap">{{ lo.label }}</button>
+        </sc-for>
+      </div>
+      <span style="font-size:13px;color:var(--ink-3);white-space:nowrap">{{ detectedLabel }}</span>
+    </div>
+
+    <div id="as-scroll" style="flex:1;min-height:0;overflow:auto;scroll-behavior:smooth">
+      <div style="max-width:880px;margin:0 auto;padding:clamp(14px,2vw,24px) clamp(10px,2.4vw,24px) 24px;display:flex;flex-direction:column;gap:20px">
+
+        <sc-if value="{{ offline }}" hint-placeholder-val="{{ false }}">
+          <div role="status" style="display:flex;gap:12px;align-items:center;padding:12px 16px;border-radius:14px;background:var(--warn-soft);color:var(--warn-ink);font-size:14px;font-weight:600"><span aria-hidden="true" style="font-family:var(--mono)">⌁</span>{{ t.offline }}</div>
+        </sc-if>
+
+        <sc-if value="{{ banner }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 14px 14px 16px;border-radius:20px;background:var(--hero);color:var(--hero-ink);border:1px solid var(--hero-line)">
+            <span aria-hidden="true" style="flex:none;width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.08);border:1px solid var(--hero-line);display:flex;align-items:center;justify-content:center;font:700 13px var(--mono);color:var(--hero-accent)">&lt;/&gt;</span>
+            <span style="flex:1 1 220px;font-size:15px;font-weight:600;line-height:1.45">{{ t.banner }}</span>
+            <button onClick="{{ goPlatforms }}" style="min-height:44px;padding:0 6px 0 16px;border:0;border-radius:var(--r-pill);background:var(--hero-accent);color:#0b1430;font-size:14px;font-weight:700;display:flex;align-items:center;gap:10px;white-space:nowrap">{{ t.forPlatforms }}<span aria-hidden="true" style="width:32px;height:32px;border-radius:50%;background:#0b1430;color:var(--hero-accent);display:flex;align-items:center;justify-content:center">→</span></button>
+            <button onClick="{{ hideBanner }}" aria-label="{{ t.dismiss }}" style="flex:none;width:44px;height:44px;border:0;border-radius:50%;background:transparent;color:var(--hero-ink);font-size:20px">×</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isBrowse }}" hint-placeholder-val="{{ false }}">
+          <section aria-labelledby="br-h" style="display:flex;flex-direction:column;gap:16px">
+            <div style="display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap">
+              <div style="display:flex;flex-direction:column;gap:4px">
+                <h2 id="br-h" style="margin:0;font:500 clamp(26px,3vw,38px)/1.2 var(--serif)">{{ t.browse }}</h2>
+                <span style="font-size:15px;color:var(--ink-2)">{{ t.browseSub }}</span>
+              </div>
+              <button onClick="{{ backToChat }}" style="min-height:44px;padding:0 16px;border:1.5px solid var(--ink);border-radius:var(--r-pill);background:transparent;font-weight:700;font-size:14px">← {{ t.backChat }}</button>
+            </div>
+            <div role="tablist" aria-label="{{ t.topics }}" style="display:flex;gap:6px;overflow-x:auto;padding:2px 2px 6px">
+              <sc-for list="{{ topics }}" as="tp" hint-placeholder-count="7">
+                <button role="tab" aria-selected="{{ tp.sel }}" onClick="{{ tp.pick }}" style="flex:none;min-height:44px;padding:0 16px;border:1.5px solid {{ tp.border }};border-radius:var(--r-pill);background:{{ tp.bg }};color:{{ tp.fg }};font-size:14px;font-weight:600;white-space:nowrap">{{ tp.label }} <span style="font:500 11px var(--mono);opacity:.8">{{ tp.n }}</span></button>
+              </sc-for>
+            </div>
+            <ul role="tabpanel" style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr));gap:10px">
+              <sc-for list="{{ dict }}" as="d" hint-placeholder-count="8">
+                <li><button onClick="{{ d.post }}" aria-label="{{ d.aria }}" style="width:100%;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:16px;background:var(--surface);overflow:hidden;text-align:left;padding:0" style-hover="border-color:var(--ink)">
+                  <span aria-hidden="true" style="width:100%;aspect-ratio:4/3;background:repeating-linear-gradient(135deg,#141e3a 0 2px,#1a2648 2px 12px);display:flex;align-items:flex-end;padding:8px"><span style="font:600 10px var(--mono);color:#fff;background:rgba(0,0,0,.55);padding:3px 6px;border-radius:4px">{{ d.gloss }}</span></span>
+                  <span style="padding:10px 12px 12px;display:flex;flex-direction:column;gap:2px"><span lang="am" style="font:600 18px/1.5 'Noto Sans Ethiopic'">{{ d.am }}</span><span style="font-size:14px;color:var(--ink-2)">{{ d.en }}</span></span>
+                </button></li>
+              </sc-for>
+            </ul>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ true }}">
+          <section aria-labelledby="as-empty-h" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px;padding:clamp(20px,5vh,56px) 0 12px">
+            <h1 id="as-empty-h" style="margin:0;font:500 clamp(34px,5vw,60px)/var(--lh-tight) var(--serif);letter-spacing:-.025em;text-wrap:balance">{{ t.emptyH1 }}<br><em style="color:var(--accent-soft-ink)">{{ t.emptyH2 }}</em></h1>
+            <p lang="{{ altLang }}" style="margin:0;font:500 clamp(18px,1.8vw,22px)/1.6 var(--serif);color:var(--ink-2)">{{ t.emptyAlt }}</p>
+            <p style="margin:0;font-size:16px;color:var(--ink-2)">{{ t.emptySub }}</p>
+            <div aria-hidden="true" style="width:min(260px,70vw);aspect-ratio:4/3;border-radius:22px;background:radial-gradient(circle at 50% 40%,rgba(142,169,255,.18),transparent 60%),var(--hero);border:1px solid var(--hero-line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;margin:6px 0">
+              <span style="width:56px;height:56px;border-radius:50%;border:1.5px solid rgba(255,255,255,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px"><span style="width:12px;height:12px;border-radius:50%;background:#b8c2dc"></span><span style="width:24px;height:12px;border-radius:12px 12px 4px 4px;background:#b8c2dc"></span></span>
+              <span style="display:flex;gap:3px;align-items:end;height:18px"><span style="width:4px;height:100%;border-radius:2px;background:#8ea9ff;animation:lh-wave 1.2s ease-in-out infinite"></span><span style="width:4px;height:100%;border-radius:2px;background:#8ea9ff;animation:lh-wave 1.2s .15s ease-in-out infinite"></span><span style="width:4px;height:100%;border-radius:2px;background:#8ea9ff;animation:lh-wave 1.2s .3s ease-in-out infinite"></span></span>
+              <span style="font:500 11px var(--mono);color:#b8c2dc">{{ t.idle }}</span>
+            </div>
+            <span style="font:500 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)">{{ t.tryThese }}</span>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:720px">
+              <sc-for list="{{ tryChips }}" as="c" hint-placeholder-count="5">
+                <button onClick="{{ c.go }}" lang="{{ c.lang }}" style="min-height:46px;padding:4px 16px;border:1px solid var(--line-strong);border-radius:var(--r-pill);background:var(--surface);font-size:15px;font-weight:500;line-height:1.35;box-shadow:0 1px 2px rgba(0,0,0,.05);display:flex;align-items:center;gap:8px" style-hover="border-color:var(--ink)"><span aria-hidden="true" style="font:600 10px var(--mono);color:var(--ink-3)">{{ c.tag }}</span>{{ c.label }}</button>
+              </sc-for>
+            </div>
+            <button onClick="{{ judgesTest }}" style="min-height:46px;padding:0 18px;border:1.5px dashed var(--ink);border-radius:var(--r-pill);background:transparent;font-size:14px;font-weight:700">⇄ {{ t.judges }}</button>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{ isChat }}" hint-placeholder-val="{{ false }}">
+          <div role="log" aria-live="polite" aria-label="{{ t.logL }}" style="display:flex;flex-direction:column;gap:22px">
+            <sc-for list="{{ msgs }}" as="m" hint-placeholder-count="0">
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <sc-if value="{{ m.isUser }}" hint-placeholder-val="{{ false }}">
+                  <div style="align-self:flex-end;max-width:min(560px,86%);display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+                    <span style="font-size:12px;font-weight:600;color:var(--ink-3)">{{ t.you }} · {{ m.langLabel }}</span>
+                    <p lang="{{ m.lang }}" style="margin:0;padding:12px 18px;border-radius:22px 22px 6px 22px;background:var(--accent);color:var(--accent-ink);font-size:17px;line-height:1.55;font-weight:500;overflow-wrap:anywhere">{{ m.text }}</p>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{ m.isBot }}" hint-placeholder-val="{{ false }}">
+                  <article aria-label="{{ m.aria }}" style="display:flex;flex-direction:column;gap:10px;max-width:100%">
+                    <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+                      <span style="display:flex;align-items:center;gap:8px;min-height:32px;padding:0 12px;border-radius:var(--r-pill);background:var(--surface-2);border:1px solid var(--line);font-size:13px;font-weight:700"><span aria-hidden="true" style="width:7px;height:7px;border-radius:50%;background:var(--accent)"></span>EthSL · {{ t.interpName }}</span>
+                      <sc-if value="{{ m.badge }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;gap:6px;min-height:32px;padding:0 12px;border-radius:var(--r-pill);font-size:13px;font-weight:700;background:{{ m.badgeBg }};color:{{ m.badgeFg }};border:1.5px solid {{ m.badgeBorder }}"><span aria-hidden="true" style="font-family:var(--mono)">{{ m.badgeIcon }}</span>{{ m.badge }}</span></sc-if>
+                      <sc-if value="{{ m.twin }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;gap:6px;min-height:32px;padding:0 12px;border-radius:var(--r-pill);font-size:13px;font-weight:700;border:1.5px solid var(--ink)"><span aria-hidden="true">⇄</span>{{ m.twin }}</span></sc-if>
+                    </div>
+
+                    <sc-if value="{{ m.loading }}" hint-placeholder-val="{{ false }}">
+                      <div role="status" style="border-radius:24px;background:var(--hero);color:var(--hero-ink);border:1px solid var(--hero-line);padding:clamp(24px,4vw,44px);display:flex;flex-direction:column;align-items:center;gap:16px;min-height:260px;justify-content:center">
+                        <strong style="font:500 22px/1.3 var(--serif)">{{ t.preparing }}</strong>
+                        <ol style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;min-width:min(280px,100%)">
+                          <sc-for list="{{ m.steps }}" as="st" hint-placeholder-count="5">
+                            <li style="display:flex;align-items:center;gap:12px;font-size:15px;font-weight:{{ st.weight }};opacity:{{ st.op }}">
+                              <span aria-hidden="true" style="flex:none;width:22px;height:22px;border-radius:50%;border:1.5px solid {{ st.ring }};background:{{ st.fill }};color:#0b1430;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">{{ st.mark }}</span>{{ st.label }}
+                            </li>
+                          </sc-for>
+                        </ol>
+                        <span aria-hidden="true" style="width:min(280px,100%);height:3px;border-radius:2px;background:rgba(255,255,255,.15)"><span style="display:block;height:100%;border-radius:2px;background:var(--hero-accent);width:{{ m.pct }};transition:width .2s"></span></span>
+                      </div>
+                    </sc-if>
+
+                    <sc-if value="{{ m.error }}" hint-placeholder-val="{{ false }}">
+                      <div role="alert" style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;padding:18px 20px;border-radius:20px;border:2px solid var(--err-ink);background:var(--err-soft);color:var(--err-ink)">
+                        <span aria-hidden="true" style="width:36px;height:36px;border-radius:50%;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;font-weight:700">!</span>
+                        <span style="flex:1 1 220px;font-size:16px;font-weight:600;line-height:1.45">{{ t.errMsg }}</span>
+                        <button onClick="{{ m.retry }}" style="min-height:44px;padding:0 18px;border:2px solid currentColor;border-radius:var(--r-pill);background:transparent;color:inherit;font-weight:700">{{ t.retry }}</button>
+                      </div>
+                    </sc-if>
+
+                    <sc-if value="{{ m.ready }}" hint-placeholder-val="{{ false }}">
+                      <div style="border-radius:24px;overflow:hidden;background:var(--surface);border:1px solid var(--line);box-shadow:0 1px 0 rgba(0,0,0,.03),0 18px 40px rgba(30,25,10,.07)">
+                        <div style="display:grid;grid-template-columns:{{ m.gridCols }}">
+                          <div style="position:relative;aspect-ratio:{{ m.frameAspect }};background:#0a1124;display:flex;justify-content:center;overflow:hidden">
+                            <div style="height:100%;aspect-ratio:3/4;max-width:100%;background:repeating-linear-gradient(135deg,#141e3a 0 2px,#1a2648 2px 14px);position:relative">
+                              <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:12px;font:500 10px/1.6 var(--mono);color:#aab4cf">INTERPRETER VIDEO · 3:4</span>
+                              <sc-if value="{{ m.curGloss }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);padding:7px 14px;border-radius:10px;background:rgba(0,0,0,.66);color:#fff;font:600 clamp(14px,1.6vw,18px) var(--mono);letter-spacing:.04em;white-space:nowrap">{{ m.curGloss }}</span></sc-if>
+                            </div>
+                            <div style="position:absolute;left:10px;right:10px;bottom:10px;display:flex;align-items:center;gap:6px;padding:6px;border-radius:16px;background:rgba(8,13,30,.82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;flex-wrap:wrap">
+                              <button onClick="{{ m.playPause }}" aria-label="{{ m.playLabel }}" style="min-width:44px;min-height:44px;padding:0 14px;border:0;border-radius:var(--r-pill);background:#8ea9ff;color:#0b1430;font-weight:700;font-size:13px;display:flex;align-items:center;gap:8px">
+                                <sc-if value="{{ m.isPlaying }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="display:flex;gap:3px"><span style="width:3px;height:12px;background:currentColor"></span><span style="width:3px;height:12px;background:currentColor"></span></span></sc-if>
+                                <sc-if value="{{ m.notPlaying }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="width:0;height:0;border-left:9px solid currentColor;border-top:6px solid transparent;border-bottom:6px solid transparent"></span></sc-if>
+                                {{ m.playLabel }}
+                              </button>
+                              <button onClick="{{ m.replay }}" aria-label="{{ t.replay }}" title="{{ t.replay }}" style="min-width:44px;min-height:44px;border:0;border-radius:50%;background:transparent;color:#fff;font-size:18px">↻</button>
+                              <div role="group" aria-label="{{ t.speed }}" style="display:flex;gap:2px;padding:2px;border-radius:var(--r-pill);border:1px solid rgba(255,255,255,.25)">
+                                <sc-for list="{{ m.speeds }}" as="sp" hint-placeholder-count="2"><button onClick="{{ sp.pick }}" aria-pressed="{{ sp.sel }}" style="min-height:38px;min-width:48px;border:0;border-radius:var(--r-pill);font:600 12px var(--mono);background:{{ sp.bg }};color:{{ sp.fg }}">{{ sp.label }}</button></sc-for>
+                              </div>
+                              <sc-if value="{{ m.isWord }}" hint-placeholder-val="{{ false }}">
+                                <button onClick="{{ m.toggleLoop }}" aria-pressed="{{ m.loop }}" style="min-height:40px;padding:0 12px;border:1px solid rgba(255,255,255,.3);border-radius:var(--r-pill);background:{{ m.loopBg }};color:{{ m.loopFg }};font-size:12px;font-weight:700">{{ t.loop }}</button>
+                              </sc-if>
+                              <span style="flex:1"></span>
+                              <button onClick="{{ download }}" aria-label="{{ t.download }}" title="{{ t.download }}" style="min-width:44px;min-height:44px;border:0;border-radius:50%;background:transparent;color:#fff;font-size:17px;font-weight:700">⤓</button>
+                            </div>
+                          </div>
+
+                          <div style="padding:clamp(16px,2vw,22px);display:flex;flex-direction:column;gap:14px;min-width:0">
+                            <sc-if value="{{ m.isWord }}" hint-placeholder-val="{{ false }}">
+                              <div style="display:flex;flex-direction:column;gap:12px">
+                                <span style="align-self:flex-start;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border-radius:6px;background:var(--surface-2)">{{ m.topic }}</span>
+                                <div style="display:flex;flex-direction:column;gap:2px">
+                                  <span lang="am" style="font:600 clamp(32px,4vw,46px)/1.3 'Noto Serif Ethiopic',serif">{{ m.am }}</span>
+                                  <span style="font:500 clamp(20px,2vw,26px)/1.3 var(--serif);color:var(--ink-2)">{{ m.en }}</span>
+                                </div>
+                                <div style="display:flex;flex-direction:column;gap:8px;padding:14px;border-radius:14px;background:var(--surface-2)">
+                                  <span style="font-size:12px;font-weight:700;color:var(--ink-3)">{{ t.example }}</span>
+                                  <span style="font-size:16px;line-height:1.6">{{ m.example }}</span>
+                                  <button onClick="{{ m.signExample }}" style="align-self:flex-start;min-height:44px;padding:0 16px;border:0;border-radius:var(--r-pill);background:var(--ink);color:var(--bg);font-weight:700;font-size:13px">{{ t.signExample }}</button>
+                                </div>
+                                <p style="margin:0;display:flex;gap:8px;font-size:14px;line-height:1.5;color:var(--ink-2)"><span aria-hidden="true" style="color:var(--accent-soft-ink);font-weight:700">✓</span>{{ t.credit }}</p>
+                                <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+                                  <span style="font-size:13px;font-weight:700;margin-right:4px">{{ t.related }}</span>
+                                  <sc-for list="{{ m.related }}" as="r" hint-placeholder-count="3"><button onClick="{{ r.go }}" style="min-height:44px;padding:0 14px;border:1px solid var(--line-strong);border-radius:var(--r-pill);background:transparent;font-size:14px">{{ r.label }}</button></sc-for>
+                                </div>
+                              </div>
+                            </sc-if>
+
+                            <sc-if value="{{ m.isSentence }}" hint-placeholder-val="{{ false }}">
+                              <div style="display:flex;flex-direction:column;gap:12px">
+                                <p lang="{{ m.lang }}" style="margin:0;font:500 clamp(18px,1.8vw,22px)/1.5 var(--serif)">“{{ m.text }}”</p>
+                                <ol aria-label="{{ t.glossL }}" style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px">
+                                  <sc-for list="{{ m.chips }}" as="c" hint-placeholder-count="3">
+                                    <li><button onClick="{{ c.tap }}" aria-label="{{ c.aria }}" style="min-height:56px;padding:6px 12px;border-radius:12px;border:{{ c.border }};background:{{ c.bg }};color:{{ c.fg }};display:flex;flex-direction:column;align-items:flex-start;gap:2px;box-shadow:{{ c.ring }};transition:box-shadow .15s">
+                                      <span style="display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600"><span aria-hidden="true" style="font-family:var(--mono)">{{ c.icon }}</span>{{ c.type }}</span>
+                                      <span style="font:600 14px var(--mono);letter-spacing:.03em">{{ c.label }}</span>
+                                    </button></li>
+                                  </sc-for>
+                                </ol>
+                                <div style="display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center">
+                                  <sc-if value="{{ m.face }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;gap:6px;min-height:32px;padding:0 12px;border-radius:var(--r-pill);border:1.5px solid var(--ink);font-size:13px;font-weight:700"><span aria-hidden="true" style="font-family:var(--mono)">{{ m.faceIcon }}</span>{{ m.face }}</span></sc-if>
+                                  <span style="font-size:14px;font-weight:600;color:{{ m.covColor }}">{{ m.coverage }}</span>
+                                  <sc-if value="{{ m.missing }}" hint-placeholder-val="{{ false }}"><button onClick="{{ m.request }}" style="min-height:44px;padding:0;border:0;background:transparent;font-size:14px;font-weight:700;color:var(--accent-soft-ink);text-decoration:underline;text-underline-offset:3px">{{ t.requestThis }}</button></sc-if>
+                                </div>
+                                <sc-if value="{{ m.lessonLine }}" hint-placeholder-val="{{ false }}">
+                                  <button onClick="{{ goLesson }}" style="display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:16px;background:var(--surface-2);text-align:left" style-hover="border-color:var(--ink)">
+                                    <span aria-hidden="true" style="width:72px;aspect-ratio:16/10;border-radius:8px;background:repeating-linear-gradient(135deg,#d6cfbf 0 2px,#e3ddcf 2px 9px);display:flex;align-items:flex-end;padding:3px"><span style="font:600 9px var(--mono);background:rgba(0,0,0,.65);color:#fff;padding:1px 4px;border-radius:3px">{{ m.lessonLine.time }}</span></span>
+                                    <span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:12px;font-weight:700;color:var(--ink-3)">{{ t.lessonExplains }}</span><span style="font-size:15px;font-weight:600;line-height:1.4">{{ m.lessonLine.text }}</span></span>
+                                    <span aria-hidden="true" style="width:36px;height:36px;border-radius:50%;background:var(--ink);color:var(--bg);display:flex;align-items:center;justify-content:center">▶</span>
+                                  </button>
+                                </sc-if>
+                              </div>
+                            </sc-if>
+
+                            <sc-if value="{{ m.isNoSign }}" hint-placeholder-val="{{ false }}">
+                              <div style="display:flex;flex-direction:column;gap:10px">
+                                <span style="align-self:flex-start;display:flex;gap:6px;align-items:center;padding:5px 10px;border-radius:var(--r-pill);background:var(--warn-soft);color:var(--warn-ink);font-size:13px;font-weight:700"><span aria-hidden="true" style="font-family:var(--mono)">∅</span>{{ t.noSign }}</span>
+                                <p style="margin:0;font:500 22px/1.4 var(--serif)">“{{ m.text }}”</p>
+                                <p style="margin:0;font-size:15px;line-height:1.55;color:var(--ink-2)">{{ t.noSignB }}</p>
+                                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                                  <button onClick="{{ m.fingerspell }}" style="min-height:44px;padding:0 16px;border:1.5px solid var(--ink);border-radius:var(--r-pill);background:transparent;font-weight:700;font-size:14px">{{ t.fingerspell }}</button>
+                                  <button onClick="{{ m.request }}" style="min-height:44px;padding:0 16px;border:0;border-radius:var(--r-pill);background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:14px">{{ t.request }}</button>
+                                </div>
+                              </div>
+                            </sc-if>
+                          </div>
+                        </div>
+
+                        <div style="display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding:12px clamp(14px,2vw,20px);border-top:1px solid var(--line);background:var(--bg)">
+                          <button onClick="{{ m.fbYes }}" aria-pressed="{{ m.fbIsYes }}" style="min-height:44px;padding:0 14px;border:1.5px solid var(--ink);border-radius:var(--r-pill);background:{{ m.fbYesBg }};color:{{ m.fbYesFg }};font-weight:700;font-size:14px">✓ {{ t.understood }}</button>
+                          <button onClick="{{ m.fbNo }}" aria-pressed="{{ m.fbIsNo }}" style="min-height:44px;padding:0 14px;border:1.5px solid var(--ink);border-radius:var(--r-pill);background:{{ m.fbNoBg }};color:{{ m.fbNoFg }};font-weight:700;font-size:14px">? {{ t.notClear }}</button>
+                          <div role="radiogroup" aria-label="{{ t.rateL }}" style="display:flex;align-items:center;gap:0">
+                            <sc-for list="{{ m.stars }}" as="sr" hint-placeholder-count="5"><button role="radio" aria-checked="{{ sr.sel }}" aria-label="{{ sr.aria }}" onClick="{{ sr.pick }}" style="width:36px;min-height:44px;border:0;background:transparent;font-size:20px;color:{{ sr.color }};padding:0">{{ sr.glyph }}</button></sc-for>
+                          </div>
+                          <span style="flex:1"></span>
+                          <button onClick="{{ m.toggleWhy }}" aria-expanded="{{ m.why }}" style="min-height:44px;padding:0 4px;border:0;background:transparent;font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px">{{ t.why }} <span aria-hidden="true">{{ m.whyIcon }}</span></button>
+                        </div>
+                        <sc-if value="{{ m.why }}" hint-placeholder-val="{{ false }}">
+                          <ul style="margin:0;padding:4px clamp(14px,2vw,20px) 16px 38px;display:flex;flex-direction:column;gap:6px;font-size:15px;line-height:1.55;color:var(--ink-2);background:var(--bg)">
+                            <sc-for list="{{ m.whyItems }}" as="wi" hint-placeholder-count="2"><li>{{ wi }}</li></sc-for>
+                          </ul>
+                        </sc-if>
+                      </div>
+                    </sc-if>
+                  </article>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+
+    <form onSubmit="{{ send }}" style="flex:none;padding:10px clamp(10px,2.4vw,24px) 12px;background:linear-gradient(transparent,var(--bg) 30%);position:relative;z-index:4">
+      <div style="max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;align-items:flex-end;gap:8px;padding:6px 6px 6px 18px;border-radius:24px;border:2px solid {{ composerBorder }};background:var(--surface);box-shadow:var(--shadow)">
+          <label for="as-input" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">{{ t.composer }}</label>
+          <textarea id="as-input" rows="1" value="{{ input }}" onInput="{{ onInput }}" onKeyDown="{{ onKey }}" onFocus="{{ onFocus }}" onBlur="{{ onBlur }}" placeholder="{{ t.composer }}" style="flex:1;min-width:0;min-height:48px;max-height:140px;padding:12px 0;border:0;background:transparent;font-size:17px;line-height:1.5;resize:none;outline:none"></textarea>
+          <button type="submit" disabled="{{ sendDisabled }}" aria-label="{{ t.send }}" style="flex:none;width:48px;height:48px;border:0;border-radius:50%;background:{{ sendBg }};color:{{ sendFg }};display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;cursor:{{ sendCursor }}">↑</button>
+        </div>
+        <span style="text-align:center;font-size:12px;color:var(--ink-3)">{{ composerHint }}</span>
+      </div>
+    </form>
+
+    <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+      <div role="status" style="position:absolute;z-index:40;left:50%;bottom:110px;transform:translateX(-50%);max-width:calc(100% - 32px);display:flex;align-items:center;gap:10px;padding:12px 18px;border-radius:14px;background:var(--ink);color:var(--bg);font-size:14px;font-weight:600;box-shadow:var(--shadow)"><span aria-hidden="true">✓</span>{{ toast }}</div>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const T = {
+  en: {
+    sideL: 'Asayegn navigation', showMe: 'Show me in sign', newChat: 'New chat', browse: 'Browse signs', history: 'Your history', clear: 'Clear',
+    historyEmpty: 'Your messages will appear here.', historyNote: 'Stored on this device only.', settings: 'Learner settings', help: 'Help & feedback', forPlatforms: 'For platforms',
+    collapse: 'Collapse sidebar', expand: 'Expand sidebar', closeSide: 'Close menu', openSide: 'Open menu',
+    interpName: '[Interpreter name]', interpRole: 'Certified EthSL interpreter', interpL: 'Interpreter', moreInterp: 'More interpreters are coming.',
+    inputLang: 'Input language', auto: 'Auto', amharic: 'አማርኛ', english: 'English', detected: 'Detected', detAm: 'Amharic', detEn: 'English',
+    offline: 'You’re offline. Signs you’ve already watched still play.', banner: 'Add EthSL to your own platform with one line of code', dismiss: 'Dismiss',
+    browseSub: 'Pick a sign to add it to the chat.', backChat: 'Back to chat', topics: 'Topics', all: 'All',
+    emptyH1: 'Type a message.', emptyH2: 'Watch it signed.', emptyAlt: 'መልዕክት ይጻፉ። በምልክት ይመልከቱት።', emptySub: 'Real Ethiopian Sign Language interpreters, joined by our engine.', idle: 'interpreter ready',
+    tryThese: 'Try one of these', judges: 'Run the judges’ test: same question in English, then Amharic',
+    logL: 'Conversation', you: 'You', preparing: 'Preparing your signs',
+    steps: ['Reading your message', 'Finding the signs', 'Applying EthSL grammar', 'Joining real interpreter clips', 'Ready'],
+    errMsg: 'Can’t reach the sign server. Try again.', retry: 'Try again',
+    recorded: 'Recorded phrase', automatic: 'Automatic', dictionary: 'Dictionary sign', notSigned: 'Not signed', sameAs: 'Same signs as the message above',
+    play: 'Play', pause: 'Pause', replay: 'Replay', speed: 'Speed', loop: 'Loop', download: 'Download video',
+    example: 'Example sentence', signExample: 'Sign the example', credit: 'Signed by [interpreter name] · reviewed by Deaf co-designer', related: 'Related',
+    glossL: 'Signs in EthSL order. Tap one to play just that sign.', types: { sign: 'Sign', finger: 'Fingerspelled', point: 'Pointing', none: 'No sign yet', pause: 'Pause' },
+    eyebrows: 'Eyebrows up: question', shake: 'Head shake: not', of: 'of', wordsSigned: 'words signed', wordNoSign: 'word has no sign yet', wordsNoSign: 'words have no sign yet',
+    requestThis: 'Request this sign', lessonExplains: 'Where the lesson explains this',
+    noSign: 'No sign yet', noSignB: 'This isn’t in our sign library yet. You can see it fingerspelled now and request a recorded sign.', fingerspell: 'Fingerspell it', request: 'Request a sign',
+    understood: 'Understood', notClear: 'Not clear', rateL: 'Rate this signing, 1 to 5', star: 'stars', why: 'Why this sign',
+    whyRec: 'An interpreter recorded this whole sentence, so you see one natural recording.', whyAuto: 'Each word was matched to a reviewed dictionary sign and joined in EthSL order.',
+    whyQ: 'EthSL puts question words like WHAT at the end.', whyNot: 'NOT comes after the verb, with a head shake.', whyNone: 'Words with no sign yet stay in the text and go to our recording queue.', whyWord: 'This is the reviewed dictionary sign for this word.',
+    composer: 'Type something to sign', send: 'Send', hint: 'Enter to send · Shift+Enter for a new line · Amharic or English', typing: 'Typing…',
+    thanks: 'Thanks for your feedback.', requested: 'Request sent to the recording queue.', downloaded: 'Download started (demo).', helpMsg: 'Feedback form opens here (demo).',
+  },
+  am: {
+    sideL: 'የአሳየኝ ማሰሻ', showMe: 'በምልክት አሳየኝ', newChat: 'አዲስ ውይይት', browse: 'ምልክቶችን ያስሱ', history: 'ታሪክዎ', clear: 'አጽዳ',
+    historyEmpty: 'መልዕክቶችዎ እዚህ ይታያሉ።', historyNote: 'በዚህ መሣሪያ ላይ ብቻ ይቀመጣል።', settings: 'የተማሪ ቅንብሮች', help: 'እገዛ እና አስተያየት', forPlatforms: 'ለመድረኮች',
+    collapse: 'የጎን ፓነሉን አሳንስ', expand: 'የጎን ፓነሉን አስፋ', closeSide: 'ምናሌውን ዝጋ', openSide: 'ምናሌውን ክፈት',
+    interpName: '[የአስተርጓሚ ስም]', interpRole: 'የተረጋገጠ የምልክት ቋንቋ አስተርጓሚ', interpL: 'አስተርጓሚ', moreInterp: 'ተጨማሪ አስተርጓሚዎች ይመጣሉ።',
+    inputLang: 'የመጻፊያ ቋንቋ', auto: 'ራስ-ሰር', amharic: 'አማርኛ', english: 'English', detected: 'የታወቀው', detAm: 'አማርኛ', detEn: 'እንግሊዝኛ',
+    offline: 'ከኢንተርኔት ውጪ ነዎት። ያዩዋቸው ምልክቶች አሁንም ይጫወታሉ።', banner: 'የኢትዮጵያ ምልክት ቋንቋን በአንድ መስመር ኮድ ወደ መድረክዎ ያክሉ', dismiss: 'ዝጋ',
+    browseSub: 'ወደ ውይይቱ ለመጨመር ምልክት ይምረጡ።', backChat: 'ወደ ውይይት ተመለስ', topics: 'ርዕሶች', all: 'ሁሉም',
+    emptyH1: 'መልዕክት ይጻፉ።', emptyH2: 'በምልክት ይመልከቱት።', emptyAlt: 'Type a message. Watch it signed.', emptySub: 'እውነተኛ የኢትዮጵያ ምልክት ቋንቋ አስተርጓሚዎች፣ በሞተራችን የተገናኙ።', idle: 'አስተርጓሚው ዝግጁ ነው',
+    tryThese: 'ከእነዚህ አንዱን ይሞክሩ', judges: 'የዳኞች ሙከራ፦ አንድ ጥያቄ በእንግሊዝኛ፣ ከዚያ በአማርኛ',
+    logL: 'ውይይት', you: 'እርስዎ', preparing: 'ምልክቶችዎን በማዘጋጀት ላይ',
+    steps: ['መልዕክትዎን በማንበብ ላይ', 'ምልክቶቹን በመፈለግ ላይ', 'የምልክት ቋንቋ ሰዋስው በመተግበር ላይ', 'እውነተኛ የአስተርጓሚ ቅንጥቦችን በማገናኘት ላይ', 'ዝግጁ'],
+    errMsg: 'የምልክት አገልጋዩን ማግኘት አልተቻለም። እንደገና ይሞክሩ።', retry: 'እንደገና ሞክር',
+    recorded: 'የተቀረጸ ሐረግ', automatic: 'ራስ-ሰር', dictionary: 'የመዝገበ ቃላት ምልክት', notSigned: 'አልተተረጎመም', sameAs: 'ከላይ ካለው መልዕክት ጋር ተመሳሳይ ምልክቶች',
+    play: 'አጫውት', pause: 'ቆም', replay: 'እንደገና', speed: 'ፍጥነት', loop: 'ድገም', download: 'ቪዲዮውን አውርድ',
+    example: 'ምሳሌ ዓረፍተ ነገር', signExample: 'ምሳሌውን በምልክት', credit: 'በ[የአስተርጓሚ ስም] የተሰራ · በመስማት የተሳነው ተባባሪ ዲዛይነር የተገመገመ', related: 'ተዛማጅ',
+    glossL: 'ምልክቶች በምልክት ቋንቋ ቅደም ተከተል። ያንን ምልክት ብቻ ለማጫወት ይንኩ።', types: { sign: 'ምልክት', finger: 'በጣት ፊደል', point: 'ማመልከት', none: 'ገና ምልክት የለውም', pause: 'ቆም' },
+    eyebrows: 'ቅንድብ ከፍ፦ ጥያቄ', shake: 'ራስ መነቅነቅ፦ አይ', of: 'ከ', wordsSigned: 'ቃላት ተተርጉመዋል', wordNoSign: 'ቃል ገና ምልክት የለውም', wordsNoSign: 'ቃላት ገና ምልክት የላቸውም',
+    requestThis: 'ይህንን ምልክት ይጠይቁ', lessonExplains: 'ትምህርቱ ይህንን የሚያብራራበት',
+    noSign: 'ገና ምልክት የለውም', noSignB: 'ይህ ገና በምልክት ቤተ መጻሕፍታችን ውስጥ የለም። አሁን በጣት ፊደል ማየት እና የተቀረጸ ምልክት መጠየቅ ይችላሉ።', fingerspell: 'በጣት ፊደል አሳይ', request: 'ምልክት ይጠይቁ',
+    understood: 'ገባኝ', notClear: 'ግልጽ አይደለም', rateL: 'ይህንን ትርጉም ከ1 እስከ 5 ይገምግሙ', star: 'ኮከቦች', why: 'ይህ ምልክት ለምን',
+    whyRec: 'አስተርጓሚው ሙሉውን ዓረፍተ ነገር ቀርጾታል፤ አንድ ተፈጥሯዊ ቅጂ ያያሉ።', whyAuto: 'እያንዳንዱ ቃል ከተገመገመ የመዝገበ ቃላት ምልክት ጋር ተዛምዶ በምልክት ቋንቋ ቅደም ተከተል ተገናኝቷል።',
+    whyQ: 'የምልክት ቋንቋ እንደ «ምን» ያሉ የጥያቄ ቃላትን መጨረሻ ላይ ያስቀምጣል።', whyNot: '«አይ» ከግሱ በኋላ፣ ከራስ መነቅነቅ ጋር ይመጣል።', whyNone: 'ምልክት የሌላቸው ቃላት በጽሑፉ ውስጥ ይቆያሉ፤ ወደ መቅረጫ ወረፋም ይላካሉ።', whyWord: 'ይህ ለዚህ ቃል የተገመገመው የመዝገበ ቃላት ምልክት ነው።',
+    composer: 'በምልክት እንዲተረጎም ይጻፉ', send: 'ላክ', hint: 'ለመላክ Enter · ለአዲስ መስመር Shift+Enter · አማርኛ ወይም እንግሊዝኛ', typing: 'በመጻፍ ላይ…',
+    thanks: 'ለአስተያየትዎ እናመሰግናለን።', requested: 'ጥያቄዎ ወደ መቅረጫ ወረፋ ተልኳል።', downloaded: 'ማውረድ ተጀምሯል (ማሳያ)።', helpMsg: 'የአስተያየት ቅጽ እዚህ ይከፈታል (ማሳያ)።',
+  },
+};
+const TRY = [['What is a variable?', 'en', 'EN'], ['ተለዋዋጭ ምንድን ነው?', 'am', 'አማ'], ['ኮዱ ካልሰራ፣ ስህተቱን አረጋግጡ።', 'am', 'አማ'], ['ሰላም፣ እንኳን ደህና መጣችሁ።', 'am', 'አማ'], ['ኮድ', 'am', 'ኮድ / code']];
+const TYPE = { sign: ['var(--accent)', 'var(--accent-ink)', '1.5px solid var(--accent)', '●'], finger: ['transparent', 'var(--ink)', '1.5px dashed var(--ink)', 'ABC'], point: ['transparent', 'var(--ink)', '1.5px solid var(--ink)', '→'], none: ['var(--warn-soft)', 'var(--warn-ink)', '1.5px dashed var(--warn-ink)', '∅'], pause: ['transparent', 'var(--ink-2)', '1px solid var(--line-strong)', '‖'] };
+const isAm = s => /[\u1200-\u137F]/.test(s);
+const fmt = s => Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
+let UID = 1;
+
+class Component extends DCLogic {
+  state = { msgs: [], input: '', inLang: 'auto', collapsed: false, drawer: false, banner: true, view: 'chat', topic: 'all', playing: null, single: false, idx: {}, speed: {}, loop: {}, why: {}, fb: {}, rating: {}, history: [], toast: '', interpMenu: false, offline: typeof navigator !== 'undefined' && navigator.onLine === false, focused: false };
+  componentDidMount() {
+    try { this.setState({ history: JSON.parse(localStorage.getItem('lehulum.asayegn.history') || '[]'), banner: localStorage.getItem('lehulum.asayegn.banner') !== '0' }); } catch (e) {}
+    this._on = () => this.setState({ offline: false }); this._off = () => this.setState({ offline: true });
+    window.addEventListener('online', this._on); window.addEventListener('offline', this._off);
+    const B = window.LH_BRIDGE;
+    if (B && B.lexicon) {
+      B.lexicon().then(data => {
+        const items = data.items || data || [];
+        const topics = {};
+        items.forEach(e => { const g = e.group || e.topic || 'other'; topics[g] = topics[g] || { id: g, en: g, am: g }; });
+        const mapped = items.map(e => ({
+          id: e.gloss || e.id, gloss: e.gloss || e.id, am: (e.am && e.am[0]) || e.am || '', en: (e.en && e.en[0]) || e.en || '',
+          topic: e.group || e.topic || 'other', example: { en: e.en && e.en[0] || '', am: e.am && e.am[0] || '' }, related: [],
+          clip: e.clip, from: e.from_s, to: e.to_s,
+        }));
+        window.LH = window.LH || {};
+        window.LH.lexicon = mapped;
+        window.LH.byId = Object.fromEntries(mapped.map(x => [x.id, x]));
+        window.LH.topics = Object.values(topics);
+        this.setState({ lexReady: true });
+      }).catch(() => {});
+    }
+    if (this.props.query) this.post(this.props.query);
+  }
+  componentDidUpdate(pp) { if (pp.queryKey !== this.props.queryKey && this.props.query) this.post(this.props.query); }
+  componentWillUnmount() { clearTimeout(this._t); clearTimeout(this._toast); (this._steps || []).forEach(clearTimeout); window.removeEventListener('online', this._on); window.removeEventListener('offline', this._off); }
+  toastMsg(m) { clearTimeout(this._toast); this.setState({ toast: m }); this._toast = setTimeout(() => this.setState({ toast: '' }), 2800); }
+  scrollEnd() { setTimeout(() => { const el = document.getElementById('as-scroll'); if (el) el.scrollTop = el.scrollHeight; }, 40); }
+  saveHistory(text) {
+    const h = [text].concat(this.state.history.filter(x => x !== text)).slice(0, 20);
+    this.setState({ history: h }); try { localStorage.setItem('lehulum.asayegn.history', JSON.stringify(h)); } catch (e) {}
+  }
+  post(text, opts = {}) {
+    text = (text || '').trim(); if (!text) return;
+    const u = { id: UID++, role: 'user', text, lang: isAm(text) ? 'am' : 'en' };
+    const b = { id: UID++, role: 'bot', text, lang: u.lang, status: 'loading', step: 0, entry: opts.entry || null };
+    this.setState(s => ({ msgs: s.msgs.concat([u, b]), input: opts.keepInput ? s.input : '', view: 'chat', drawer: false, playing: null }));
+    this.saveHistory(text); this.scrollEnd();
+    const fail = this.state.offline || /#error/i.test(text);
+    this._steps = [1, 2, 3, 4].map(n => setTimeout(() => this.updMsg(b.id, { step: n }), n * 230));
+    const finish = (res) => {
+      this.updMsg(b.id, { status: 'ready', res });
+      this.setState(s => ({ playing: b.id, single: false, idx: { ...s.idx, [b.id]: 0 } }), () => this.tick());
+      this.scrollEnd();
+      if (opts.then) setTimeout(opts.then, 1400);
+    };
+    if (fail) { this._steps.push(setTimeout(() => this.updMsg(b.id, { status: 'error' }), 400)); return; }
+    if (opts.entry) { this._steps.push(setTimeout(() => finish({ input: text, single: true, entry: opts.entry }), 500)); return; }
+    const B = window.LH_BRIDGE;
+    const q = text.replace(/#\w+/g, '').trim();
+    if (!B || !B.ask) {
+      const res = window.LH ? window.LH.translate(q) : null;
+      this._steps.push(setTimeout(() => finish(res), 600));
+      return;
+    }
+    B.ask(q, this.state.inLang === 'auto' ? '' : this.state.inLang).then(raw => {
+      const card = B.toCard(raw, q);
+      // Attach lesson line index for "where the lesson explains this"
+      if (card.lesson_match && window.LH && window.LH.lesson) {
+        const cue = card.lesson_match.cue;
+        const idx = (window.LH.lesson.lines || []).findIndex(l => l.id === cue || l.cue === cue);
+        if (idx >= 0) card.line = idx;
+      }
+      finish(card);
+    }).catch(() => this.updMsg(b.id, { status: 'error' }));
+  }
+  updMsg(id, patch) { this.setState(s => ({ msgs: s.msgs.map(m => m.id === id ? { ...m, ...patch } : m) })); }
+  chipsOf(m) {
+    const r = m.res; if (!r) return [];
+    if (r.single) return [{ type: r.entry ? 'sign' : 'none', label: r.entry ? r.entry.gloss : r.input }];
+    return r.chips || [];
+  }
+  tick() {
+    clearTimeout(this._t);
+    const s = this.state; if (s.playing == null) return;
+    const m = s.msgs.find(x => x.id === s.playing); if (!m) return;
+    const sp = s.speed[m.id] || 1;
+    this._t = setTimeout(() => {
+      const st = this.state; if (st.playing !== m.id) return;
+      const chips = this.chipsOf(m); const i = st.idx[m.id] || 0;
+      const isWord = m.res && m.res.single && m.res.entry;
+      if (st.single || i >= chips.length - 1) {
+        if (isWord && st.loop[m.id] !== false) { this.setState({ idx: { ...st.idx, [m.id]: 0 } }, () => this.tick()); return; }
+        this.setState({ playing: null, single: false, idx: { ...st.idx, [m.id]: st.single ? i : chips.length } }); return;
+      }
+      this.setState({ idx: { ...st.idx, [m.id]: i + 1 } }, () => this.tick());
+    }, (m.res && m.res.single ? 1600 : 850) / sp);
+  }
+  play(id, from, single) { this.setState(s => ({ playing: id, single: !!single, idx: { ...s.idx, [id]: from } }), () => this.tick()); }
+
+  renderVals() {
+    const lang = this.props.lang || 'en', t = T[lang], s = this.state, w = this.props.w || 1440, LH = window.LH;
+    const desk = w >= 1024, phone = w < 640;
+    const sideFull = desk ? !s.collapsed : true;
+    const prim = lang;
+    const det = s.inLang !== 'auto' ? s.inLang : (s.input ? (isAm(s.input) ? 'am' : 'en') : null);
+    const lex = LH ? LH.lexicon : [];
+    const topicName = id => { const tp = LH && LH.topics.find(x => x.id === id); return tp ? tp[lang] : id; };
+    const bots = s.msgs.filter(m => m.role === 'bot' && m.status === 'ready');
+    const msgs = s.msgs.map((m, mi) => {
+      if (m.role === 'user') return { isUser: true, isBot: false, text: m.text, lang: m.lang, langLabel: m.lang === 'am' ? t.detAm : t.detEn };
+      const r = m.res || {};
+      const isWordReply = !!(r.single && r.entry);
+      const isNoSign = m.status === 'ready' && ((r.single && !r.entry) || (!r.single && r.signed === 0));
+      const isSentence = m.status === 'ready' && !r.single && r.signed > 0;
+      const chipsRaw = this.chipsOf(m);
+      const playing = s.playing === m.id;
+      const ci = s.idx[m.id] == null ? -1 : s.idx[m.id];
+      const sp = s.speed[m.id] || 1;
+      const missing = isSentence && r.signed < r.total;
+      const nMiss = (r.total || 0) - (r.signed || 0);
+      let twin = '';
+      if (isSentence) { const prevBot = bots.filter(b => b.id < m.id).pop(); if (prevBot && prevBot.res && !prevBot.res.single && prevBot.lang !== m.lang && JSON.stringify(this.chipsOf(prevBot).map(c => c.label)) === JSON.stringify(chipsRaw.map(c => c.label))) twin = t.sameAs; }
+      const badge = m.status !== 'ready' ? '' : isWordReply ? t.dictionary : isNoSign ? t.notSigned : r.source === 'recorded' ? t.recorded : t.automatic;
+      const badgeStyle = isWordReply || r.source === 'recorded' ? ['var(--accent-soft)', 'var(--accent-soft-ink)', 'var(--accent)', '●'] : isNoSign ? ['var(--warn-soft)', 'var(--warn-ink)', 'var(--warn-ink)', '∅'] : ['transparent', 'var(--ink)', 'var(--ink)', 'β'];
+      const whyItems = isWordReply ? [t.whyWord] : [r.source === 'recorded' ? t.whyRec : t.whyAuto].concat(r.face === 'eyebrows' ? [t.whyQ] : []).concat(r.face === 'shake' ? [t.whyNot] : []).concat(missing || isNoSign ? [t.whyNone] : []);
+      const fbv = s.fb[m.id], rate = s.rating[m.id] || 0;
+      const e = r.entry;
+      const ll = r.line != null && LH ? LH.lesson.lines[r.line] : null;
+      const req = () => this.toastMsg(t.requested);
+      return {
+        isUser: false, isBot: true, id: m.id, text: m.text, lang: m.lang,
+        aria: (badge ? badge + ': ' : '') + m.text,
+        loading: m.status === 'loading', error: m.status === 'error', ready: m.status === 'ready',
+        retry: () => { const text = m.text; this.setState(st => ({ msgs: st.msgs.filter(x => x.id !== m.id && !(x.role === 'user' && x.id === m.id - 1)) }), () => this.post(text.replace(/#error/i, ''))); },
+        steps: t.steps.map((label, i) => ({ label, mark: i < m.step ? '✓' : '', weight: i === m.step ? 700 : 500, op: i <= m.step ? 1 : 0.55, ring: i <= m.step ? 'var(--hero-accent)' : 'rgba(255,255,255,.4)', fill: i < m.step ? 'var(--hero-accent)' : 'transparent' })),
+        pct: Math.round((m.step + 1) / 5 * 100) + '%',
+        badge, badgeBg: badgeStyle[0], badgeFg: badgeStyle[1], badgeBorder: badgeStyle[2], badgeIcon: badgeStyle[3], twin,
+        gridCols: isWordReply && !phone ? 'minmax(220px,300px) minmax(0,1fr)' : 'minmax(0,1fr)',
+        frameAspect: isWordReply ? '3/4' : (phone ? '3/4' : '16/9'),
+        curGloss: ci >= 0 && chipsRaw[ci] && chipsRaw[ci].type !== 'pause' ? chipsRaw[ci].label : '',
+        isPlaying: playing, notPlaying: !playing, playLabel: playing ? t.pause : (ci >= chipsRaw.length ? t.replay : t.play),
+        playPause: () => { if (playing) { clearTimeout(this._t); this.setState({ playing: null }); } else this.play(m.id, ci < 0 || ci >= chipsRaw.length ? 0 : ci); },
+        replay: () => this.play(m.id, 0),
+        speeds: [1, 0.75].map(v => ({ label: v + '×', sel: sp === v, bg: sp === v ? '#f3f5fb' : 'transparent', fg: sp === v ? '#0b1430' : '#fff', pick: () => this.setState(st => ({ speed: { ...st.speed, [m.id]: v } })) })),
+        isWord: isWordReply, loop: s.loop[m.id] !== false, loopBg: s.loop[m.id] !== false ? '#f3f5fb' : 'transparent', loopFg: s.loop[m.id] !== false ? '#0b1430' : '#fff',
+        toggleLoop: () => this.setState(st => ({ loop: { ...st.loop, [m.id]: st.loop[m.id] === false } })),
+        topic: e ? topicName(e.topic) : '', am: e ? e.am : '', en: e ? e.en : '', example: e ? e.example[prim] : '',
+        signExample: () => e && this.post(e.example[prim]),
+        related: e && LH ? e.related.map(id => LH.byId[id]).filter(Boolean).map(x => ({ label: lang === 'am' ? x.am : x.en, go: () => this.post(lang === 'am' ? x.am : x.en, { entry: x }) })) : [],
+        isSentence, isNoSign,
+        chips: chipsRaw.map((c, i) => { const [bg, fg, border, icon] = TYPE[c.type] || TYPE.sign; return { label: c.label, type: t.types[c.type], icon, bg, fg, border, ring: i === ci ? '0 0 0 2px var(--surface),0 0 0 5px var(--ink)' : 'none', aria: t.types[c.type] + ': ' + c.label, tap: () => { if (c.type === 'none') req(); else this.play(m.id, i, true); } }; }),
+        face: r.face === 'eyebrows' ? t.eyebrows : r.face === 'shake' ? t.shake : '', faceIcon: r.face === 'shake' ? '↔' : '◠',
+        coverage: isSentence ? (missing ? (r.signed + ' ' + t.of + ' ' + r.total + ' · ' + nMiss + ' ' + (nMiss === 1 ? t.wordNoSign : t.wordsNoSign)) : (lang === 'am' ? r.total + ' ' + t.of + ' ' + r.signed + ' ' + t.wordsSigned : r.signed + ' ' + t.of + ' ' + r.total + ' ' + t.wordsSigned)) : '',
+        covColor: missing ? 'var(--warn-ink)' : 'var(--accent-soft-ink)', missing, request: req,
+        lessonLine: (ll || (r.lesson_match)) ? { time: ll ? fmt(ll.s) : fmt(r.lesson_match.start), text: ll ? ll[prim] : r.lesson_match.text, go: () => { const start = ll ? ll.s : (r.lesson_match && r.lesson_match.start) || 0; try { sessionStorage.setItem('lh.lesson.seek', String(start)); } catch (e) {} this.props.go && this.props.go('lesson'); } } : null,
+        fingerspell: () => { this.updMsg(m.id, { res: { input: m.text, chips: [{ type: 'finger', label: m.text.toUpperCase().split('').join('-') }], source: 'automatic', confidence: 60, signed: 1, total: 1 } }); this.play(m.id, 0); },
+        fbIsYes: fbv === 'yes', fbIsNo: fbv === 'no',
+        fbYesBg: fbv === 'yes' ? 'var(--ink)' : 'transparent', fbYesFg: fbv === 'yes' ? 'var(--bg)' : 'var(--ink)', fbNoBg: fbv === 'no' ? 'var(--ink)' : 'transparent', fbNoFg: fbv === 'no' ? 'var(--bg)' : 'var(--ink)',
+        fbYes: () => { this.setState(st => ({ fb: { ...st.fb, [m.id]: 'yes' } })); this.toastMsg(t.thanks); try { const B = window.LH_BRIDGE; B && B.review({ text_am: m.text, gloss: (this.chipsOf(m).map(c => c.label).join(' ')), verdict: 'approve' }); } catch (e) {} }, fbNo: () => { this.setState(st => ({ fb: { ...st.fb, [m.id]: 'no' } })); this.toastMsg(t.thanks); try { const B = window.LH_BRIDGE; B && B.review({ text_am: m.text, gloss: (this.chipsOf(m).map(c => c.label).join(' ')), verdict: 'fix' }); } catch (e) {} },
+        stars: [1, 2, 3, 4, 5].map(n => ({ glyph: n <= rate ? '★' : '☆', color: n <= rate ? 'var(--accent-soft-ink)' : 'var(--ink-3)', sel: rate === n, aria: n + ' ' + t.star, pick: () => this.setState(st => ({ rating: { ...st.rating, [m.id]: n } })) })),
+        why: !!s.why[m.id], whyIcon: s.why[m.id] ? '−' : '+', toggleWhy: () => this.setState(st => ({ why: { ...st.why, [m.id]: !st.why[m.id] } })), whyItems,
+      };
+    });
+    const hasMsgs = s.msgs.length > 0;
+    return {
+      t, altLang: lang === 'en' ? 'am' : 'en',
+      pageH: 'calc(100dvh - ' + (this.props.chromeH || 120) + 'px)',
+      sideVisible: desk || s.drawer, drawerScrim: !desk && s.drawer,
+      sidePos: desk ? 'relative' : 'absolute', sideW: desk ? (s.collapsed ? '76px' : '290px') : 'min(320px,86vw)', sideShadow: desk ? 'none' : 'var(--shadow)',
+      sideFull, sideRail: !sideFull, sideJustify: sideFull ? 'flex-start' : 'center',
+      sideToggleL: desk ? (s.collapsed ? t.expand : t.collapse) : t.closeSide, sideToggleIcon: desk ? (s.collapsed ? '›' : '‹') : '×',
+      toggleSide: () => desk ? this.setState({ collapsed: !s.collapsed }) : this.setState({ drawer: false }),
+      showMenuBtn: !desk, openDrawer: () => this.setState({ drawer: true }), closeDrawer: () => this.setState({ drawer: false }),
+      newChat: () => { clearTimeout(this._t); this.setState({ msgs: [], playing: null, view: 'chat', drawer: false }); },
+      openBrowse: () => this.setState({ view: 'browse', drawer: false }), backToChat: () => this.setState({ view: 'chat' }),
+      isBrowse: s.view === 'browse', browseBg: s.view === 'browse' ? 'var(--surface-2)' : 'transparent', browseBorder: s.view === 'browse' ? 'var(--ink)' : 'var(--line)',
+      hasHistory: s.history.length > 0, noHistory: s.history.length === 0,
+      history: s.history.map(text => ({ text, lang: isAm(text) ? 'አማ' : 'EN', go: () => this.post(text) })),
+      clearHistory: () => { this.setState({ history: [] }); try { localStorage.removeItem('lehulum.asayegn.history'); } catch (e) {} },
+      openSettings: () => this.props.openSettings && this.props.openSettings(), helpFeedback: () => this.toastMsg(t.helpMsg),
+      goPlatforms: e => { e && e.preventDefault && e.preventDefault(); this.props.go && this.props.go('platforms'); },
+      goLesson: () => this.props.go && this.props.go('lesson'),
+      interpMenu: s.interpMenu, toggleInterp: () => this.setState({ interpMenu: !s.interpMenu }),
+      langOpts: [['auto', t.auto], ['am', t.amharic], ['en', t.english]].map(([id, label]) => ({ label, sel: s.inLang === id, bg: s.inLang === id ? 'var(--ink)' : 'transparent', fg: s.inLang === id ? 'var(--bg)' : 'var(--ink)', pick: () => this.setState({ inLang: id }) })),
+      detectedLabel: det ? t.detected + ': ' + (det === 'am' ? t.detAm : t.detEn) : '',
+      offline: s.offline, banner: s.banner, hideBanner: () => { this.setState({ banner: false }); try { localStorage.setItem('lehulum.asayegn.banner', '0'); } catch (e) {} },
+      topics: [{ id: 'all', en: t.all, am: t.all }].concat(LH ? LH.topics : []).map(tp => { const sel = s.topic === tp.id; return { label: tp[lang] || tp.en, sel, n: tp.id === 'all' ? lex.length : lex.filter(x => x.topic === tp.id).length, bg: sel ? 'var(--ink)' : 'transparent', fg: sel ? 'var(--bg)' : 'var(--ink)', border: sel ? 'var(--ink)' : 'var(--line-strong)', pick: () => this.setState({ topic: tp.id }) }; }),
+      dict: lex.filter(x => s.topic === 'all' || x.topic === s.topic).map(x => ({ am: x.am, en: x.en, gloss: x.gloss, aria: x.en + ' · ' + x.am, post: () => this.post(lang === 'am' ? x.am : x.en, { entry: x }) })),
+      isEmpty: !hasMsgs && s.view === 'chat', isChat: hasMsgs && s.view === 'chat',
+      tryChips: TRY.map(([label, l, tag]) => ({ label: tag.includes('/') ? '' : label, tag: tag.includes('/') ? tag : tag, lang: l, go: () => this.post(label) })),
+      judgesTest: () => this.post('What is a variable?', { then: () => this.post('ተለዋዋጭ ምንድን ነው?') }),
+      msgs,
+      download: () => this.toastMsg(t.downloaded),
+      input: s.input, onInput: e => { this.setState({ input: e.target.value }); e.target.style.height = 'auto'; e.target.style.height = Math.min(140, e.target.scrollHeight) + 'px'; },
+      onKey: e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.post(s.input); e.target.style.height = 'auto'; } },
+      onFocus: () => this.setState({ focused: true }), onBlur: () => this.setState({ focused: false }),
+      send: e => { e.preventDefault(); this.post(s.input); },
+      sendDisabled: !s.input.trim(), sendBg: s.input.trim() ? 'var(--accent)' : 'var(--surface-3)', sendFg: s.input.trim() ? 'var(--accent-ink)' : 'var(--ink-3)', sendCursor: s.input.trim() ? 'pointer' : 'not-allowed',
+      composerBorder: s.focused ? 'var(--ink)' : 'var(--line-strong)',
+      composerHint: s.input ? t.typing + ' · ' + (det === 'am' ? t.detAm : t.detEn) : t.hint,
+      toast: s.toast,
+    };
+  }
+}
+</script>
+</body>
+</html>
