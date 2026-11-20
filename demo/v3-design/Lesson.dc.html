@@ -59,169 +59,10 @@
 
             <div id="lh-player" style="border-radius:24px;overflow:hidden;background:#0a1124;border:1px solid var(--hero-line);color:#f4f1e8;box-shadow:0 30px 80px rgba(0,0,0,.35)">
               <div id="lh-db-host" style="position:relative;z-index:2;background:#0a1124;min-height:min(56vw,420px)">
-                <!-- real <db-player> mounted by Component -->
-              </div>
-              <div id="lh-db-mock" hidden>
-              <div style="display:grid;grid-template-columns:{{ stageCols }};gap:{{ stageGap }};padding:{{ stagePad }}">
-                <sc-if value="{{ signFirstOn }}" hint-placeholder-val="{{ false }}">
-                  <div style="position:relative;aspect-ratio:3/4;border-radius:18px;overflow:hidden;background:repeating-linear-gradient(135deg,#141e3a 0 2px,#1a2648 2px 16px)" onMouseEnter="{{ showCtl }}" onFocus="{{ showCtl }}" onClick="{{ showCtl }}">
-                    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;font:500 11px/1.7 var(--mono);color:#aab4cf">INTERPRETER VIDEO · 3:4</div>
-                    <div style="position:absolute;left:12px;top:12px;right:12px;display:flex;flex-wrap:wrap;gap:6px">
-                      <span style="padding:6px 11px;border-radius:var(--r-pill);background:#f3f5fb;color:#0b1430;font-size:12px;font-weight:700;display:flex;gap:6px;align-items:center;white-space:nowrap"><span aria-hidden="true" style="width:7px;height:7px;border-radius:50%;background:#2d6a4a"></span>{{ signerTag }}</span>
-                      <sc-for list="{{ signerBadges }}" as="b" hint-placeholder-count="0"><span style="padding:6px 11px;border-radius:var(--r-pill);background:{{ b.bg }};color:{{ b.fg }};font-size:12px;font-weight:700;display:flex;gap:6px;align-items:center"><span aria-hidden="true" style="font-family:var(--mono)">{{ b.icon }}</span>{{ b.label }}</span></sc-for>
-                    </div>
-                    <sc-if value="{{ glossNow }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;left:50%;bottom:14px;transform:translateX(-50%);padding:7px 14px;border-radius:10px;background:rgba(0,0,0,.72);color:#fff;font:600 16px var(--mono);white-space:nowrap">{{ glossNow }}</span></sc-if>
-                    <sc-if value="{{ noSignNow }}" hint-placeholder-val="{{ false }}">
-                      <div style="position:absolute;left:12px;right:12px;bottom:12px;padding:14px;border-radius:14px;background:#fff6dc;color:#4d3608;font-size:14px;line-height:1.45;display:flex;gap:10px"><span aria-hidden="true" style="font-family:var(--mono);font-weight:700">∅</span><span><strong>{{ t.noSign }}</strong><br>{{ t.noSignB }}</span></div>
-                    </sc-if>
-                    <sc-if value="{{ ctlOn }}" hint-placeholder-val="{{ false }}">
-                      <div style="position:absolute;right:10px;bottom:10px;display:flex;gap:4px;padding:4px;border-radius:14px;background:rgba(0,0,0,.6)">
-                        <button onClick="{{ swap }}" aria-label="{{ t.swap }}" title="{{ t.swap }}" style="min-width:44px;min-height:44px;border:0;border-radius:10px;background:transparent;color:#fff;font-size:15px;font-weight:700">⇄</button>
-                        <button onClick="{{ toggleSignerMenu }}" aria-label="{{ t.signerMore }}" aria-expanded="{{ signerMenu }}" style="min-width:44px;min-height:44px;border:0;border-radius:10px;background:transparent;color:#fff;font-size:18px;font-weight:700">⋯</button>
-                        <button onClick="{{ hideSigner }}" aria-label="{{ t.hideSigner }}" style="min-width:44px;min-height:44px;border:0;border-radius:10px;background:transparent;color:#fff;font-size:20px">×</button>
-                      </div>
-                    </sc-if>
-                  </div>
-                </sc-if>
-
-                <div style="position:relative;aspect-ratio:16/9;border-radius:{{ lessonRadius }};overflow:hidden;background:#ece7db;color:#1f1e1b;align-self:start">
-                  <div style="position:absolute;inset:0;display:grid;grid-template-columns:38% 1fr">
-                    <div style="background:repeating-linear-gradient(135deg,#d6cfbf 0 2px,#e3ddcf 2px 12px);display:flex;align-items:center;justify-content:center;text-align:center;font:500 10px/1.6 var(--mono);color:#5c584f;padding:8px">LESSON VIDEO<br>teacher</div>
-                    <div style="background:#1b1f1c;color:#e8e4d8;padding:6% 7%;display:flex;flex-direction:column;gap:6%;font:400 clamp(9px,1.25vw,16px)/1.5 var(--mono)">
-                      <span style="color:#8f9a8f">main.py</span>
-                      <span style="opacity:{{ codeOp1 }};transition:opacity .4s"><span style="color:#9fc9ad">name</span> = <span style="color:#e9c25c">"Abebe"</span></span>
-                      <span style="opacity:{{ codeOp2 }};transition:opacity .4s"><span style="color:#9fc9ad">print</span>(name)</span>
-                      <span style="opacity:{{ codeOp2 }};color:#8f9a8f">&gt; Abebe</span>
-                    </div>
-                  </div>
-
-                  <sc-if value="{{ floatOn }}" hint-placeholder-val="{{ false }}">
-                    <div role="group" aria-label="{{ t.signerWin }}" onMouseEnter="{{ showCtl }}" onFocus="{{ showCtl }}" onClick="{{ showCtl }}" style="position:absolute;left:{{ fl.left }};top:{{ fl.top }};width:{{ fl.width }};aspect-ratio:3/4;border-radius:14px;overflow:hidden;background:repeating-linear-gradient(135deg,#141e3a 0 2px,#1a2648 2px 12px);box-shadow:0 0 0 3px #f3f5fb,0 14px 36px rgba(0,0,0,.45);opacity:{{ fl.opacity }};touch-action:none">
-                      <div role="button" onPointerDown="{{ dragStart }}" onKeyDown="{{ dragKey }}" tabindex="0" aria-label="{{ t.dragHandle }}" style="position:absolute;inset:0;cursor:move"></div>
-                      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;font:500 9px/1.5 var(--mono);color:#aab4cf;pointer-events:none">SIGNER<br>3:4</div>
-                      <div style="position:absolute;left:6px;top:6px;right:6px;display:flex;flex-wrap:wrap;gap:4px;pointer-events:none">
-                        <sc-for list="{{ signerBadges }}" as="b" hint-placeholder-count="0"><span style="padding:3px 7px;border-radius:var(--r-pill);background:{{ b.bg }};color:{{ b.fg }};font-size:11px;font-weight:700">{{ b.icon }} {{ b.label }}</span></sc-for>
-                      </div>
-                      <sc-if value="{{ glossNow }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;left:50%;bottom:6px;transform:translateX(-50%);padding:3px 8px;border-radius:6px;background:rgba(0,0,0,.75);color:#fff;font:600 12px var(--mono);white-space:nowrap;pointer-events:none">{{ glossNow }}</span></sc-if>
-                      <sc-if value="{{ noSignNow }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:6px;right:6px;bottom:6px;padding:6px 8px;border-radius:8px;background:#fff6dc;color:#4d3608;font-size:12px;font-weight:700;line-height:1.3;pointer-events:none">∅ {{ t.noSign }}</div></sc-if>
-                      <sc-if value="{{ ctlOn }}" hint-placeholder-val="{{ false }}">
-                        <div style="position:absolute;right:4px;top:4px;display:flex;flex-direction:column;gap:3px;padding:3px;border-radius:12px;background:rgba(0,0,0,.6)">
-                          <button onClick="{{ swap }}" aria-label="{{ t.swap }}" title="{{ t.swap }}" style="min-width:44px;min-height:44px;border:0;border-radius:10px;background:transparent;color:#fff;font-size:14px;font-weight:700">⇄</button>
-                          <button onClick="{{ toggleSignerMenu }}" aria-label="{{ t.signerMore }}" aria-expanded="{{ signerMenu }}" style="min-width:44px;min-height:44px;border:0;border-radius:10px;background:transparent;color:#fff;font-size:18px;font-weight:700">⋯</button>
-                          <button onClick="{{ hideSigner }}" aria-label="{{ t.hideSigner }}" style="min-width:44px;min-height:44px;border:0;border-radius:10px;background:transparent;color:#fff;font-size:20px">×</button>
-                        </div>
-                      </sc-if>
-                    </div>
-                  </sc-if>
-
-                  <sc-if value="{{ signerHidden }}" hint-placeholder-val="{{ false }}">
-                    <button onClick="{{ showSigner }}" style="position:absolute;right:12px;top:12px;min-height:44px;padding:0 16px;border:0;border-radius:var(--r-pill);background:#0b1430;color:#f3f5fb;font-weight:700;font-size:14px">{{ t.showSigner }}</button>
-                  </sc-if>
-
-                  <sc-if value="{{ waiting }}" hint-placeholder-val="{{ false }}">
-                    <div role="status" style="position:absolute;left:50%;top:12px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:4px 4px 4px 14px;border-radius:var(--r-pill);background:rgba(8,13,30,.9);color:#fff;font-size:14px;font-weight:600;white-space:nowrap">
-                      <span aria-hidden="true" style="display:flex;gap:3px"><span style="width:6px;height:6px;border-radius:50%;background:#8ea9ff;animation:lh-pulse 1s infinite"></span><span style="width:6px;height:6px;border-radius:50%;background:#8ea9ff;animation:lh-pulse 1s .2s infinite"></span><span style="width:6px;height:6px;border-radius:50%;background:#8ea9ff;animation:lh-pulse 1s .4s infinite"></span></span>{{ t.waiting }}
-                      <button onClick="{{ skipWait }}" style="min-height:36px;padding:0 12px;border:0;border-radius:var(--r-pill);background:#fff;color:#1f1e1b;font-weight:700;font-size:13px">{{ t.skip }}</button>
-                    </div>
-                  </sc-if>
-
-                  <sc-if value="{{ isPoster }}" hint-placeholder-val="{{ true }}">
-                    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,13,30,.25),rgba(8,13,30,.75));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#fff;text-align:center;padding:16px">
-                      <button onClick="{{ play }}" aria-label="{{ t.playLesson }}" style="width:clamp(68px,8vw,96px);height:clamp(68px,8vw,96px);border-radius:50%;border:0;background:#8ea9ff;color:#0b1430;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 10px rgba(142,169,255,.22)"><span aria-hidden="true" style="width:0;height:0;border-left:22px solid currentColor;border-top:14px solid transparent;border-bottom:14px solid transparent;margin-left:6px"></span></button>
-                      <span style="font-size:clamp(15px,1.5vw,18px);font-weight:700">{{ t.playLesson }} · 0:46</span>
-                    </div>
-                  </sc-if>
-                  <sc-if value="{{ isEnded }}" hint-placeholder-val="{{ false }}">
-                    <div style="position:absolute;inset:0;background:rgba(8,13,30,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#fff;text-align:center;padding:16px">
-                      <span aria-hidden="true" style="width:52px;height:52px;border-radius:50%;background:#8ea9ff;color:#1f1e1b;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700">✓</span>
-                      <strong style="font:500 clamp(22px,2.6vw,34px)/1.25 var(--serif)">{{ t.complete }}</strong>
-                      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
-                        <button onClick="{{ restart }}" style="min-height:46px;padding:0 18px;border:1.5px solid #fff;border-radius:var(--r-pill);background:transparent;color:#fff;font-weight:700">{{ t.replay }}</button>
-                        <button onClick="{{ goStudio }}" style="min-height:46px;padding:0 18px;border:0;border-radius:var(--r-pill);background:#8ea9ff;color:#0b1430;font-weight:700">{{ t.askStudio }}</button>
-                      </div>
-                    </div>
-                  </sc-if>
+                <div id="lh-poster-play" hidden style="position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:linear-gradient(180deg,rgba(8,13,30,.2),rgba(8,13,30,.55));pointer-events:none">
+                  <button type="button" id="lh-poster-btn" aria-label="Play lesson" style="pointer-events:auto;width:clamp(68px,8vw,96px);height:clamp(68px,8vw,96px);border-radius:50%;border:0;background:#8ea9ff;color:#0b1430;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 10px rgba(142,169,255,.22)"><span aria-hidden="true" style="width:0;height:0;border-left:22px solid currentColor;border-top:14px solid transparent;border-bottom:14px solid transparent;margin-left:6px"></span></button>
                 </div>
               </div>
-
-              <sc-if value="{{ signerMenu }}" hint-placeholder-val="{{ false }}">
-                <div role="menu" aria-label="{{ t.signerMore }}" style="margin:0 12px 12px;padding:14px;border-radius:16px;background:#141d38;border:1px solid rgba(255,255,255,.12);display:flex;flex-direction:column;gap:10px">
-                  <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
-                    <span style="font-size:13px;font-weight:600;color:#b8c2dc;min-width:110px">{{ t.moveTo }}</span>
-                    <sc-for list="{{ corners }}" as="c" hint-placeholder-count="4"><button role="menuitem" onClick="{{ c.pick }}" style="min-height:44px;padding:0 12px;border:1px solid rgba(255,255,255,.3);border-radius:var(--r-pill);background:transparent;color:#fff;font-size:13px;font-weight:600">{{ c.label }}</button></sc-for>
-                  </div>
-                  <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
-                    <span style="font-size:13px;font-weight:600;color:#b8c2dc;min-width:110px">{{ t.sizeL }}</span>
-                    <button role="menuitem" onClick="{{ smaller }}" style="min-height:44px;padding:0 14px;border:1px solid rgba(255,255,255,.3);border-radius:var(--r-pill);background:transparent;color:#fff;font-weight:600;font-size:13px">－ {{ t.smaller }}</button>
-                    <button role="menuitem" onClick="{{ larger }}" style="min-height:44px;padding:0 14px;border:1px solid rgba(255,255,255,.3);border-radius:var(--r-pill);background:transparent;color:#fff;font-weight:600;font-size:13px">＋ {{ t.larger }}</button>
-                    <button role="menuitem" onClick="{{ cycleOpacity }}" style="min-height:44px;padding:0 14px;border:1px solid rgba(255,255,255,.3);border-radius:var(--r-pill);background:transparent;color:#fff;font-weight:600;font-size:13px">{{ t.opacity }} {{ opacityLabel }}</button>
-                  </div>
-                  <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
-                    <span style="font-size:13px;font-weight:600;color:#b8c2dc;min-width:110px">{{ t.signerSpeed }}</span>
-                    <sc-for list="{{ signerSpeeds }}" as="sp" hint-placeholder-count="3"><button role="menuitemradio" aria-checked="{{ sp.sel }}" onClick="{{ sp.pick }}" style="min-height:44px;min-width:56px;border:1px solid rgba(255,255,255,.3);border-radius:var(--r-pill);background:{{ sp.bg }};color:{{ sp.fg }};font:600 13px var(--mono)">{{ sp.label }}</button></sc-for>
-                  </div>
-                  <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
-                    <span style="font-size:13px;font-weight:600;color:#b8c2dc;min-width:110px">{{ t.pacing }}</span>
-                    <sc-for list="{{ pacings }}" as="pc" hint-placeholder-count="3"><button role="menuitemradio" aria-checked="{{ pc.sel }}" onClick="{{ pc.pick }}" style="min-height:44px;padding:0 12px;border:1px solid rgba(255,255,255,.3);border-radius:var(--r-pill);background:{{ pc.bg }};color:{{ pc.fg }};font-size:13px;font-weight:600">{{ pc.label }}</button></sc-for>
-                  </div>
-                </div>
-              </sc-if>
-
-              <sc-if value="{{ capsOn }}" hint-placeholder-val="{{ true }}">
-                <div aria-live="polite" style="margin:0 12px;padding:14px 18px;border-radius:16px;background:{{ capBg }};color:{{ capFg }};min-height:80px;display:flex;flex-direction:column;justify-content:center;gap:2px">
-                  <span style="font-size:{{ capLabelSize }};font-weight:700;opacity:.85">{{ t.teacher }}</span>
-                  <sc-if value="{{ capPrimary }}" hint-placeholder-val="{{ false }}"><span style="font-size:{{ capSize }};font-weight:600;line-height:1.6">{{ capPrimary }}</span></sc-if>
-                  <sc-if value="{{ capSecondary }}" hint-placeholder-val="{{ false }}"><span style="font-size:{{ capSize2 }};line-height:1.55;opacity:.88">{{ capSecondary }}</span></sc-if>
-                  <sc-if value="{{ isPoster }}" hint-placeholder-val="{{ true }}"><span style="font-size:{{ capSize2 }};line-height:1.55;opacity:.8">{{ t.capsReady }}</span></sc-if>
-                </div>
-              </sc-if>
-
-              <sc-if value="{{ feedbackOn }}" hint-placeholder-val="{{ false }}">
-                <div style="margin:10px 12px 0;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px">
-                  <span style="display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:var(--r-pill);border:1.5px solid #8ea9ff;color:#c7d4ff;font-weight:700"><span aria-hidden="true">β</span>{{ t.autoBeta }}</span>
-                  <button onClick="{{ fbYes }}" aria-pressed="{{ fbIsYes }}" style="min-height:44px;padding:0 16px;border:1.5px solid #fff;border-radius:var(--r-pill);background:{{ fbYesBg }};color:{{ fbYesFg }};font-weight:700">✓ {{ t.understood }}</button>
-                  <button onClick="{{ fbNo }}" aria-pressed="{{ fbIsNo }}" style="min-height:44px;padding:0 16px;border:1.5px solid #fff;border-radius:var(--r-pill);background:{{ fbNoBg }};color:{{ fbNoFg }};font-weight:700">? {{ t.notClear }}</button>
-                </div>
-              </sc-if>
-
-              <div style="margin:12px;padding:8px 10px 10px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;gap:4px">
-                <div style="position:relative;height:28px;display:flex;align-items:center">
-                  <input type="range" min="0" max="46" step="0.5" value="{{ tNow }}" onInput="{{ seek }}" aria-label="{{ t.progress }}" aria-valuetext="{{ timeText }}" style="width:100%;height:28px;accent-color:#8ea9ff;margin:0">
-                  <sc-for list="{{ chapterTicks }}" as="ct" hint-placeholder-count="2"><span aria-hidden="true" style="position:absolute;left:{{ ct }};top:5px;width:2px;height:6px;background:#fff;opacity:.7;pointer-events:none"></span></sc-for>
-                </div>
-                <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">
-                  <button onClick="{{ togglePlay }}" aria-label="{{ playLabel }}" style="min-width:48px;min-height:48px;padding:0 16px;border:0;border-radius:var(--r-pill);background:#8ea9ff;color:#0b1430;font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px">
-                    <sc-if value="{{ playing }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="display:flex;gap:3px"><span style="width:4px;height:14px;background:currentColor"></span><span style="width:4px;height:14px;background:currentColor"></span></span></sc-if>
-                    <sc-if value="{{ notPlaying }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="width:0;height:0;border-left:11px solid currentColor;border-top:7px solid transparent;border-bottom:7px solid transparent"></span></sc-if>
-                    <sc-if value="{{ showCtlLabels }}" hint-placeholder-val="{{ true }}"><span>{{ playLabel }}</span></sc-if>
-                  </button>
-                  <button onClick="{{ back10 }}" aria-label="{{ t.back10 }}" title="{{ t.back10 }}" style="min-width:48px;min-height:48px;border:0;border-radius:var(--r-pill);background:transparent;color:#f4f1e8;font:600 13px var(--mono)" style-hover="background:rgba(255,255,255,.1)">−10</button>
-                  <button onClick="{{ fwd10 }}" aria-label="{{ t.fwd10 }}" title="{{ t.fwd10 }}" style="min-width:48px;min-height:48px;border:0;border-radius:var(--r-pill);background:transparent;color:#f4f1e8;font:600 13px var(--mono)" style-hover="background:rgba(255,255,255,.1)">+10</button>
-                  <span style="font:500 13px var(--mono);color:#b8c2dc;padding:0 8px;white-space:nowrap">{{ timeText }}</span>
-                  <span style="flex:1"></span>
-                  <button onClick="{{ toggleCaps }}" aria-pressed="{{ capsOn }}" aria-label="{{ t.captions }}" title="{{ t.captions }}" style="min-width:48px;min-height:48px;padding:0 12px;border:1.5px solid {{ capsBorder }};border-radius:var(--r-pill);background:transparent;color:#f4f1e8;font:700 13px var(--mono)">CC</button>
-                  <button onClick="{{ toggleSign }}" aria-pressed="{{ signOn }}" aria-label="{{ t.signLang }}" title="{{ t.signLang }}" style="min-width:48px;min-height:48px;padding:0 12px;border:1.5px solid {{ signBorder }};border-radius:var(--r-pill);background:transparent;color:#f4f1e8;font-size:13px;font-weight:700">EthSL</button>
-                  <div style="position:relative">
-                    <button onClick="{{ toggleMore }}" aria-expanded="{{ moreOpen }}" aria-haspopup="menu" style="min-width:48px;min-height:48px;padding:0 14px;border:0;border-radius:var(--r-pill);background:rgba(255,255,255,.1);color:#f4f1e8;font-size:14px;font-weight:700">{{ t.more }}</button>
-                    <sc-if value="{{ moreOpen }}" hint-placeholder-val="{{ false }}">
-                      <div role="menu" style="position:absolute;right:0;bottom:calc(100% + 8px);width:min(300px,86vw);padding:8px;border-radius:16px;background:var(--surface);color:var(--ink);box-shadow:var(--shadow);border:1px solid var(--line-strong);z-index:20;display:flex;flex-direction:column;gap:6px">
-                        <span style="font-size:12px;font-weight:700;color:var(--ink-3);padding:4px 8px 0">{{ t.speed }}</span>
-                        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px">
-                          <sc-for list="{{ rates }}" as="r" hint-placeholder-count="4"><button role="menuitemradio" aria-checked="{{ r.sel }}" onClick="{{ r.pick }}" style="min-height:44px;border:1px solid var(--line-strong);border-radius:10px;background:{{ r.bg }};color:{{ r.fg }};font:600 13px var(--mono)">{{ r.label }}</button></sc-for>
-                        </div>
-                        <span style="font-size:12px;font-weight:700;color:var(--ink-3);padding:4px 8px 0">{{ t.capLang }}</span>
-                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px">
-                          <sc-for list="{{ capLangs }}" as="cl" hint-placeholder-count="3"><button role="menuitemradio" aria-checked="{{ cl.sel }}" onClick="{{ cl.pick }}" style="min-height:44px;border:1px solid var(--line-strong);border-radius:10px;background:{{ cl.bg }};color:{{ cl.fg }};font-size:13px;font-weight:600">{{ cl.label }}</button></sc-for>
-                        </div>
-                        <button role="menuitem" onClick="{{ openWords }}" style="min-height:48px;padding:0 12px;border:0;border-radius:10px;background:transparent;text-align:left;font-weight:600;font-size:15px" style-hover="background:var(--surface-2)">{{ t.wordList }}</button>
-                        <button role="menuitem" onClick="{{ openSettings }}" style="min-height:48px;padding:0 12px;border:0;border-radius:10px;background:transparent;text-align:left;font-weight:600;font-size:15px" style-hover="background:var(--surface-2)">{{ t.settings }}</button>
-                      </div>
-                    </sc-if>
-                  </div>
-                  <button onClick="{{ fullscreen }}" aria-label="{{ t.fullscreen }}" title="{{ t.fullscreen }}" style="min-width:48px;min-height:48px;border:0;border-radius:var(--r-pill);background:transparent;color:#f4f1e8;display:flex;align-items:center;justify-content:center" style-hover="background:rgba(255,255,255,.1)"><span aria-hidden="true" style="width:16px;height:16px;border:2px solid currentColor;border-radius:3px;outline:2px solid #0a1124;outline-offset:-6px"></span></button>
-                </div>
-              </div>
-              </div><!-- /lh-db-mock -->
             </div>
           </div>
 
@@ -238,7 +79,7 @@
                 <ol style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px">
                   <sc-for list="{{ chapters }}" as="c" hint-placeholder-count="3">
                     <li><button onClick="{{ c.go }}" aria-current="{{ c.cur }}" style="width:100%;min-height:76px;display:grid;grid-template-columns:72px 1fr;gap:14px;align-items:center;padding:8px;border:1px solid {{ c.border }};border-radius:16px;background:{{ c.bg }};color:var(--hero-ink);text-align:left">
-                      <span aria-hidden="true" style="aspect-ratio:16/10;border-radius:10px;background:repeating-linear-gradient(135deg,#d6cfbf 0 2px,#e3ddcf 2px 9px);display:flex;align-items:flex-end;justify-content:flex-start;padding:4px"><span style="font:600 10px var(--mono);padding:1px 4px;border-radius:3px;background:rgba(0,0,0,.65);color:#fff">{{ c.time }}</span></span>
+                      <span aria-hidden="true" style="aspect-ratio:16/10;border-radius:10px;overflow:hidden;background:var(--stage);position:relative"><img src="{{ c.thumb }}" alt="" width="72" height="45" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;left:4px;bottom:4px;font:600 10px var(--mono);padding:1px 4px;border-radius:3px;background:rgba(0,0,0,.65);color:#fff">{{ c.time }}</span></span>
                       <span style="display:flex;flex-direction:column;gap:4px">
                         <span style="font-size:16px;font-weight:{{ c.weight }};line-height:1.4">{{ c.title }}</span>
                         <span style="font-size:12px;font-weight:600;color:var(--hero-ink-2);display:flex;gap:8px;align-items:center">{{ c.time }}<sc-if value="{{ c.isCur }}" hint-placeholder-val="{{ false }}"><span style="padding:2px 8px;border-radius:var(--r-pill);background:var(--hero-accent);color:#0b1430;font-weight:700">{{ t.now }}</span></sc-if></span>
@@ -315,7 +156,7 @@ const T = {
     wordList: 'Word list', settings: 'Learner settings', fullscreen: 'Fullscreen',
     kbdHint: 'Keyboard: Space play/pause · ← → 10 seconds · C captions · S signer.',
     panelL: 'Lesson panel', chapters: 'Chapters', words: 'Words', transcript: 'Transcript', now: 'Now',
-    showSign: 'Show sign', goLine: 'Go to line', lines: 'Lines', loopingSlow: 'Looping at 0.75× · signed by [interpreter name]',
+    showSign: 'Show sign', goLine: 'Go to line', lines: 'Lines', loopingSlow: 'Looping at 0.75× · signed by interpreter',
     stSigned: 'Signed', stAuto: 'Automatic sign', stNone: 'No sign yet', capsReady: 'Captions appear here, in Amharic and English.', legendL: 'Status key', lgSigned: 'Signed by interpreter', lgAuto: 'Automatic sign (beta)', lgNone: 'No sign yet', lgWait: 'Waiting for signer', meta: ['0:46', '14 lines', 'Python basics'], tagInterp: 'Interpreter', tagAuto: 'Automatic',
   },
   am: {
@@ -334,7 +175,7 @@ const T = {
     wordList: 'የቃላት ዝርዝር', settings: 'የተማሪ ቅንብሮች', fullscreen: 'ሙሉ ስክሪን',
     kbdHint: 'ቁልፎች፦ Space አጫውት/ቆም · ← → 10 ሰከንድ · C ጽሑፍ · S አስተርጓሚ።',
     panelL: 'የትምህርት ፓነል', chapters: 'ምዕራፎች', words: 'ቃላት', transcript: 'ሙሉ ጽሑፍ', now: 'አሁን',
-    showSign: 'ምልክቱን አሳይ', goLine: 'ወደ መስመር', lines: 'መስመሮች', loopingSlow: 'በ0.75× እየተደገመ · በ[የአስተርጓሚ ስም]',
+    showSign: 'ምልክቱን አሳይ', goLine: 'ወደ መስመር', lines: 'መስመሮች', loopingSlow: 'በ0.75× እየተደገመ · በአስተርጓሚ',
     stSigned: 'ተተርጉሟል', stAuto: 'ራስ-ሰር ምልክት', stNone: 'ገና ምልክት የለውም', capsReady: 'ጽሑፉ እዚህ በአማርኛ እና በእንግሊዝኛ ይታያል።', legendL: 'የሁኔታ መግለጫ', lgSigned: 'በአስተርጓሚ የተተረጎመ', lgAuto: 'ራስ-ሰር ምልክት (ቤታ)', lgNone: 'ገና ምልክት የለውም', lgWait: 'አስተርጓሚውን በመጠበቅ ላይ', meta: ['0:46', '14 መስመሮች', 'የፓይተን መሠረታዊያን'], tagInterp: 'አስተርጓሚ', tagAuto: 'ራስ-ሰር',
   },
 };
@@ -374,19 +215,52 @@ class Component extends DCLogic {
     let el = host.querySelector('db-player');
     const B = window.LH_BRIDGE || {};
     const DATA = B.DATA || ((location.origin || '') + '/demo/data');
-    const API = B.API || ((location.origin || '') + '/api/v1');
     if (!el) {
       el = document.createElement('db-player');
       el.setAttribute('src', DATA + '/lesson.mp4');
+      el.setAttribute('poster', DATA + '/lesson-poster.webp');
       el.setAttribute('captions', DATA + '/lesson.am.vtt,' + DATA + '/lesson.en.vtt');
+      el.setAttribute('chapters', DATA + '/chapters.vtt');
       el.setAttribute('glossary', DATA + '/glossary.json');
+      el.setAttribute('features', 'deaf');
+      el.setAttribute('data-sign-open', '');
       el.setAttribute('lang', (document.documentElement.lang === 'am') ? 'am' : 'en');
       el.setAttribute('theme', document.documentElement.dataset.theme || 'light');
       el.style.display = 'block';
       el.style.width = '100%';
       el.style.minHeight = '360px';
-      host.appendChild(el);
+      const overlay = document.getElementById('lh-poster-play');
+      host.insertBefore(el, overlay || null);
       this._player = el;
+      el.addEventListener('db-player:settings', () => {
+        if (this.props.openSettings) this.props.openSettings();
+      });
+      const syncOverlay = () => {
+        const v = el.shadowRoot && el.shadowRoot.querySelector('video');
+        const ov = document.getElementById('lh-poster-play');
+        if (!ov) return;
+        const show = !v || (v.paused && (v.currentTime || 0) < 0.4);
+        ov.hidden = !show;
+      };
+      el.addEventListener('db-player:progress', () => { const ov = document.getElementById('lh-poster-play'); if (ov) ov.hidden = true; });
+      const btn = document.getElementById('lh-poster-btn');
+      if (btn && !btn.dataset.bound) {
+        btn.dataset.bound = '1';
+        btn.addEventListener('click', () => this.togglePlay());
+      }
+      const tryBind = () => {
+        const v = el.shadowRoot && el.shadowRoot.querySelector('video');
+        if (!v) return false;
+        v.addEventListener('play', syncOverlay);
+        v.addEventListener('pause', syncOverlay);
+        v.addEventListener('loadedmetadata', syncOverlay);
+        syncOverlay();
+        return true;
+      };
+      if (!tryBind()) {
+        let n = 0;
+        const t = setInterval(() => { if (tryBind() || ++n > 40) clearInterval(t); }, 100);
+      }
     }
     this.applyPlayerMode();
   }
@@ -597,7 +471,13 @@ class Component extends DCLogic {
       panelMax: wide ? '820px' : 'none',
       tabs: [['chapters', t.chapters], ['words', t.words], ['transcript', t.transcript]].map(([id, label]) => ({ label, sel: s.tab === id, ...gsel(s.tab === id), pick: () => this.setState({ tab: id }) })),
       tab: { chapters: s.tab === 'chapters', words: s.tab === 'words', transcript: s.tab === 'transcript' },
-      chapters: lesson.chapters.map((c, i) => ({ time: fmt(c.t), title: c[lang], cur: i === chIdx && started ? 'step' : undefined, isCur: i === chIdx && started, bg: i === chIdx && started ? 'rgba(255,255,255,.08)' : 'transparent', border: i === chIdx && started ? 'var(--hero-accent)' : 'var(--hero-line)', weight: i === chIdx ? 700 : 500, go: () => this.seekTo(c.t + 0.01) })),
+      chapters: lesson.chapters.map((c, i) => ({
+        time: fmt(c.t), title: c[lang], cur: i === chIdx && started ? 'step' : undefined, isCur: i === chIdx && started,
+        bg: i === chIdx && started ? 'rgba(255,255,255,.08)' : 'transparent',
+        border: i === chIdx && started ? 'var(--hero-accent)' : 'var(--hero-line)', weight: i === chIdx ? 700 : 500,
+        thumb: (((window.LH_BRIDGE || {}).DATA || ((location.origin || '') + '/demo/data')).replace(/\/?$/, '/')) + 'posters/ch-' + Math.min(i, 2) + '.webp',
+        go: () => this.seekTo(c.t + 0.01),
+      })),
       words: lesson.words.map(wd => {
         const id = wd.gloss || wd.id || wd.en;
         const e = (LH && LH.byId && LH.byId[id]) || wd;

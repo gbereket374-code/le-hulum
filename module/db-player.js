@@ -66,6 +66,11 @@ video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;backgr
 .controls button{flex:1 1 3.5rem;min-width:2.75rem;min-height:3.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.15rem;padding:.25rem;background:transparent;color:inherit;border:0;border-radius:var(--r-s,10px);font:700 .85rem/1.2 var(--lh-font-latin,"Atkinson Hyperlegible",system-ui,sans-serif);transition:background-color .15s,color .15s}
 :host([lang="am"]) .controls button{font-family:var(--lh-font-ethiopic,"Noto Sans Ethiopic",sans-serif);line-height:1.4}
 .controls button::before{font-weight:700;font-size:1rem;line-height:1}
+:host([features="deaf"]) .controls button{flex:0 1 auto;flex-direction:row;gap:.4rem;padding:.35rem .7rem;white-space:nowrap;font-size:.8rem}
+:host([features="deaf"]) .btns{gap:.15rem;padding:.35rem .5rem .6rem}
+:host([features="deaf"]) [data-id="mute"],:host([features="deaf"]) [data-id="help"],:host([features="deaf"]) [data-id="glossary"],:host([features="deaf"]) [data-id="describe"],:host([features="deaf"]) [data-id="describe-how"],:host([features="deaf"]) [data-id="onscreen"],:host([features="deaf"]) [data-id="hearing"],:host([features="deaf"]) [data-id="downloads"],:host([features="deaf"]) [data-id="chapters"],:host([features="deaf"]) [data-id="transcript"],:host([features="deaf"]) [data-id="again"],:host([features="deaf"]) [data-id="caption-style"]{display:none!important}
+:host([features="deaf"]) .below{display:none!important}
+:host([features="deaf"]) .panels{display:none!important}
 [data-id="play"][data-state="play"]::before{content:"▶"}
 [data-id="play"][data-state="pause"]::before{content:"❚❚"}
 [data-id="back"]::before{content:"↺"}
@@ -77,6 +82,8 @@ video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;backgr
 [data-id="help"]::before{content:"⌨"}
 [data-id="sign"]::before{content:"✋"}
 [data-id="glossary"]::before{content:"Aa"}
+[data-id="settings"]::before{content:"⚙"}
+[data-id="more"]::before{content:"⋯"}
 .controls button[aria-pressed="true"]{background:var(--lh-player-accent,#F4B740);color:var(--lh-on-accent,#1A1206);border-radius:var(--r-pill,999px)}
 button:focus-visible,.seek:focus-visible{outline:3px solid var(--lh-player-focus,#FFD54A);outline-offset:2px}
 .below,.panels{max-width:100%}
@@ -93,8 +100,12 @@ dialog button:focus-visible{outline:3px solid var(--lh-focus,#1C1B18);outline-of
 <div class="below"></div><div class="panels"></div><div class="sr-only" aria-live="polite"></div>
 <dialog class="help" aria-labelledby="help-title"><h2 id="help-title"></h2><ul></ul><button type="button" class="shortcuts"></button><button type="button" class="close"></button></dialog></div>`;
 
+function isDeaf(host) {
+  return (host.getAttribute("features") || "").split(/\s+/).includes("deaf");
+}
+
 class DbPlayer extends HTMLElement {
-  static get observedAttributes() { return ["src", "lang", "captions", "sign", "glossary", "describe", "screen", "chapters"]; }
+  static get observedAttributes() { return ["src", "lang", "captions", "sign", "glossary", "describe", "screen", "chapters", "features", "poster"]; }
 
   constructor() { super(); this.attachShadow({ mode: "open" }); }
 
@@ -109,10 +120,10 @@ class DbPlayer extends HTMLElement {
   attributeChangedCallback(name, oldValue, value) {
     if (!this._player || oldValue === value) return;
     if (name === "lang") this._player.setLang(value === "am" ? "am" : "en");
-    if (name === "src") this._player.setSource(value || "", this.getAttribute("poster"));
+    if (name === "src" || name === "poster") this._player.setSource(this.getAttribute("src") || "", this.getAttribute("poster"));
     if (name === "captions") this._player.captions?.reload();
     if (name === "sign" && this._player.sign?.isOpen()) this._player.sign.play(value || "", {});
-    if (name === "glossary" && value) loadGlossary(this._player);
+    if (name === "glossary" && value && !isDeaf(this)) loadGlossary(this._player);
   }
 
   async _boot() {
@@ -129,9 +140,23 @@ class DbPlayer extends HTMLElement {
     }
     this._player = new Player(this, this.shadowRoot);
     this._player.render(SHELL);
+    if (isDeaf(this) || this.getAttribute("poster")) {
+      this._player.media.preload = "metadata";
+    }
     attachCaptions(this._player);
     mountSign(this._player);
-    loadGlossary(this._player);
+    if (isDeaf(this)) {
+      this._player.addControl({
+        id: "settings", order: 55, labelKey: "settings",
+        onClick: () => this.dispatchEvent(new CustomEvent("db-player:settings", { bubbles: true, composed: true }))
+      });
+      this._player.addControl({
+        id: "more", order: 58, labelKey: "more",
+        onClick: () => this._player.openHelp(this._player._helpBtn)
+      });
+    } else {
+      loadGlossary(this._player);
+    }
     this._player.setSource(this.getAttribute("src") || "", this.getAttribute("poster"));
     const autoSign = !this.getAttribute("sign") && this.getAttribute("api") && this.getAttribute("lesson-id");
     const openSign = new URLSearchParams(location.search).get("sign") === "on" || this.hasAttribute("data-sign-open") || autoSign;
@@ -141,7 +166,9 @@ class DbPlayer extends HTMLElement {
 }
 
 function loadFeatures(player) {
-  const modules = [
+  const deaf = isDeaf(player.host);
+  // Deaf-focused demo: keep code for other tracks but do not mount non-Deaf chrome.
+  const modules = deaf ? [] : [
     ["./core/transcript.js", "attachTranscript"],
     ["./hearing/caption-style.js", "attachCaptionStyle"],
     ["./hearing/repeat.js", "attachRepeat"],
