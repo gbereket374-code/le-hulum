@@ -41,5 +41,15 @@ def test_stats(data_root, monkeypatch):
     with TestClient(app) as client:
         # seed disabled — counts may be 0; shape must be present
         body = client.get("/api/v1/stats").json()
-        assert set(body) >= {"signs", "phrases", "auto_lines_signed", "lesson_lines"}
+        assert set(body) >= {
+            "signs",
+            "phrases",
+            "auto_lines_signed",
+            "lesson_lines",
+            "sentences_cut_midway",
+            "codesigner_understood",
+            "codesigner_total",
+        }
         assert body["lesson_lines"] >= 1
+        assert body["sentences_cut_midway"] == 0
+        assert body["codesigner_understood"] is None

@@ -337,7 +337,11 @@ const T = {
     tryEy: 'Try it now', signItH: 'Sign it', signItHelp: 'Type a word or a question in Amharic or English', signItPh: 'What is a variable?', signItBtn: 'Sign it', tryL: 'Try',
     preview: 'Live preview', openStudio: 'Open in Sign studio', wordsSigned: 'words signed', of: 'of', noSign: 'No sign yet', dict: 'Dictionary sign',
     impactL: 'Impact', phNote: 'PLACEHOLDER · result pending',
-    stats: [['64', 'EthSL word signs'], ['39', 'recorded phrases'], ['0', 'sentences cut mid-way: the teacher waits for the signer'], ['X', 'of 10 sentences understood by our Deaf co-designer']],
+    stats: [['64', 'EthSL word signs'], ['39', 'recorded phrases'], ['0', 'sentences cut mid-way: the teacher waits for the signer'], ['14', 'lesson lines signed by a real interpreter']],
+    statCut: 'sentences cut mid-way: the teacher waits for the signer',
+    statCutUnit: 'in our sync test',
+    statUnderstood: 'sentences understood by our Deaf co-designer',
+    statLinesSigned: 'lesson lines signed by a real interpreter',
     probEy: '01 · The problem', probH: 'Online learning in Ethiopia is not yet made for Deaf learners.', probLede: 'Video lessons are now the main way people learn to code in Ethiopia. For Deaf learners, most of that teaching is out of reach.',
     problems: [
       ['No sign language. Almost no Amharic captions.', 'Deaf learners in Ethiopia get no sign language and almost no Amharic captions in online courses.'],
@@ -388,7 +392,11 @@ const T = {
     tryEy: 'አሁን ይሞክሩ', signItH: 'በምልክት ይተርጉሙ', signItHelp: 'በአማርኛ ወይም በእንግሊዝኛ ቃል ወይም ጥያቄ ይጻፉ', signItPh: 'ተለዋዋጭ ምንድን ነው?', signItBtn: 'በምልክት', tryL: 'ይሞክሩ',
     preview: 'የቀጥታ ቅድመ እይታ', openStudio: 'በምልክት ስቱዲዮ ክፈት', wordsSigned: 'ቃላት ተተርጉመዋል', of: 'ከ', noSign: 'ገና ምልክት የለውም', dict: 'የመዝገበ ቃላት ምልክት',
     impactL: 'ውጤት', phNote: 'ቦታ ያዥ · ውጤቱ በመጠባበቅ ላይ',
-    stats: [['64', 'የምልክት ቋንቋ ቃላት'], ['39', 'የተቀረጹ ሐረጎች'], ['0', 'በመሃል የተቋረጡ ዓረፍተ ነገሮች፦ መምህሩ አስተርጓሚውን ይጠብቃል'], ['X', 'ከ10 ዓረፍተ ነገሮች በመስማት የተሳነው ተባባሪ ዲዛይነራችን የተረዳቸው']],
+    stats: [['64', 'የምልክት ቋንቋ ቃላት'], ['39', 'የተቀረጹ ሐረጎች'], ['0', 'በመሃል የተቋረጡ ዓረፍተ ነገሮች፦ መምህሩ አስተርጓሚውን ይጠብቃል'], ['14', 'በእውነተኛ አስተርጓሚ የተተረጎሙ የትምህርት መስመሮች']],
+    statCut: 'በመሃል የተቋረጡ ዓረፍተ ነገሮች፦ መምህሩ አስተርጓሚውን ይጠብቃል',
+    statCutUnit: 'በስንክ ሙከራችን',
+    statUnderstood: 'ዓረፍተ ነገሮች በመስማት የተሳነው ተባባሪ ዲዛይነራችን የተረዳቸው',
+    statLinesSigned: 'በእውነተኛ አስተርጓሚ የተተረጎሙ የትምህርት መስመሮች',
     probEy: '01 · ችግሩ', probH: 'በኢትዮጵያ ያለው የኦንላይን ትምህርት ገና ለመስማት የተሳናቸው ተማሪዎች አልተዘጋጀም።', probLede: 'የቪዲዮ ትምህርቶች በኢትዮጵያ ኮድ ለመማር ዋናው መንገድ ሆነዋል። ለመስማት የተሳናቸው ተማሪዎች ግን አብዛኛው ትምህርት አይደርሳቸውም።',
     problems: [
       ['ምልክት ቋንቋ የለም። የአማርኛ ጽሑፍ ትርጉምም እምብዛም የለም።', 'በኢትዮጵያ ያሉ መስማት የተሳናቸው ተማሪዎች በኦንላይን ኮርሶች ምልክት ቋንቋ አያገኙም፤ የአማርኛ ጽሑፍ ትርጉምም እምብዛም የለም።'],
@@ -526,18 +534,12 @@ class Component extends DCLogic {
       submit: e => { e && e.preventDefault && e.preventDefault(); open(s.q || t.signItPh); },
       chips: CHIPS.map(([label, l]) => ({ label, lang: l, go: () => this.setState({ q: label }) })),
       pv,
-      stats: (() => {
-        const api = s.apiStats;
-        const nums = api
-          ? [String(api.signs), String(api.phrases), String(api.auto_lines_signed), String(api.lesson_lines)]
-          : t.stats.map(x => x[0]);
-        return t.stats.map(([n, label], i) => ({
-          n: nums[i] != null ? nums[i] : n, label,
-          unit: i === 3 ? (api ? '' : '/ 10') : '',
-          ph: !api && i === 3, pad: i === 3 && !api ? '0 14px' : '0',
-          border: i === 3 && !api ? '2px dashed var(--line-strong)' : '0',
-        }));
-      })(),
+      stats: (typeof window.LH_mapHomeStats === 'function'
+        ? window.LH_mapHomeStats(s.apiStats || {
+            signs: 64, phrases: 39, sentences_cut_midway: 0, lesson_lines: 14,
+            codesigner_understood: null, codesigner_total: 10,
+          }, t)
+        : t.stats.map(([n, label]) => ({ n, label, unit: '', ph: false, pad: '0', border: '0' }))),
       problems: t.problems.map(([h, b], i) => ({ n: '0' + (i + 1), h, b })),
       howCols: w >= 960 ? 'minmax(0,.9fr) minmax(0,1.1fr)' : 'minmax(0,1fr)',
       steps: t.steps.map(([h, b], i) => ({ n: '0' + (i + 1), h, b, sel: s.step === i, bg: s.step === i ? 'var(--surface)' : 'transparent', border: s.step === i ? 'var(--ink)' : 'var(--line)', numBg: s.step === i ? 'var(--ink)' : 'transparent', numFg: s.step === i ? 'var(--bg)' : 'var(--ink)', pick: () => this.setState({ step: i }) })),
