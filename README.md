@@ -211,6 +211,8 @@ scripts/dev-up.sh             # builds, starts, smoke-tests, prints the links
 
 ## Deploy to Hugging Face Spaces (Docker)
 
+> Note: Hugging Face Docker Spaces may require a paid plan. Prefer **Render** (free) below.
+
 One container serves the API, `/module`, `/demo`, and `/savanna`.
 
 1. Create a new **Docker** Space on https://huggingface.co/spaces (public).
@@ -248,10 +250,12 @@ Demo paths on the Space:
 
 ## Deploy to Render
 
-1. New **Web Service** from this GitHub repo.
-2. Environment: Docker. Dockerfile path: `Dockerfile.hf`.
-3. Set `PORT` (Render sets this automatically). Optional: `DATA_DIR=/data`.
-4. Health check path: `/api/v1/health`.
+Free Docker web service from this repo (`render.yaml` + `Dockerfile.hf`).
+
+1. Connect the public GitHub repo at https://dashboard.render.com (New → Blueprint, or Web Service).
+2. Render reads `render.yaml`: Docker, `./Dockerfile.hf`, free plan, health check `/api/v1/health`.
+3. `$PORT` is set by Render; the container binds `0.0.0.0:$PORT`. No ASR/torch in the image.
+4. After deploy, open `https://YOUR-SERVICE.onrender.com/` (home), `/api/docs`, `/demo/plugin-test.html`.
 
 ## 8. API reference
 

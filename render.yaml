@@ -1,0 +1,14 @@
+# INT-05: Render Blueprint — free Docker web service from Dockerfile.hf.
+services:
+  - type: web
+    name: le-hulum
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile.hf
+    dockerContext: .
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: PYTHONPATH
+        value: /app
+      - key: DATA_DIR
+        value: /data
