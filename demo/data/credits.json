@@ -1,16 +1,67 @@
 {
+  "quote": null,
+  "quote_caption": null,
+  "quote_video": null,
   "people": [
     {
       "id": "interp-1",
-      "role": "interpreter",
-      "name": "[Interpreter name]",
-      "consent": true
+      "kind": "interpreter",
+      "name": "",
+      "role": "Certified EthSL interpreter · lesson and welcome",
+      "role_am": "የተረጋገጠ የምልክት ቋንቋ አስተርጓሚ · ትምህርት እና እንኳን ደህና መጡ",
+      "photo": "posters/A01.webp",
+      "consent": true,
+      "show": false
+    },
+    {
+      "id": "interp-2",
+      "kind": "interpreter",
+      "name": "",
+      "role": "Certified EthSL interpreter · dictionary signs",
+      "role_am": "የተረጋገጠ የምልክት ቋንቋ አስተርጓሚ · የመዝገበ ቃላት ምልክቶች",
+      "photo": "posters/A01.webp",
+      "consent": true,
+      "show": false
     },
     {
       "id": "co-1",
-      "role": "co-designer",
-      "name": "[Deaf co-designer]",
-      "consent": true
+      "kind": "codesigner",
+      "name": "",
+      "role": "Deaf co-designer",
+      "role_am": "መስማት የተሳነው ተባባሪ ዲዛይነር",
+      "photo": null,
+      "consent": false,
+      "show": false
+    },
+    {
+      "id": "team-1",
+      "kind": "team",
+      "name": "",
+      "role": "Product & engineering",
+      "role_am": "ምርት እና ምህንድስና",
+      "photo": null,
+      "consent": false,
+      "show": false
+    },
+    {
+      "id": "team-2",
+      "kind": "team",
+      "name": "",
+      "role": "Design & research",
+      "role_am": "ዲዛይን እና ምርምር",
+      "photo": null,
+      "consent": false,
+      "show": false
+    },
+    {
+      "id": "team-3",
+      "kind": "team",
+      "name": "",
+      "role": "Sign library & data",
+      "role_am": "የምልክት ቤተ-መጻሕፍት እና ውሂብ",
+      "photo": null,
+      "consent": false,
+      "show": false
     }
   ]
 }

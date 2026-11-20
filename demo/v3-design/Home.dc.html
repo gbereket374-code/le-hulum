@@ -214,21 +214,23 @@
         </div>
       </div>
 
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:24px;align-items:stretch">
-        <figure style="margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:24px;align-items:end;padding:clamp(20px,2.6vw,36px);border-radius:28px;background:var(--surface);border:1px solid var(--line)">
-          <div style="display:flex;flex-direction:column;border-radius:18px;overflow:hidden">
-            <div style="position:relative;aspect-ratio:3/4;background:repeating-linear-gradient(135deg,var(--stage) 0 2px,var(--stage-2) 2px 14px);display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;font:500 11px/1.7 var(--mono);color:var(--stage-ink-2)">
-              {{ t.quoteVid }}
-              <button aria-label="{{ t.playQuote }}" style="position:absolute;left:12px;bottom:12px;min-height:44px;padding:0 16px;border:0;border-radius:var(--r-pill);background:#f3f5fb;color:#0b1430;font-size:14px;font-weight:700">▶ {{ t.play }}</button>
+      <div style="display:grid;grid-template-columns:{{ peopleCols }};gap:24px;align-items:stretch">
+        <sc-if value="{{ hasQuote }}" hint-placeholder-val="{{ false }}">
+          <figure style="margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:24px;align-items:end;padding:clamp(20px,2.6vw,36px);border-radius:28px;background:var(--surface);border:1px solid var(--line)">
+            <div style="display:flex;flex-direction:column;border-radius:18px;overflow:hidden">
+              <div style="position:relative;aspect-ratio:3/4;background:var(--stage)">
+                <sc-if value="{{ quotePoster }}" hint-placeholder-val="{{ false }}"><img src="{{ quotePoster }}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></sc-if>
+                <button aria-label="{{ t.playQuote }}" style="position:absolute;left:12px;bottom:12px;min-height:44px;padding:0 16px;border:0;border-radius:var(--r-pill);background:#f3f5fb;color:#0b1430;font-size:14px;font-weight:700">▶ {{ t.play }}</button>
+              </div>
+              <div style="background:var(--stage);color:var(--stage-ink);padding:12px 14px;font-size:14px;line-height:1.5">{{ quoteCap }}</div>
             </div>
-            <div style="background:var(--stage);color:var(--stage-ink);padding:12px 14px;font-size:14px;line-height:1.5">{{ t.quoteCap }}</div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:18px">
-            <span aria-hidden="true" style="font:500 80px/0.55 var(--serif);color:var(--accent)">“</span>
-            <blockquote style="margin:0;font:400 clamp(20px,1.7vw,25px)/1.5 var(--serif);text-wrap:pretty">{{ t.quote }}</blockquote>
-            <figcaption style="display:flex;flex-direction:column;gap:2px;font-size:15px;line-height:1.5"><span style="font-weight:700">{{ t.quoteName }}</span><span style="color:var(--ink-3)">{{ t.quoteRole }}</span></figcaption>
-          </div>
-        </figure>
+            <div style="display:flex;flex-direction:column;gap:18px">
+              <span aria-hidden="true" style="font:500 80px/0.55 var(--serif);color:var(--accent)">“</span>
+              <blockquote style="margin:0;font:400 clamp(20px,1.7vw,25px)/1.5 var(--serif);text-wrap:pretty">{{ quoteText }}</blockquote>
+              <figcaption style="display:flex;flex-direction:column;gap:2px;font-size:15px;line-height:1.5"><span style="font-weight:700">{{ quoteName }}</span><span style="color:var(--ink-3)">{{ quoteRole }}</span></figcaption>
+            </div>
+          </figure>
+        </sc-if>
 
         <div style="display:flex;flex-direction:column;gap:20px;padding:clamp(20px,2.6vw,36px);border-radius:28px;background:var(--surface-2);border:1px solid var(--line)">
           <h3 style="margin:0;font-size:22px;font-weight:700">{{ t.reviewH }}</h3>
@@ -248,32 +250,38 @@
       </div>
 
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:40px clamp(40px,6vw,96px)">
-        <div style="display:flex;flex-direction:column;gap:16px">
-          <h3 style="margin:0;font-size:22px;font-weight:700">{{ t.interpH }}</h3>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px">
-            <sc-for list="{{ interpreters }}" as="p" hint-placeholder-count="2">
-              <div style="display:flex;gap:14px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:18px;background:var(--surface)">
-                <span aria-hidden="true" style="flex:none;width:60px;height:80px;border-radius:12px;background:repeating-linear-gradient(135deg,var(--surface-3) 0 2px,var(--surface-2) 2px 9px);display:flex;align-items:center;justify-content:center;font:500 9px var(--mono);color:var(--ink-3)">3:4</span>
-                <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
-                  <span style="font-weight:700;font-size:16px">{{ p.name }}</span>
-                  <span style="font-size:14px;color:var(--ink-2);line-height:1.4">{{ p.role }}</span>
-                  <span style="align-self:flex-start;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--accent-soft-ink)"><span aria-hidden="true">✓</span>{{ t.consent }}</span>
+        <sc-if value="{{ showInterps }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <h3 style="margin:0;font-size:22px;font-weight:700">{{ t.interpH }}</h3>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px">
+              <sc-for list="{{ interpreters }}" as="p" hint-placeholder-count="0">
+                <div style="display:flex;gap:14px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:18px;background:var(--surface)">
+                  <sc-if value="{{ p.hasPhoto }}" hint-placeholder-val="{{ false }}"><img src="{{ p.photo }}" alt="" width="60" height="80" style="flex:none;width:60px;height:80px;border-radius:12px;object-fit:cover;background:var(--surface-2)"></sc-if>
+                  <sc-if value="{{ p.noPhoto }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="flex:none;width:60px;height:80px;border-radius:12px;background:var(--accent-soft);color:var(--accent-soft-ink);display:flex;align-items:center;justify-content:center;font:700 18px var(--serif)">{{ p.initials }}</span></sc-if>
+                  <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+                    <span style="font-weight:700;font-size:16px">{{ p.name }}</span>
+                    <span style="font-size:14px;color:var(--ink-2);line-height:1.4">{{ p.role }}</span>
+                    <sc-if value="{{ p.consent }}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--accent-soft-ink)"><span aria-hidden="true">✓</span>{{ t.consent }}</span></sc-if>
+                  </div>
                 </div>
-              </div>
-            </sc-for>
+              </sc-for>
+            </div>
           </div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:16px">
-          <h3 style="margin:0;font-size:22px;font-weight:700">{{ t.teamH }}</h3>
-          <ul style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:4px 16px">
-            <sc-for list="{{ team }}" as="m" hint-placeholder-count="4">
-              <li style="display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)">
-                <span aria-hidden="true" style="flex:none;width:48px;height:48px;border-radius:50%;background:var(--surface-2);border:1px dashed var(--line-strong);display:flex;align-items:center;justify-content:center;font:500 10px var(--mono);color:var(--ink-3)">IMG</span>
-                <span style="display:flex;flex-direction:column;gap:2px;font-size:15px;line-height:1.4"><span style="font-weight:700">{{ m.name }}</span><span style="color:var(--ink-2)">{{ m.role }}</span></span>
-              </li>
-            </sc-for>
-          </ul>
-        </div>
+        </sc-if>
+        <sc-if value="{{ showTeam }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <h3 style="margin:0;font-size:22px;font-weight:700">{{ t.teamH }}</h3>
+            <ul style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:4px 16px">
+              <sc-for list="{{ team }}" as="m" hint-placeholder-count="0">
+                <li style="display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)">
+                  <sc-if value="{{ m.hasPhoto }}" hint-placeholder-val="{{ false }}"><img src="{{ m.photo }}" alt="" width="48" height="48" style="flex:none;width:48px;height:48px;border-radius:50%;object-fit:cover"></sc-if>
+                  <sc-if value="{{ m.noPhoto }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="flex:none;width:48px;height:48px;border-radius:50%;background:var(--accent-soft);color:var(--accent-soft-ink);display:flex;align-items:center;justify-content:center;font:700 14px var(--serif)">{{ m.initials }}</span></sc-if>
+                  <span style="display:flex;flex-direction:column;gap:2px;font-size:15px;line-height:1.4"><span style="font-weight:700">{{ m.name }}</span><span style="color:var(--ink-2)">{{ m.role }}</span></span>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
       </div>
     </div>
   </section>
@@ -441,12 +449,16 @@ const HERO_GLOSS = ['HELLO', 'WELCOME'];
 const TYPE = { sign: ['var(--accent)', 'var(--accent-ink)', '1.5px solid transparent', '●'], finger: ['transparent', 'var(--ink)', '1.5px dashed var(--ink)', 'ABC'], point: ['transparent', 'var(--ink)', '1.5px solid var(--ink)', '→'], none: ['var(--warn-soft)', 'var(--warn-ink)', '1.5px dashed var(--warn-ink)', '∅'], pause: ['transparent', 'var(--ink-2)', '1px solid var(--line-strong)', '‖'] };
 
 class Component extends DCLogic {
-  state = { chip: 0, playing: false, reduced: false, q: '', faq: 0, step: 0, copied: false, apiStats: null };
+  state = { chip: 0, playing: false, reduced: false, q: '', faq: 0, step: 0, copied: false, apiStats: null, credits: null };
   componentDidMount() {
     this._i = setInterval(() => this.tick(), 900);
     this.bootHero();
     const B = window.LH_BRIDGE;
     if (B && B.stats) B.stats().then(s => this.setState({ apiStats: s })).catch(() => {});
+    const DATA = (B && B.DATA) || ((location.origin || '') + '/demo/data');
+    fetch(DATA.replace(/\/?$/, '/') + 'credits.json').then(r => r.ok ? r.json() : null).then(c => {
+      if (c) this.setState({ credits: c });
+    }).catch(() => {});
   }
   bootHero() {
     const B = window.LH_BRIDGE || {};
@@ -552,8 +564,38 @@ class Component extends DCLogic {
       copyLabel: s.copied ? t.copied : t.copy, copyBg: s.copied ? 'var(--hero-ink)' : 'transparent', copyFg: s.copied ? 'var(--hero)' : 'var(--hero-ink)',
       legend: t.legendL.map(([icon, label]) => ({ icon, label })),
       review: t.review.map(([h, b], i) => ({ n: i + 1, h, b, line: i < 3 ? 'var(--line-strong)' : 'transparent', bg: i === 1 ? 'var(--ink)' : 'var(--surface)', fg: i === 1 ? 'var(--bg)' : 'var(--ink)' })),
-      interpreters: t.interps.map(([name, role]) => ({ name, role })),
-      team: t.team.map(([name, role]) => ({ name, role })),
+      ...(() => {
+        const DATA = ((window.LH_BRIDGE || {}).DATA || ((location.origin || '') + '/demo/data')).replace(/\/?$/, '/');
+        const credits = s.credits || {};
+        const people = Array.isArray(credits.people) ? credits.people : [];
+        const visible = people.filter(p => p && p.show && String(p.name || '').trim() && !/^\[/.test(String(p.name).trim()));
+        const initials = name => String(name).trim().split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase() || '?';
+        const mapPerson = p => {
+          const photo = p.photo ? (DATA + String(p.photo).replace(/^\//, '')) : '';
+          const role = lang === 'am' && p.role_am ? p.role_am : (p.role || '');
+          return {
+            name: p.name, role, consent: !!p.consent,
+            photo, hasPhoto: !!photo, noPhoto: !photo, initials: initials(p.name),
+          };
+        };
+        const interpreters = visible.filter(p => p.kind === 'interpreter').map(mapPerson);
+        const team = visible.filter(p => p.kind === 'team' || p.kind === 'codesigner').map(mapPerson);
+        const quoteRaw = credits.quote && String(credits.quote).trim() && !/^\[/.test(String(credits.quote).trim())
+          ? String(credits.quote).trim() : '';
+        const co = people.find(p => p && p.kind === 'codesigner' && p.show && p.name);
+        return {
+          hasQuote: !!quoteRaw,
+          peopleCols: quoteRaw ? 'repeat(auto-fit,minmax(min(100%,400px),1fr))' : 'minmax(0,1fr)',
+          quoteText: quoteRaw,
+          quoteCap: credits.quote_caption || '',
+          quoteName: (co && co.name) || credits.quote_name || '',
+          quoteRole: (co && (lang === 'am' && co.role_am ? co.role_am : co.role)) || t.quoteRole,
+          quotePoster: credits.quote_video ? (DATA + String(credits.quote_video).replace(/^\//, '')) : '',
+          interpreters, team,
+          showInterps: interpreters.length > 0,
+          showTeam: team.length > 0,
+        };
+      })(),
       faqs: t.faqs.map(([q, a], i) => ({ q, a, id: 'faq-' + i, open: s.faq === i, icon: s.faq === i ? '−' : '+',
         bg: s.faq === i ? 'var(--surface)' : 'transparent', border: s.faq === i ? 'var(--ink)' : 'var(--line)',
         iconBg: s.faq === i ? 'var(--ink)' : 'transparent', iconFg: s.faq === i ? 'var(--bg)' : 'var(--ink)',
