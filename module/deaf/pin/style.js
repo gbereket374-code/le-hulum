@@ -9,9 +9,11 @@ export const PIN_CSS = `
 :host :focus-visible{outline:3px solid var(--pin-focus);outline-offset:2px}
 [hidden]{display:none !important}
 .launch,.panel,.pin,.pick,.tray{pointer-events:auto}
-.launch{position:fixed;left:1rem;bottom:1rem;z-index:6;min-width:48px;min-height:48px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:0;padding:.35rem .8rem;border:0;border-radius:var(--r-pill,999px);background:var(--pin);color:var(--pin-ink);font:inherit;font-weight:700;text-align:start}
-.launch [lang=am]{line-height:1.7;letter-spacing:0}
-.panel{position:fixed;left:1rem;bottom:5.5rem;z-index:6;width:min(22rem,calc(100vw - 2rem));max-height:min(50vh,24rem);margin:0;padding:.75rem;overflow:auto;border:1px solid var(--pin-text);border-radius:var(--r-l,24px);background:var(--pin-surface);color:var(--pin-text);box-shadow:0 12px 32px rgba(0,0,0,.25)}
+.launch{position:fixed;right:1rem;bottom:1rem;left:auto;z-index:6;min-width:48px;min-height:52px;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:.55rem;padding:.35rem 1.1rem .35rem .55rem;border:0;border-radius:var(--r-pill,999px);background:var(--bs-body-color,var(--lh-text,#0e1525));color:var(--bs-body-bg,var(--lh-surface,#fff));font:inherit;font-weight:700;text-align:start;box-shadow:0 10px 28px rgba(0,0,0,.28)}
+.launch::before{content:"";flex:none;width:32px;height:32px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#8ea9ff,#2747d6 55%,#f2b544);box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}
+.launch [lang=am]{line-height:1.7;letter-spacing:0;font-size:.72rem;opacity:.9}
+.launch [lang=en]{font-size:.95rem;letter-spacing:.02em}
+.panel{position:fixed;right:1rem;left:auto;bottom:5.5rem;z-index:6;width:min(22rem,calc(100vw - 2rem));max-height:min(50vh,24rem);margin:0;padding:.75rem;overflow:auto;border:1px solid var(--pin-text);border-radius:var(--r-l,24px);background:var(--pin-surface);color:var(--pin-text);box-shadow:0 12px 32px rgba(0,0,0,.25)}
 .panel::backdrop{background:transparent}
 .title{margin:0 0 .5rem;font-weight:700;line-height:1.7}
 .list{display:flex;flex-direction:column;gap:.5rem}

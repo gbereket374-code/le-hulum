@@ -119,6 +119,7 @@ export function createSession(refs, hooks) {
   }
 
   function stop(focus) {
+    refs.pin.hidden = true;
     token += 1;
     waiting = null;
     clearTimeout(timer);

@@ -123,45 +123,6 @@
           </div>
         </sc-if>
 
-        <sc-if value="{{ launcherOn }}" hint-placeholder-val="{{ true }}">
-          <button onClick="{{ openSigner }}" style="position:absolute;right:12px;bottom:12px;z-index:5;min-height:52px;padding:0 18px 0 8px;border:0;border-radius:var(--r-pill);background:var(--ink);color:var(--bg);font-size:15px;font-weight:700;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow)">
-            <span aria-hidden="true" style="width:34px;height:34px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;overflow:hidden"><svg class="logo-svg" aria-hidden="true" width="26" height="26" viewBox="0 0 48 48"><defs><linearGradient id="lhgPl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--accent)"/><stop offset="1" style="stop-color:var(--gold)"/></linearGradient></defs><rect x="1" y="1" width="46" height="46" rx="14" fill="url(#lhgPl)"/><rect x="1.5" y="1.5" width="45" height="45" rx="13.5" fill="none" stroke="rgba(255,255,255,.35)"/><path d="M11.5 11.5 L24 37.5 L36.5 11.5" fill="none" stroke="var(--accent-ink)" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.2 23.5 H31.8" stroke="var(--accent-ink)" stroke-width="3.8" stroke-linecap="round"/><circle cx="24" cy="12.6" r="3.6" fill="var(--accent-ink)"/></svg></span>
-            <span style="display:flex;flex-direction:column;align-items:flex-start;line-height:1.15"><span>EthSL</span><span style="font-size:12px;font-weight:500;opacity:.85">{{ t.signPage }}</span></span>
-          </button>
-        </sc-if>
-
-        <sc-if value="{{ signerOn }}" hint-placeholder-val="{{ false }}">
-          <div role="region" aria-label="LE HULUM EthSL signer" style="position:absolute;z-index:9;right:{{ sw.right }};left:{{ sw.left }};bottom:{{ sw.bottom }};width:{{ sw.width }};background:var(--surface);color:var(--ink);border:1.5px solid var(--ink);border-radius:{{ sw.radius }};box-shadow:var(--shadow);overflow:hidden;display:flex">
-            <div style="position:relative;flex:none;width:{{ sw.vidW }};aspect-ratio:3/4;background:repeating-linear-gradient(135deg,var(--stage) 0 2px,var(--stage-2) 2px 12px)">
-              <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:500 10px var(--mono);color:var(--stage-ink-2)">SIGNER 3:4</span>
-              <sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center"><span aria-label="{{ t.loading }}" style="width:24px;height:24px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:lh-spin .9s linear infinite"></span></span></sc-if>
-              <sc-if value="{{ curGloss }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;left:50%;bottom:8px;transform:translateX(-50%);padding:4px 8px;border-radius:6px;background:rgba(0,0,0,.75);color:#fff;font:600 12px var(--mono);white-space:nowrap">{{ curGloss }}</span></sc-if>
-            </div>
-            <div style="flex:1;min-width:0;display:flex;flex-direction:column">
-              <div style="display:flex;align-items:center;padding:2px 2px 2px 10px;border-bottom:1px solid var(--line)">
-                <span style="flex:1;font:500 11px var(--mono);letter-spacing:.05em;color:var(--ink-2)">LE HULUM · EthSL</span>
-                <button onClick="{{ stop }}" aria-label="{{ t.close }}" style="min-width:44px;min-height:44px;border:0;background:transparent;font-size:20px">×</button>
-              </div>
-              <div style="padding:8px 10px;display:flex;flex-direction:column;gap:6px">
-                <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--ink-3);gap:6px;flex-wrap:wrap"><span>{{ sentLabel }}</span><span style="font-weight:700;color:var(--ink-2)">{{ coverage }}</span></div>
-                <div style="height:4px;border-radius:2px;background:var(--surface-3)"><div style="height:100%;border-radius:2px;background:var(--accent);width:{{ pct }}"></div></div>
-                <div style="display:flex;flex-wrap:wrap;gap:4px;max-height:76px;overflow:auto">
-                  <sc-for list="{{ chips }}" as="c" hint-placeholder-count="3"><span style="min-height:28px;display:flex;align-items:center;gap:4px;padding:0 7px;border-radius:6px;border:{{ c.border }};background:{{ c.bg }};color:{{ c.fg }};font:600 11px var(--mono);box-shadow:{{ c.ring }}"><span aria-hidden="true">{{ c.icon }}</span>{{ c.label }}</span></sc-for>
-                </div>
-              </div>
-              <div style="display:flex;gap:4px;padding:4px 8px 8px;margin-top:auto">
-                <button onClick="{{ prev }}" aria-label="{{ t.prev }}" title="{{ t.prev }}" style="flex:1;min-height:44px;border:1px solid var(--line-strong);border-radius:10px;background:transparent;font-weight:700">⏮︎</button>
-                <button onClick="{{ playPause }}" aria-label="{{ ppLabel }}" style="flex:1.4;min-height:44px;border:0;border-radius:10px;background:var(--ink);color:var(--bg);font-size:13px;font-weight:700">{{ ppLabel }}</button>
-                <button onClick="{{ next }}" aria-label="{{ t.next }}" title="{{ t.next }}" style="flex:1;min-height:44px;border:1px solid var(--line-strong);border-radius:10px;background:transparent;font-weight:700">⏭︎</button>
-                <button onClick="{{ stop }}" aria-label="{{ t.stop }}" title="{{ t.stop }}" style="flex:1;min-height:44px;border:1px solid var(--line-strong);border-radius:10px;background:transparent;display:flex;align-items:center;justify-content:center"><span aria-hidden="true" style="width:12px;height:12px;background:currentColor;border-radius:2px"></span></button>
-              </div>
-            </div>
-          </div>
-        </sc-if>
-
-        <sc-if value="{{ dragPin }}" hint-placeholder-val="{{ false }}">
-          <span aria-hidden="true" style="position:fixed;left:{{ dragPin.x }};top:{{ dragPin.y }};z-index:100;width:28px;height:28px;border-radius:50% 50% 50% 0;transform:translate(-50%,-100%) rotate(-45deg);background:var(--accent);border:3px solid var(--ink);pointer-events:none;box-shadow:0 6px 16px rgba(0,0,0,.3)"></span>
-        </sc-if>
       </div>
     </div>
     <p style="margin:0;font-size:15px;line-height:1.6;color:var(--ink-2);max-width:90ch">{{ t.demoHelp }}</p>
@@ -180,7 +141,7 @@
             <span style="font:500 12px var(--mono);color:#b9b4a6">lesson.html</span>
             <button onClick="{{ copy }}" style="min-height:44px;padding:0 16px;border:1.5px solid #ece8dc;border-radius:var(--r-pill);background:{{ copyBg }};color:{{ copyFg }};font-size:14px;font-weight:700">{{ copyLabel }}</button>
           </div>
-          <pre tabindex="0" style="margin:0;padding:20px;overflow:auto;font:400 14px/1.8 var(--mono)"><code><span style="color:#9fc9ad">&lt;script</span> <span style="color:#e9c25c">type</span>="module" <span style="color:#e9c25c">src</span>="{{ host }}/module/db-player.js"<span style="color:#9fc9ad">&gt;&lt;/script&gt;</span>
+          <pre tabindex="0" style="margin:0;padding:20px;overflow-x:auto;white-space:pre-wrap;overflow-wrap:anywhere;font:400 14px/1.8 var(--mono)"><code><span style="color:#9fc9ad">&lt;script</span> <span style="color:#e9c25c">type</span>="module" <span style="color:#e9c25c">src</span>="{{ host }}/module/db-player.js"<span style="color:#9fc9ad">&gt;&lt;/script&gt;</span>
 <span style="color:#9fc9ad">&lt;db-player</span> <span style="color:#e9c25c">src</span>="lesson.mp4" <span style="color:#e9c25c">captions</span>="lesson.am.vtt,lesson.en.vtt"
   <span style="color:#e9c25c">api</span>="{{ host }}/api/v1" <span style="color:#e9c25c">lesson-id</span>="demo"<span style="color:#9fc9ad">&gt;&lt;/db-player&gt;</span>
 <span style="color:#9fc9ad">&lt;db-sign-pin</span> <span style="color:#e9c25c">api</span>="{{ host }}/api/v1" <span style="color:#e9c25c">lang</span>="am"<span style="color:#9fc9ad">&gt;&lt;/db-sign-pin&gt;</span></code></pre>
@@ -214,7 +175,7 @@
       </ol>
     </div>
     <figure style="margin:0;display:flex;flex-direction:column;gap:12px">
-      <div style="aspect-ratio:16/10;border-radius:var(--r-l);border:1.5px solid var(--ink);background:repeating-linear-gradient(135deg,var(--surface-2) 0 2px,var(--surface) 2px 14px);display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;font:500 12px/1.7 var(--mono);color:var(--ink-3)">SCREENSHOT · Savanna lesson page<br>with db-player + signer running</div>
+      <img src="{{ savannaShot }}" alt="{{ t.guideH }}" width="960" height="600" style="width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;border-radius:var(--r-l);border:1.5px solid var(--ink);background:var(--surface-2)">
       <figcaption style="display:flex;gap:10px;align-items:flex-start;font-size:16px;line-height:1.5"><span aria-hidden="true" style="flex:none;width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">✓</span><span><strong>{{ t.savannaH }}</strong> {{ t.savannaB }}</span></figcaption>
     </figure>
   </section>
@@ -270,11 +231,11 @@ const T = {
     demoHelp: 'Word level: double-click (or long-press) a word to see its sign. Every drag has a button alternative: the Paragraphs list and the Sign buttons do everything the pin does.',
     devEy: 'Developer guide', oneLineH: 'Add Ethiopian Sign Language in one line', oneLineB: 'Load the module once. Use <db-player> for video lessons and <db-sign-pin> for text pages. Both work without a framework, and the player falls back to a normal video if our server can’t be reached.',
     copy: 'Copy code', copied: 'Copied ✓',
-    levels: [['Script tag', 'Drop-in web components for lesson videos and text pages. Best for most platforms.', '<db-player>'], ['REST API', 'Send text or lesson captions, get back sign clips, gloss and coverage. For native apps and custom players.', 'POST /sign/translate'], ['Open file formats', 'Sign timing ships as WebVTT next to your captions, and the lexicon as JSON, so you are never locked in.', 'lesson.sign.vtt']],
+    levels: [['Script tag', 'Drop-in web components for lesson videos and text pages. Best for most platforms.', '<db-player>'], ['REST API', 'Send text or lesson captions, get back sign clips, gloss and coverage. For native apps and custom players.', 'POST /sign/translate'], ['Open file formats', 'Sign timing ships as sign.json next to your WebVTT captions, and the lexicon as glossary.json, so you are never locked in.', 'sign.json']],
     guideH: 'Install guide', steps: [['Add the script tag', 'Paste the module script once in your page template.'], ['Wrap your lesson video', 'Replace <video> with <db-player> and point captions at your Amharic and English .vtt files.'], ['Turn on the sign pin for text', 'Add <db-sign-pin> to article pages. Learners get the Sign button on every block.']],
     savannaH: 'Works inside Savanna.', savannaB: 'This demo runs inside ALX’s Savanna learning platform with no changes to its code beyond our tag.',
     refH: 'Reference', attrsH: 'Attributes', attr: 'Attribute', desc: 'What it does', example: 'Example', eventsH: 'Events', apiH: 'API endpoints', openDocs: 'Open API docs',
-    attrs: [['src', 'Lesson video file', 'lesson.mp4'], ['captions', 'Comma-separated caption files', 'lesson.am.vtt,lesson.en.vtt'], ['sign', 'Recorded interpreter track (optional)', 'lesson.sign.vtt'], ['glossary', 'Words in this lesson', 'glossary.json'], ['api', 'LE HULUM API base URL', '{{ host }}/api/v1'], ['lesson-id', 'Lesson identifier for feedback', 'demo'], ['lang', 'Default caption language', 'am | en'], ['theme', 'Player theme', 'light | dark | contrast']],
+    attrs: [['src', 'Lesson video file', 'lesson.mp4'], ['captions', 'Comma-separated caption files', 'lesson.am.vtt,lesson.en.vtt'], ['sign', 'Recorded interpreter track (optional)', 'sign.json'], ['glossary', 'Words in this lesson', 'glossary.json'], ['api', 'LE HULUM API base URL', '{{ host }}/api/v1'], ['lesson-id', 'Lesson identifier for feedback', 'demo'], ['lang', 'Default caption language', 'am | en'], ['theme', 'Player theme', 'light | dark | contrast']],
     events: [['progress', 'Fires as the learner moves through lines: { line, time, signed }.'], ['complete', 'Fires when the lesson ends: { lessonId, understood }.']],
     endpoints: [['POST', '/sign/translate', 'Text in Amharic or English → gloss, clips, coverage, face signals.'], ['POST', '/sign/lesson', 'Caption file → signed lesson track with pacing.'], ['GET', '/lexicon', 'All published signs with topics and credits.'], ['GET', '/glossary', 'Words for a lesson, with lines they appear in.'], ['POST', '/sign/review', 'Send “Understood / Not clear” feedback for review.']],
   },
@@ -288,11 +249,11 @@ const T = {
     demoHelp: 'በቃል ደረጃ፦ ምልክቱን ለማየት ቃሉን ሁለቴ ይጫኑ (ወይም ረጅም ጊዜ ይጫኑ)። እያንዳንዱ መጎተት የቁልፍ አማራጭ አለው፦ የአንቀጾች ዝርዝር እና የምልክት ቁልፎች ፒኑ የሚሰራውን ሁሉ ይሰራሉ።',
     devEy: 'የገንቢዎች መመሪያ', oneLineH: 'የኢትዮጵያ ምልክት ቋንቋን በአንድ መስመር ያክሉ', oneLineB: 'ሞጁሉን አንድ ጊዜ ይጫኑ። ለቪዲዮ ትምህርቶች <db-player>፣ ለጽሑፍ ገጾች <db-sign-pin> ይጠቀሙ። ሁለቱም ያለ framework ይሰራሉ፤ አገልጋያችን ካልተገኘ ማጫወቻው እንደ መደበኛ ቪዲዮ ይሰራል።',
     copy: 'ኮዱን ቅዳ', copied: 'ተቀድቷል ✓',
-    levels: [['Script tag', 'ለቪዲዮ ትምህርቶች እና ለጽሑፍ ገጾች ዝግጁ የweb components። ለአብዛኞቹ መድረኮች ምርጥ።', '<db-player>'], ['REST API', 'ጽሑፍ ወይም የትምህርት ጽሑፍ ይላኩ፣ የምልክት ቅንጥቦችን፣ gloss እና ሽፋን ይቀበሉ። ለመተግበሪያዎች እና ለብጁ ማጫወቻዎች።', 'POST /sign/translate'], ['ክፍት የፋይል ቅርጸቶች', 'የምልክት ጊዜ በWebVTT፣ መዝገበ ቃላቱ በJSON ይቀርባል፤ ስለዚህ በፍጹም አይታሰሩም።', 'lesson.sign.vtt']],
+    levels: [['Script tag', 'ለቪዲዮ ትምህርቶች እና ለጽሑፍ ገጾች ዝግጁ የweb components። ለአብዛኞቹ መድረኮች ምርጥ።', '<db-player>'], ['REST API', 'ጽሑፍ ወይም የትምህርት ጽሑፍ ይላኩ፣ የምልክት ቅንጥቦችን፣ gloss እና ሽፋን ይቀበሉ። ለመተግበሪያዎች እና ለብጁ ማጫወቻዎች።', 'POST /sign/translate'], ['ክፍት የፋይል ቅርጸቶች', 'የምልክት ጊዜ በsign.json፣ ጽሑፍ ትርጉም በWebVTT፣ መዝገበ ቃላት በglossary.json፤ ስለዚህ በፍጹም አይታሰሩም።', 'sign.json']],
     guideH: 'የመጫኛ መመሪያ', steps: [['script tag ያክሉ', 'የሞጁሉን script በገጽ አብነትዎ ውስጥ አንድ ጊዜ ይለጥፉ።'], ['የትምህርት ቪዲዮዎን ይጠቅልሉ', '<video>ን በ<db-player> ይተኩ፣ captions ን ወደ አማርኛ እና እንግሊዝኛ .vtt ፋይሎችዎ ያመልክቱ።'], ['ለጽሑፍ የምልክት ፒኑን ያብሩ', '<db-sign-pin>ን ወደ ጽሑፍ ገጾች ያክሉ። ተማሪዎች በእያንዳንዱ ክፍል ላይ የምልክት ቁልፍ ያገኛሉ።']],
     savannaH: 'በSavanna ውስጥ ይሰራል።', savannaB: 'ይህ ማሳያ በALX የSavanna የመማሪያ መድረክ ውስጥ ይሰራል፤ ከእኛ tag ውጪ በኮዱ ላይ ምንም ለውጥ የለም።',
     refH: 'ማጣቀሻ', attrsH: 'ባህሪያት', attr: 'ባህሪ', desc: 'የሚሰራው', example: 'ምሳሌ', eventsH: 'ክስተቶች', apiH: 'የAPI መዳረሻዎች', openDocs: 'የAPI ሰነዶችን ክፈት',
-    attrs: [['src', 'የትምህርት ቪዲዮ ፋይል', 'lesson.mp4'], ['captions', 'በኮማ የተለዩ የጽሑፍ ፋይሎች', 'lesson.am.vtt,lesson.en.vtt'], ['sign', 'የተቀረጸ የአስተርጓሚ ትራክ (አማራጭ)', 'lesson.sign.vtt'], ['glossary', 'በዚህ ትምህርት ያሉ ቃላት', 'glossary.json'], ['api', 'የLE HULUM API መነሻ URL', '{{ host }}/api/v1'], ['lesson-id', 'ለአስተያየት የትምህርት መለያ', 'demo'], ['lang', 'ነባሪ የጽሑፍ ቋንቋ', 'am | en'], ['theme', 'የማጫወቻ ገጽታ', 'light | dark | contrast']],
+    attrs: [['src', 'የትምህርት ቪዲዮ ፋይል', 'lesson.mp4'], ['captions', 'በኮማ የተለዩ የጽሑፍ ፋይሎች', 'lesson.am.vtt,lesson.en.vtt'], ['sign', 'የተቀረጸ የአስተርጓሚ ትራክ (አማራጭ)', 'sign.json'], ['glossary', 'በዚህ ትምህርት ያሉ ቃላት', 'glossary.json'], ['api', 'የLE HULUM API መነሻ URL', '{{ host }}/api/v1'], ['lesson-id', 'ለአስተያየት የትምህርት መለያ', 'demo'], ['lang', 'ነባሪ የጽሑፍ ቋንቋ', 'am | en'], ['theme', 'የማጫወቻ ገጽታ', 'light | dark | contrast']],
     events: [['progress', 'ተማሪው በመስመሮች ሲያልፍ ይነሳል፦ { line, time, signed }።'], ['complete', 'ትምህርቱ ሲያልቅ ይነሳል፦ { lessonId, understood }።']],
     endpoints: [['POST', '/sign/translate', 'አማርኛ ወይም እንግሊዝኛ ጽሑፍ → gloss፣ ቅንጥቦች፣ ሽፋን፣ የፊት ምልክቶች።'], ['POST', '/sign/lesson', 'የጽሑፍ ፋይል → ከፍጥነት ማስተካከያ ጋር የተተረጎመ ትራክ።'], ['GET', '/lexicon', 'ሁሉም የታተሙ ምልክቶች ከርዕሶች እና ምስጋናዎች ጋር።'], ['GET', '/glossary', 'የአንድ ትምህርት ቃላት፣ ከሚገኙባቸው መስመሮች ጋር።'], ['POST', '/sign/review', '«ገባኝ / ግልጽ አይደለም» አስተያየት ለግምገማ ይላኩ።']],
   },
@@ -315,20 +276,17 @@ const splitS = s => s.split(/(?<=[.?!።])\s+/).filter(Boolean);
 class Component extends DCLogic {
   state = { host: 'light', hover: null, active: null, status: 'idle', chipIdx: 0, signer: false, sel: null, selText: '', pop: null, kb: false, drag: null, pinAt: null, copied: false, selSign: null, doneBlock: null };
   componentDidMount() {
-    const API = (window.LH_BRIDGE && window.LH_BRIDGE.API) || ((location.origin || '') + '/api/v1');
-    let pin = document.getElementById('lh-platform-pin');
-    if (!pin) {
-      pin = document.createElement('db-sign-pin');
-      pin.id = 'lh-platform-pin';
-      pin.setAttribute('api', API);
+    const pin = document.getElementById('lh-global-pin') || document.querySelector('db-sign-pin');
+    if (pin) {
+      pin.setAttribute('scope', '#lh-platform-article');
       pin.setAttribute('lang', document.documentElement.lang === 'am' ? 'am' : 'en');
-      pin.setAttribute('for', 'lh-platform-article');
-      const art = document.getElementById('lh-platform-article');
-      if (art && art.parentNode) art.parentNode.appendChild(pin);
-      else document.body.appendChild(pin);
     }
   }
-  componentWillUnmount() { clearTimeout(this._t); clearTimeout(this._cp); }
+  componentWillUnmount() {
+    clearTimeout(this._t); clearTimeout(this._cp);
+    const pin = document.getElementById('lh-global-pin');
+    if (pin) pin.setAttribute('scope', 'main');
+  }
   data() {
     if (this._data) return this._data;
     const LH = window.LH; if (!LH) return [];
@@ -477,7 +435,13 @@ class Component extends DCLogic {
       },
       pinKey: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.start(order[0], 0); } },
       dragPin: s.drag,
-      launcherOn: !s.signer, openSigner: () => this.start(order[0], 0),
+      launcherOn: false, openSigner: () => {
+        const pin = document.getElementById('lh-global-pin');
+        const launch = pin && pin.shadowRoot && pin.shadowRoot.querySelector('.launch');
+        if (launch) launch.click();
+        else this.start(order[0], 0);
+      },
+      savannaShot: ((window.LH_CONFIG && window.LH_CONFIG.HOST) || location.origin || '') + '/demo/v3-design/img/savanna-proof.webp',
       signerOn: s.signer,
       sw: phone ? { right: '0', left: '0', bottom: '0', width: 'auto', radius: '18px 18px 0 0', vidW: '34%' } : { right: '16px', left: 'auto', bottom: '16px', width: '400px', radius: '18px', vidW: '150px' },
       loading: s.status === 'loading', curGloss: s.status !== 'loading' && cur && cur.chips[s.chipIdx] ? cur.chips[s.chipIdx].label : '',

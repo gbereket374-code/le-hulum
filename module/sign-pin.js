@@ -110,7 +110,19 @@ class DbSignPin extends HTMLElement {
       });
       this.refs.list.append(button);
     });
-    this.refs.pin.hidden = false;
+    const drag = document.createElement("button");
+    drag.type = "button";
+    drag.textContent = this.t("pin_drag_btn") || "Drag pin";
+    drag.addEventListener("click", () => {
+      this.refs.pin.hidden = false;
+      this.refs.pin.style.right = "1rem";
+      this.refs.pin.style.bottom = "5.5rem";
+      this.refs.pin.style.left = "auto";
+      this.refs.pin.style.top = "auto";
+      this.closePanel(false);
+      this.refs.pin.focus();
+    });
+    this.refs.list.prepend(drag);
     if (!this.refs.panel.open) this.refs.panel.show();
     this.refs.launch.setAttribute("aria-expanded", "true");
     (this.refs.list.querySelector("button") || this.refs.close).focus();
@@ -120,6 +132,10 @@ class DbSignPin extends HTMLElement {
     if (this.refs.panel.open) this.refs.panel.close();
     this.refs.launch.setAttribute("aria-expanded", "false");
     if (focus) this.refs.launch.focus();
+  }
+
+  hidePin() {
+    this.refs.pin.hidden = true;
   }
 
   outline(range) {

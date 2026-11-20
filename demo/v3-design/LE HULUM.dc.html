@@ -380,7 +380,18 @@ class Component extends DCLogic {
     this._r = () => this.setState({ w: window.innerWidth }); window.addEventListener('resize', this._r);
     this._k = e => { if (e.key === 'Escape') { if (this.state.settings) this.setState({ settings: false }); else if (this.state.themeMenu) this.setState({ themeMenu: false }); else if (this.state.menu) this.setState({ menu: false }); } };
     window.addEventListener('keydown', this._k);
+    this.mountGlobalPin();
     this.apply();
+  }
+  mountGlobalPin() {
+    if (document.getElementById('lh-global-pin')) return;
+    const B = window.LH_BRIDGE || {};
+    const pin = document.createElement('db-sign-pin');
+    pin.id = 'lh-global-pin';
+    pin.setAttribute('api', B.API || ((location.origin || '') + '/api/v1'));
+    pin.setAttribute('lang', document.documentElement.lang === 'am' ? 'am' : 'en');
+    pin.setAttribute('scope', 'main');
+    document.body.appendChild(pin);
   }
   componentWillUnmount() { window.removeEventListener('hashchange', this._h); window.removeEventListener('resize', this._r); window.removeEventListener('keydown', this._k); clearTimeout(this._fsT); }
   componentDidUpdate() { this.apply(); }
@@ -519,9 +530,13 @@ class Component extends DCLogic {
       shRight: '0', shTop: phone ? 'auto' : '0', shLeft: phone ? '0' : 'auto', shWidth: phone ? '100%' : 'min(460px,100%)',
       shRadius: phone ? '24px 24px 0 0' : '24px 0 0 24px',
       // floating signer
-      showLauncher: !f.open && s.page !== 'studio', showFooter: s.page !== 'studio', chromeH: s.ann ? 129 : 77, setPad: s.page === 'studio' || phone ? '0' : '0 18px 0 8px', setGap: s.page === 'studio' || phone ? '0' : '10px',
-      setLeft: s.page === 'studio' ? 'auto' : '16px', setRight: s.page === 'studio' ? '16px' : 'auto', setBottom: s.page === 'studio' ? (phone ? '128px' : '112px') : '16px', fsOpen: f.open, fs: f,
-      openSigner: () => this.fsSet({ open: true }), fsClose: () => { clearTimeout(this._fsT); this.fsSet({ open: false, playing: false, more: false }); },
+      showLauncher: false, showFooter: s.page !== 'studio', chromeH: s.ann ? 129 : 77, setPad: s.page === 'studio' || phone ? '0' : '0 18px 0 8px', setGap: s.page === 'studio' || phone ? '0' : '10px',
+      setLeft: s.page === 'studio' ? 'auto' : '16px', setRight: s.page === 'studio' ? '16px' : 'auto', setBottom: s.page === 'studio' ? (phone ? '128px' : '112px') : '16px', fsOpen: false, fs: f,
+      openSigner: () => {
+        const pin = document.getElementById('lh-global-pin');
+        const launch = pin && pin.shadowRoot && pin.shadowRoot.querySelector('.launch');
+        if (launch) launch.click();
+      }, fsClose: () => { clearTimeout(this._fsT); this.fsSet({ open: false, playing: false, more: false }); },
       fsToggleMore: () => this.fsSet({ more: !f.more }), fsToggleSize: () => this.fsSet({ size: fsLarge ? 's' : 'l' }),
       fsSizeLabel: fsLarge ? t.shrink : t.expand,
       fsRight: phone ? '0' : '16px', fsLeft: phone ? '0' : 'auto', fsBottom: phone ? '0' : '16px',

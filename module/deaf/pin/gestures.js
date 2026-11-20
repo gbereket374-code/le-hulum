@@ -117,10 +117,18 @@ export function bindGestures(host) {
   host.refs.pick.addEventListener("mousedown", (event) => event.preventDefault());
   host.refs.pick.addEventListener("click", () => signSelection(host));
   host.onKey = (event) => {
-    if (event.key === "Escape" && host.refs.panel.open) {
-      event.preventDefault();
-      host.closePanel(true);
-      return;
+    if (event.key === "Escape") {
+      if (host.refs.panel.open) {
+        event.preventDefault();
+        host.closePanel(true);
+        return;
+      }
+      if (!host.refs.pin.hidden) {
+        event.preventDefault();
+        host.hidePin?.();
+        host.session?.stop(true);
+        return;
+      }
     }
     const field = event.target?.closest?.("input, textarea, select, [contenteditable='true']");
     if (field) return;

@@ -141,6 +141,7 @@
   "pin_list": "Choose a block to sign",
   "pin_close": "Close",
   "pin_drag": "Drag the pin onto a sentence, or press to sign the text under its tip",
+  "pin_drag_btn": "Drag pin",
   "pin_selection": "Sign selection",
   "pin_pause": "Pause",
   "pin_resume": "Play",
