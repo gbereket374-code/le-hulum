@@ -13,20 +13,22 @@
     <div style="position:relative;overflow:hidden;border-radius:clamp(20px,2.4vw,36px);background:var(--hero);color:var(--hero-ink);border:1px solid var(--hero-line);display:grid;grid-template-columns:{{ heroCols }};min-height:{{ heroMinH }}">
 
       <div style="position:relative;order:{{ videoOrder }};min-height:{{ videoMinH }};aspect-ratio:{{ videoAspect }};background:repeating-linear-gradient(135deg,#141e3a 0 2px,#1a2648 2px 16px);overflow:hidden">
-        <div aria-hidden="true" style="position:absolute;inset:0;background:{{ videoFade }};pointer-events:none"></div>
-        <video id="lh-hero-vid" src="{{ heroSrc }}" muted playsinline preload="none" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#0a1124" aria-label="{{ t.realBadge }}"></video>
-        <div id="lh-hero-ph" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:32px;white-space:pre-line;font:500 12px/1.8 var(--mono);color:#aab4cf;pointer-events:none">{{ t.videoPh }}</div>
-        <div style="position:absolute;top:clamp(14px,2vw,24px);right:clamp(14px,2vw,24px);display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+        <div aria-hidden="true" style="position:absolute;inset:0;background:{{ videoFade }};pointer-events:none;z-index:1"></div>
+        <video id="lh-hero-vid" src="{{ heroSrc }}" poster="{{ heroPoster }}" muted playsinline loop preload="metadata" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#0a1124" aria-label="{{ t.realBadge }}"></video>
+        <sc-if value="{{ showPosterPlay }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ togglePlay }}" aria-label="{{ t.play }}" style="position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);z-index:3;width:72px;height:72px;border:0;border-radius:50%;background:#8ea9ff;color:#0b1430;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 10px rgba(142,169,255,.22)"><span aria-hidden="true" style="width:0;height:0;border-left:18px solid currentColor;border-top:11px solid transparent;border-bottom:11px solid transparent;margin-left:4px"></span></button>
+        </sc-if>
+        <div style="position:absolute;top:clamp(14px,2vw,24px);right:clamp(14px,2vw,24px);z-index:2;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
           <span style="display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:var(--r-pill);background:#f3f5fb;color:#0b1430;font-size:13px;font-weight:700;white-space:nowrap">
             <span aria-hidden="true" style="width:8px;height:8px;border-radius:50%;background:#2747d6;animation:{{ liveAnim }}"></span>{{ t.realBadge }}
           </span>
         </div>
         <sc-if value="{{ glossNow }}" hint-placeholder-val="{{ false }}">
-          <span aria-hidden="true" style="position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);padding:8px 16px;border-radius:10px;background:rgba(0,0,0,.6);color:#fff;font:600 clamp(16px,1.6vw,22px) var(--mono);letter-spacing:.05em;white-space:nowrap">{{ glossNow }}</span>
+          <span aria-hidden="true" style="position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);z-index:2;padding:8px 16px;border-radius:10px;background:rgba(0,0,0,.6);color:#fff;font:600 clamp(16px,1.6vw,22px) var(--mono);letter-spacing:.05em;white-space:nowrap">{{ glossNow }}</span>
         </sc-if>
-        <div style="position:absolute;left:clamp(12px,1.6vw,24px);right:clamp(12px,1.6vw,24px);bottom:clamp(12px,1.6vw,24px);border-radius:20px;background:rgba(8,13,30,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.14);padding:14px 14px 14px 18px;display:flex;flex-direction:column;gap:10px">
+        <div style="position:absolute;left:clamp(12px,1.6vw,24px);right:clamp(12px,1.6vw,24px);bottom:clamp(12px,1.6vw,24px);z-index:2;border-radius:20px;background:rgba(8,13,30,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.14);padding:14px 14px 14px 18px;display:flex;flex-direction:column;gap:10px">
           <div style="display:flex;align-items:center;gap:12px">
-            <span style="flex:1;min-width:0;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#b8c2dc">{{ t.interpreter }} · {{ capCount }}</span>
+            <span style="flex:1;min-width:0;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#b8c2dc">{{ t.interpreter }} · {{ t.recorded }}</span>
             <button onClick="{{ togglePlay }}" aria-pressed="{{ paused }}" style="flex:none;min-height:44px;padding:0 16px 0 12px;border:0;border-radius:var(--r-pill);background:#f3f5fb;color:#0b1430;font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px">
               <sc-if value="{{ playing }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="display:flex;gap:3px"><span style="width:3px;height:12px;background:currentColor"></span><span style="width:3px;height:12px;background:currentColor"></span></span></sc-if>
               <sc-if value="{{ paused }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="width:0;height:0;border-left:9px solid currentColor;border-top:6px solid transparent;border-bottom:6px solid transparent"></span></sc-if>
@@ -34,14 +36,13 @@
             </button>
           </div>
           <div aria-live="polite" style="display:flex;flex-direction:column;gap:2px">
-            <span style="font-size:clamp(16px,1.4vw,20px);font-weight:600;line-height:1.5;color:#fff">{{ capMain }}</span>
-            <span lang="{{ altLang }}" style="font-size:clamp(14px,1.1vw,16px);line-height:1.5;color:#b8c2dc">{{ capAlt }}</span>
+            <span lang="am" style="font-size:clamp(16px,1.4vw,20px);font-weight:600;line-height:1.7;color:#fff">{{ capAm }}</span>
+            <span lang="en" style="font-size:clamp(14px,1.1vw,16px);line-height:1.5;color:#b8c2dc">{{ capEn }}</span>
           </div>
           <div aria-hidden="true" style="display:flex;flex-wrap:wrap;gap:5px">
             <sc-for list="{{ heroChips }}" as="c" hint-placeholder-count="3">
               <span style="min-height:26px;display:flex;align-items:center;padding:0 8px;border-radius:7px;font:600 11px var(--mono);letter-spacing:.03em;background:{{ c.bg }};color:{{ c.fg }};border:{{ c.border }}">{{ c.label }}</span>
             </sc-for>
-            <sc-if value="{{ heroFace }}" hint-placeholder-val="{{ false }}"><span style="min-height:26px;display:flex;align-items:center;gap:5px;padding:0 8px;border-radius:7px;border:1px solid #f3f5fb;color:#f3f5fb;font-size:11px;font-weight:700"><span style="font-family:var(--mono)">{{ heroFaceIcon }}</span>{{ heroFace }}</span></sc-if>
           </div>
         </div>
       </div>
@@ -328,8 +329,9 @@ const T = {
     pitch: 'Ethiopian Sign Language for any online lesson, with one line of code.',
     cta1: 'Watch a signed lesson', cta2: 'Add it to your platform',
     lessonTitle: 'Python: Your first variable', teacher: 'Teacher',
-    videoPh: 'INTERPRETER VIDEO · 3:4\nyoung Ethiopian man, dark jacket\nupper body + hands visible', realBadge: 'Real interpreter',
+    realBadge: 'Real interpreter',
     interpreter: 'Interpreter', pause: 'Pause', play: 'Play', line: 'Line', chipsH: 'Signs, in EthSL order', signedOf: 'signed', recorded: 'Recorded phrase',
+    heroAm: 'ሰላም፣ እንኳን ደህና መጣችሁ።', heroEn: 'Hello, and welcome.',
     eyebrows: 'Eyebrows: question', shake: 'Head shake: not',
     proofL: 'Built with', proof: ['A Deaf co-designer', 'Certified EthSL interpreters', 'ALX Savanna', 'Track 2 · Accessible learning media'],
     tryEy: 'Try it now', signItH: 'Sign it', signItHelp: 'Type a word or a question in Amharic or English', signItPh: 'What is a variable?', signItBtn: 'Sign it', tryL: 'Try',
@@ -378,8 +380,9 @@ const T = {
     pitch: 'ለማንኛውም የኦንላይን ትምህርት የኢትዮጵያ ምልክት ቋንቋ፣ በአንድ መስመር ኮድ።',
     cta1: 'በምልክት የተተረጎመ ትምህርት ይመልከቱ', cta2: 'ወደ መድረክዎ ያክሉት',
     lessonTitle: 'ፓይተን፦ የመጀመሪያ ተለዋዋጭዎ', teacher: 'መምህር',
-    videoPh: 'የአስተርጓሚ ቪዲዮ · 3:4\nINTERPRETER VIDEO', realBadge: 'እውነተኛ አስተርጓሚ',
+    realBadge: 'እውነተኛ አስተርጓሚ',
     interpreter: 'አስተርጓሚ', pause: 'ቆም', play: 'አጫውት', line: 'መስመር', chipsH: 'ምልክቶች በምልክት ቋንቋ ቅደም ተከተል', signedOf: 'ተተርጉሟል', recorded: 'የተቀረጸ ሐረግ',
+    heroAm: 'ሰላም፣ እንኳን ደህና መጣችሁ።', heroEn: 'Hello, and welcome.',
     eyebrows: 'ቅንድብ፦ ጥያቄ', shake: 'ራስ መነቅነቅ፦ አይ',
     proofL: 'የተሰራው ከ', proof: ['መስማት ከተሳነው ተባባሪ ዲዛይነር', 'ከተረጋገጡ የምልክት ቋንቋ አስተርጓሚዎች', 'ALX Savanna', 'ዘርፍ 2 · ተደራሽ የትምህርት ሚዲያ'],
     tryEy: 'አሁን ይሞክሩ', signItH: 'በምልክት ይተርጉሙ', signItHelp: 'በአማርኛ ወይም በእንግሊዝኛ ቃል ወይም ጥያቄ ይጻፉ', signItPh: 'ተለዋዋጭ ምንድን ነው?', signItBtn: 'በምልክት', tryL: 'ይሞክሩ',
@@ -424,13 +427,15 @@ const T = {
   },
 };
 const CHIPS = [['What is a variable?', 'en'], ['ተለዋዋጭ ምንድን ነው?', 'am'], ['ኮዱ ካልሰራ፣ ስህተቱን አረጋግጡ።', 'am']];
-const HERO_LINES = [0, 1, 11];
+const HERO_FROM = 0.05;
+const HERO_TO = 7.3;
+const HERO_GLOSS = ['HELLO', 'WELCOME'];
 const TYPE = { sign: ['var(--accent)', 'var(--accent-ink)', '1.5px solid transparent', '●'], finger: ['transparent', 'var(--ink)', '1.5px dashed var(--ink)', 'ABC'], point: ['transparent', 'var(--ink)', '1.5px solid var(--ink)', '→'], none: ['var(--warn-soft)', 'var(--warn-ink)', '1.5px dashed var(--warn-ink)', '∅'], pause: ['transparent', 'var(--ink-2)', '1px solid var(--line-strong)', '‖'] };
 
 class Component extends DCLogic {
-  state = { li: 0, chip: 0, playing: true, q: '', faq: 0, step: 0, copied: false, apiStats: null };
+  state = { chip: 0, playing: false, reduced: false, q: '', faq: 0, step: 0, copied: false, apiStats: null };
   componentDidMount() {
-    this._i = setInterval(() => this.tick(), 850);
+    this._i = setInterval(() => this.tick(), 900);
     this.bootHero();
     const B = window.LH_BRIDGE;
     if (B && B.stats) B.stats().then(s => this.setState({ apiStats: s })).catch(() => {});
@@ -438,28 +443,51 @@ class Component extends DCLogic {
   bootHero() {
     const B = window.LH_BRIDGE || {};
     const DATA = B.DATA || ((location.origin || '') + '/demo/data');
-    const v = document.getElementById('lh-hero-vid');
-    if (!v) return;
-    v.src = DATA + '/memory/A01.mp4';
-    v.addEventListener('play', () => { const ph = document.getElementById('lh-hero-ph'); if (ph) ph.hidden = true; this.setState({ playing: true }); });
-    v.addEventListener('pause', () => this.setState({ playing: false }));
-    v.addEventListener('timeupdate', () => { if (v.currentTime > 7.3) v.currentTime = 0.05; });
+    const reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    this.setState({ reduced });
+    const wire = () => {
+      const v = document.getElementById('lh-hero-vid');
+      if (!v || v.dataset.lhHero === '1') return !!v;
+      v.dataset.lhHero = '1';
+      v.poster = DATA + '/posters/A01.webp';
+      if (!v.getAttribute('src')) v.src = DATA + '/memory/A01.mp4';
+      v.muted = true;
+      v.playsInline = true;
+      v.loop = true;
+      const trim = () => { try { if (v.currentTime < HERO_FROM) v.currentTime = HERO_FROM; } catch (e) {} };
+      v.addEventListener('loadeddata', trim);
+      v.addEventListener('play', () => this.setState({ playing: true }));
+      v.addEventListener('pause', () => this.setState({ playing: false }));
+      v.addEventListener('timeupdate', () => {
+        if (v.currentTime >= HERO_TO - 0.05) {
+          try { v.currentTime = HERO_FROM; } catch (e) {}
+        }
+      });
+      if (!reduced) {
+        v.play().then(() => this.setState({ playing: true })).catch(() => this.setState({ playing: false }));
+      } else {
+        v.pause();
+        this.setState({ playing: false });
+      }
+      return true;
+    };
+    if (!wire()) {
+      let n = 0;
+      const t = setInterval(() => { if (wire() || ++n > 40) clearInterval(t); }, 100);
+    }
   }
   componentWillUnmount() { clearInterval(this._i); clearTimeout(this._cp); }
   tick() {
-    if (!this.state.playing || !window.LH) return;
-    const line = window.LH.lesson.lines[HERO_LINES[this.state.li]];
-    if (this.state.chip < line.gloss.length + 1) this.setState({ chip: this.state.chip + 1 });
-    else this.setState({ li: (this.state.li + 1) % HERO_LINES.length, chip: 0 });
+    if (!this.state.playing) return;
+    this.setState(st => ({ chip: (st.chip + 1) % (HERO_GLOSS.length + 1) }));
   }
   renderVals() {
     const lang = this.props.lang || 'en', t = T[lang], w = this.props.w || 1440, s = this.state, LH = window.LH;
     const go = p => () => this.props.go && this.props.go(p);
     const open = q => this.props.openStudio && this.props.openStudio(q);
     const split = w >= 768;
-    const line = LH ? LH.lesson.lines[HERO_LINES[s.li]] : { en: '', am: '', gloss: [], s: 0 };
-    const prim = lang === 'am' ? 'am' : 'en';
-    const chipI = Math.min(s.chip, line.gloss.length) - 1;
+    const chipI = Math.min(s.chip, HERO_GLOSS.length) - 1;
+    const DATA = ((window.LH_BRIDGE || {}).DATA || ((location.origin || '') + '/demo/data'));
     const pr = LH ? LH.translate(s.q || t.signItPh) : null;
     let pv = { input: s.q || t.signItPh, chips: [], meta: '', first: '' };
     if (pr) {
@@ -480,19 +508,18 @@ class Component extends DCLogic {
       textPad: split ? 'clamp(40px,5vw,88px) clamp(28px,3vw,48px) clamp(40px,5vw,88px) clamp(28px,4.4vw,80px)' : '8px clamp(20px,5vw,40px) clamp(32px,6vw,48px)',
       h1Size: lang === 'am' ? (split ? 'clamp(32px,4.2vw,64px)' : 'clamp(32px,8.4vw,48px)') : (split ? 'clamp(44px,5.8vw,96px)' : 'clamp(42px,11vw,64px)'),
       playing: s.playing, paused: !s.playing, playLabel: s.playing ? t.pause : t.play,
+      showPosterPlay: s.reduced && !s.playing,
       liveAnim: s.playing ? 'lh-pulse 1.6s ease-in-out infinite' : 'none',
       togglePlay: () => {
         const v = document.getElementById('lh-hero-vid');
         if (v) { if (v.paused) v.play().catch(() => {}); else v.pause(); }
         else this.setState({ playing: !s.playing });
       },
-      heroSrc: ((window.LH_BRIDGE || {}).DATA || ((location.origin || '') + '/demo/data')) + '/memory/A01.mp4',
-      capMain: line[prim], capAlt: line[prim === 'am' ? 'en' : 'am'], capCount: t.line + ' ' + (s.li + 1) + '/3',
-      glossNow: chipI >= 0 && chipI < line.gloss.length ? line.gloss[chipI] : '',
-      playerTime: String(Math.floor(line.s + Math.max(0, chipI + 1) * 0.7)).padStart(2, '0'), playerPct: Math.round((line.s + Math.max(0, chipI + 1) * 0.7) / 46 * 100) + '%',
-      heroChips: line.gloss.map((g, i) => ({ label: g, bg: i <= chipI ? '#8ea9ff' : 'transparent', fg: i <= chipI ? '#0b1430' : '#b8c2dc', border: '1px solid ' + (i <= chipI ? '#8ea9ff' : 'rgba(255,255,255,.3)') })),
-      heroCoverage: line.gloss.length + ' ' + t.of + ' ' + line.gloss.length + ' ' + t.signedOf,
-      heroFace: line.face === 'eyebrows' ? t.eyebrows : line.face === 'shake' ? t.shake : '', heroFaceIcon: line.face === 'shake' ? '↔' : '◠',
+      heroSrc: DATA + '/memory/A01.mp4',
+      heroPoster: DATA + '/posters/A01.webp',
+      capAm: t.heroAm, capEn: t.heroEn,
+      glossNow: chipI >= 0 && chipI < HERO_GLOSS.length ? HERO_GLOSS[chipI] : '',
+      heroChips: HERO_GLOSS.map((g, i) => ({ label: g, bg: i <= chipI ? '#8ea9ff' : 'transparent', fg: i <= chipI ? '#0b1430' : '#b8c2dc', border: '1px solid ' + (i <= chipI ? '#8ea9ff' : 'rgba(255,255,255,.3)') })),
       goLesson: go('lesson'), goPlatforms: go('platforms'), goStudio: go('studio'),
       proof: t.proof,
       q: s.q, onQ: e => this.setState({ q: e.target.value }),
