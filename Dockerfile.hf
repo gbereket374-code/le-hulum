@@ -1,0 +1,28 @@
+# INT-05 NFR-SUS-03: One production image for Hugging Face Spaces / Render.
+# Serves FastAPI + /module + /demo + /savanna. Seed runs on start. Honours $PORT.
+FROM python:3.11-slim
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY api/requirements.txt /app/api/requirements.txt
+RUN pip install --no-cache-dir -r /app/api/requirements.txt
+
+COPY api /app/api
+COPY demo /app/demo
+COPY module /app/module
+COPY savanna /app/savanna
+COPY tools/vtt_align.py /app/tools/vtt_align.py
+COPY tools/sign_motion.py tools/cut_by_pause.py tools/sign_trim_config.json /app/tools/
+
+ENV DATA_DIR=/data
+ENV PYTHONPATH=/app
+ENV PORT=7860
+
+EXPOSE 7860
+
+# HF Spaces and Render inject PORT; default 7860 for Spaces.
+CMD ["sh", "-c", "uvicorn api.main:app --host 0.0.0.0 --port ${PORT:-7860}"]

@@ -30,6 +30,7 @@ No login is needed anywhere on the demo. Use **https://le-hulum.netlify.app/** �
 5. [How automatic EthSL works](#5-how-automatic-ethsl-works)
 6. [Architecture](#6-architecture)
 7. [Run it locally](#7-run-it-locally)
+7b. [Deploy to Hugging Face Spaces (Docker)](#deploy-to-hugging-face-spaces-docker) / [Render](#deploy-to-render)
 8. [API reference](#8-api-reference)
 9. [Open standard (file formats)](#9-open-standard-file-formats)
 10. [Testing and quality](#10-testing-and-quality)
@@ -207,6 +208,50 @@ scripts/dev-up.sh             # builds, starts, smoke-tests, prints the links
 ```
 
 `dev-up.sh` prints laptop links (`http://localhost:8080/...`) and a public HTTPS tunnel link for phones (Cloudflare quick tunnel). Stop with `scripts/dev-down.sh`.
+
+## Deploy to Hugging Face Spaces (Docker)
+
+One container serves the API, `/module`, `/demo`, and `/savanna`.
+
+1. Create a new **Docker** Space on https://huggingface.co/spaces (public).
+2. In a terminal (do **not** put the token in any file):
+
+```bash
+huggingface-cli login
+# or: hf auth login
+```
+
+3. From this repo root:
+
+```bash
+# Replace YOUR_USER / YOUR_SPACE
+export HF_SPACE=YOUR_USER/YOUR_SPACE
+git remote add hf https://huggingface.co/spaces/$HF_SPACE || true
+# Space expects Dockerfile at repo root — use Dockerfile.hf
+cp Dockerfile.hf Dockerfile
+git add Dockerfile
+git commit -m "Add HF Spaces Dockerfile"
+git push hf HEAD:main
+```
+
+4. Open `https://huggingface.co/spaces/YOUR_USER/YOUR_SPACE` — the app URL is typically `https://YOUR_USER-YOUR_SPACE.hf.space`.
+
+Demo paths on the Space:
+
+- `/` or `/demo/` — design SPA home
+- `/demo/v3-design/LE%20HULUM.dc.html#lesson` — signed lesson
+- `/demo/v3-design/LE%20HULUM.dc.html#studio` — Asayegn
+- `/demo/v3-design/LE%20HULUM.dc.html#platforms` — For platforms
+- `/savanna/pages/homepage-v1-paced.html` — Savanna learner homepage
+- `/demo/plugin-test.html` — plug-in test
+- `/api/docs` — Swagger
+
+## Deploy to Render
+
+1. New **Web Service** from this GitHub repo.
+2. Environment: Docker. Dockerfile path: `Dockerfile.hf`.
+3. Set `PORT` (Render sets this automatically). Optional: `DATA_DIR=/data`.
+4. Health check path: `/api/v1/health`.
 
 ## 8. API reference
 

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<!-- INT-01: External plug-in proof — load ONLY our script from the hosted URL. -->
+<html lang="am">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LE HULUM external plugin test</title>
+<!-- Replace HOSTED with the public Space / Render origin after deploy. -->
+<script>
+  window.LH_HOSTED = window.LH_HOSTED || (location.origin.includes('localhost') ? '' : location.origin);
+</script>
+</head>
+<body style="font:1.125rem/1.8 system-ui;max-width:40rem;margin:2rem auto;padding:0 1rem">
+  <h1>External plug-in test</h1>
+  <p>This page loads <code>db-player.js</code> from the hosted LE HULUM origin only.</p>
+  <div id="mount">
+    <article id="line"><p>ኮዱ ካልሰራ፣ ስህተቱን አረጋግጡ።</p></article>
+  </div>
+  <script type="module">
+    const HOST = window.LH_HOSTED || new URLSearchParams(location.search).get('host') || '';
+    if (!HOST) {
+      document.getElementById('mount').insertAdjacentHTML('beforebegin',
+        '<p role="alert">Pass ?host=https://YOUR-SPACE.hf.space or set window.LH_HOSTED.</p>');
+    } else {
+      await import(HOST + '/module/db-player.js');
+      await import(HOST + '/module/sign-pin.js');
+      const p = document.createElement('db-player');
+      p.setAttribute('src', HOST + '/demo/data/lesson.mp4');
+      p.setAttribute('poster', HOST + '/demo/data/lesson-poster.webp');
+      p.setAttribute('captions', HOST + '/demo/data/lesson.am.vtt,' + HOST + '/demo/data/lesson.en.vtt');
+      p.setAttribute('sign', HOST + '/demo/data/sign.json');
+      p.setAttribute('glossary', HOST + '/demo/data/glossary.json');
+      p.setAttribute('lang', 'am');
+      document.getElementById('mount').prepend(p);
+      const pin = document.createElement('db-sign-pin');
+      pin.setAttribute('api', HOST + '/api/v1');
+      pin.setAttribute('lang', 'am');
+      pin.setAttribute('scope', '#line');
+      document.getElementById('mount').appendChild(pin);
+    }
+  </script>
+</body>
+</html>
