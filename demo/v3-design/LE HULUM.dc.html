@@ -382,6 +382,7 @@ class Component extends DCLogic {
     window.addEventListener('keydown', this._k);
     this.mountGlobalPin();
     this.apply();
+    this.syncPinChrome();
   }
   mountGlobalPin() {
     if (document.getElementById('lh-global-pin')) return;
@@ -394,7 +395,16 @@ class Component extends DCLogic {
     document.body.appendChild(pin);
   }
   componentWillUnmount() { window.removeEventListener('hashchange', this._h); window.removeEventListener('resize', this._r); window.removeEventListener('keydown', this._k); clearTimeout(this._fsT); }
-  componentDidUpdate() { this.apply(); }
+  componentDidUpdate() { this.apply(); this.syncPinChrome(); }
+  syncPinChrome() {
+    const pin = document.getElementById('lh-global-pin');
+    if (!pin || !pin.shadowRoot) return;
+    const launch = pin.shadowRoot.querySelector('.launch');
+    if (!launch) return;
+    const hide = this.state.page === 'studio';
+    launch.style.display = hide ? 'none' : '';
+    pin.setAttribute('lang', this.state.lang === 'am' ? 'am' : 'en');
+  }
   apply() {
     const r = document.documentElement, s = this.state;
     r.dataset.theme = s.theme; r.lang = s.lang; r.dataset.motion = s.prefs.motion ? 'reduced' : '';

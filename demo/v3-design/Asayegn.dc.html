@@ -132,17 +132,6 @@
             <h1 id="as-empty-h" style="margin:0;font:500 clamp(34px,5vw,60px)/var(--lh-tight) var(--serif);letter-spacing:-.025em;text-wrap:balance">{{ t.emptyH1 }}<br><em style="color:var(--accent-soft-ink)">{{ t.emptyH2 }}</em></h1>
             <p lang="{{ altLang }}" style="margin:0;font:500 clamp(18px,1.8vw,22px)/1.6 var(--serif);color:var(--ink-2)">{{ t.emptyAlt }}</p>
             <p style="margin:0;font-size:16px;color:var(--ink-2)">{{ t.emptySub }}</p>
-            <div aria-hidden="true" style="width:min(260px,70vw);aspect-ratio:4/3;border-radius:22px;background:radial-gradient(circle at 50% 40%,rgba(142,169,255,.18),transparent 60%),var(--hero);border:1px solid var(--hero-line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;margin:6px 0">
-              <span style="width:56px;height:56px;border-radius:50%;border:1.5px solid rgba(255,255,255,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px"><span style="width:12px;height:12px;border-radius:50%;background:#b8c2dc"></span><span style="width:24px;height:12px;border-radius:12px 12px 4px 4px;background:#b8c2dc"></span></span>
-              <span style="display:flex;gap:3px;align-items:end;height:18px"><span style="width:4px;height:100%;border-radius:2px;background:#8ea9ff;animation:lh-wave 1.2s ease-in-out infinite"></span><span style="width:4px;height:100%;border-radius:2px;background:#8ea9ff;animation:lh-wave 1.2s .15s ease-in-out infinite"></span><span style="width:4px;height:100%;border-radius:2px;background:#8ea9ff;animation:lh-wave 1.2s .3s ease-in-out infinite"></span></span>
-              <span style="font:500 11px var(--mono);color:#b8c2dc">{{ t.idle }}</span>
-            </div>
-            <span style="font:500 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)">{{ t.tryThese }}</span>
-            <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:720px">
-              <sc-for list="{{ tryChips }}" as="c" hint-placeholder-count="5">
-                <button onClick="{{ c.go }}" lang="{{ c.lang }}" aria-label="{{ c.aria }}" style="min-height:46px;padding:4px 16px;border:1px solid var(--line-strong);border-radius:var(--r-pill);background:var(--surface);font-size:15px;font-weight:500;line-height:1.35;box-shadow:0 1px 2px rgba(0,0,0,.05);display:flex;align-items:center;gap:8px" style-hover="border-color:var(--ink)"><span aria-hidden="true" style="font:600 10px var(--mono);color:var(--ink-3)">{{ c.tag }}</span>{{ c.label }}</button>
-              </sc-for>
-            </div>
             <button onClick="{{ judgesTest }}" style="min-height:46px;padding:0 18px;border:1.5px dashed var(--ink);border-radius:var(--r-pill);background:transparent;font-size:14px;font-weight:700">⇄ {{ t.judges }}</button>
           </section>
         </sc-if>
@@ -253,7 +242,7 @@
                                 </div>
                                 <sc-if value="{{ m.lessonLine }}" hint-placeholder-val="{{ false }}">
                                   <button onClick="{{ goLesson }}" style="display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:16px;background:var(--surface-2);text-align:left" style-hover="border-color:var(--ink)">
-                                    <span aria-hidden="true" style="width:72px;aspect-ratio:16/10;border-radius:8px;background:repeating-linear-gradient(135deg,#d6cfbf 0 2px,#e3ddcf 2px 9px);display:flex;align-items:flex-end;padding:3px"><span style="font:600 9px var(--mono);background:rgba(0,0,0,.65);color:#fff;padding:1px 4px;border-radius:3px">{{ m.lessonLine.time }}</span></span>
+                                    <span aria-hidden="true" style="width:72px;aspect-ratio:16/10;border-radius:8px;overflow:hidden;background:var(--stage);position:relative"><img src="{{ m.lessonLine.thumb }}" alt="" width="72" height="45" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;left:3px;bottom:3px;font:600 9px var(--mono);background:rgba(0,0,0,.65);color:#fff;padding:1px 4px;border-radius:3px">{{ m.lessonLine.time }}</span></span>
                                     <span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:12px;font-weight:700;color:var(--ink-3)">{{ t.lessonExplains }}</span><span style="font-size:15px;font-weight:600;line-height:1.4">{{ m.lessonLine.text }}</span></span>
                                     <span aria-hidden="true" style="width:36px;height:36px;border-radius:50%;background:var(--ink);color:var(--bg);display:flex;align-items:center;justify-content:center">▶</span>
                                   </button>
@@ -302,6 +291,16 @@
 
     <form onSubmit="{{ send }}" style="flex:none;padding:10px clamp(10px,2.4vw,24px) 12px;background:linear-gradient(transparent,var(--bg) 30%);position:relative;z-index:4">
       <div style="max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:6px">
+        <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:8px;padding-bottom:4px">
+            <span style="font:500 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);text-align:center">{{ t.tryThese }}</span>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">
+              <sc-for list="{{ tryChips }}" as="c" hint-placeholder-count="5">
+                <button type="button" onClick="{{ c.go }}" lang="{{ c.lang }}" aria-label="{{ c.aria }}" style="min-height:46px;padding:4px 16px;border:1px solid var(--line-strong);border-radius:var(--r-pill);background:var(--surface);font-size:15px;font-weight:500;line-height:1.35;box-shadow:0 1px 2px rgba(0,0,0,.05);display:flex;align-items:center;gap:8px" style-hover="border-color:var(--ink)"><span aria-hidden="true" style="font:600 10px var(--mono);color:var(--ink-3)">{{ c.tag }}</span>{{ c.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
         <div style="display:flex;align-items:flex-end;gap:8px;padding:6px 6px 6px 18px;border-radius:24px;border:2px solid {{ composerBorder }};background:var(--surface);box-shadow:var(--shadow)">
           <label for="as-input" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">{{ t.composer }}</label>
           <textarea id="as-input" rows="1" value="{{ input }}" onInput="{{ onInput }}" onKeyDown="{{ onKey }}" onFocus="{{ onFocus }}" onBlur="{{ onBlur }}" placeholder="{{ t.composer }}" style="flex:1;min-width:0;min-height:48px;max-height:140px;padding:12px 0;border:0;background:transparent;font-size:17px;line-height:1.5;resize:none;outline:none"></textarea>
@@ -323,7 +322,7 @@ const T = {
     sideL: 'Asayegn navigation', showMe: 'Show me in sign', newChat: 'New chat', browse: 'Browse signs', history: 'Your history', clear: 'Clear',
     historyEmpty: 'Your messages will appear here.', historyNote: 'Stored on this device only.', settings: 'Learner settings', help: 'Help & feedback', forPlatforms: 'For platforms',
     collapse: 'Collapse sidebar', expand: 'Expand sidebar', closeSide: 'Close menu', openSide: 'Open menu',
-    interpName: '[Interpreter name]', interpRole: 'Certified EthSL interpreter', interpL: 'Interpreter', moreInterp: 'More interpreters are coming.',
+    interpName: 'Interpreter', interpRole: 'Certified EthSL interpreter', interpL: 'Interpreter', moreInterp: 'More interpreters are coming.',
     inputLang: 'Input language', auto: 'Auto', amharic: 'አማርኛ', english: 'English', detected: 'Detected', detAm: 'Amharic', detEn: 'English',
     offline: 'You’re offline. Signs you’ve already watched still play.', banner: 'Add EthSL to your own platform with one line of code', dismiss: 'Dismiss',
     browseSub: 'Pick a sign to add it to the chat.', backChat: 'Back to chat', topics: 'Topics', all: 'All',
@@ -334,7 +333,7 @@ const T = {
     errMsg: 'Can’t reach the sign server. Try again.', retry: 'Try again',
     recorded: 'Recorded phrase', automatic: 'Automatic', dictionary: 'Dictionary sign', notSigned: 'Not signed', sameAs: 'Same signs as the message above',
     play: 'Play', pause: 'Pause', replay: 'Replay', speed: 'Speed', loop: 'Loop', download: 'Download video',
-    example: 'Example sentence', signExample: 'Sign the example', credit: 'Signed by [interpreter name] · reviewed by Deaf co-designer', related: 'Related',
+    example: 'Example sentence', signExample: 'Sign the example', credit: 'Signed by interpreter · reviewed by Deaf co-designer', related: 'Related',
     glossL: 'Signs in EthSL order. Tap one to play just that sign.', types: { sign: 'Sign', finger: 'Fingerspelled', point: 'Pointing', none: 'No sign yet', pause: 'Pause' },
     eyebrows: 'Eyebrows up: question', shake: 'Head shake: not', of: 'of', wordsSigned: 'words signed', wordNoSign: 'word has no sign yet', wordsNoSign: 'words have no sign yet',
     requestThis: 'Request this sign', lessonExplains: 'Where the lesson explains this',
@@ -349,7 +348,7 @@ const T = {
     sideL: 'የአሳየኝ ማሰሻ', showMe: 'በምልክት አሳየኝ', newChat: 'አዲስ ውይይት', browse: 'ምልክቶችን ያስሱ', history: 'ታሪክዎ', clear: 'አጽዳ',
     historyEmpty: 'መልዕክቶችዎ እዚህ ይታያሉ።', historyNote: 'በዚህ መሣሪያ ላይ ብቻ ይቀመጣል።', settings: 'የተማሪ ቅንብሮች', help: 'እገዛ እና አስተያየት', forPlatforms: 'ለመድረኮች',
     collapse: 'የጎን ፓነሉን አሳንስ', expand: 'የጎን ፓነሉን አስፋ', closeSide: 'ምናሌውን ዝጋ', openSide: 'ምናሌውን ክፈት',
-    interpName: '[የአስተርጓሚ ስም]', interpRole: 'የተረጋገጠ የምልክት ቋንቋ አስተርጓሚ', interpL: 'አስተርጓሚ', moreInterp: 'ተጨማሪ አስተርጓሚዎች ይመጣሉ።',
+    interpName: 'አስተርጓሚ', interpRole: 'የተረጋገጠ የምልክት ቋንቋ አስተርጓሚ', interpL: 'አስተርጓሚ', moreInterp: 'ተጨማሪ አስተርጓሚዎች ይመጣሉ።',
     inputLang: 'የመጻፊያ ቋንቋ', auto: 'ራስ-ሰር', amharic: 'አማርኛ', english: 'English', detected: 'የታወቀው', detAm: 'አማርኛ', detEn: 'እንግሊዝኛ',
     offline: 'ከኢንተርኔት ውጪ ነዎት። ያዩዋቸው ምልክቶች አሁንም ይጫወታሉ።', banner: 'የኢትዮጵያ ምልክት ቋንቋን በአንድ መስመር ኮድ ወደ መድረክዎ ያክሉ', dismiss: 'ዝጋ',
     browseSub: 'ወደ ውይይቱ ለመጨመር ምልክት ይምረጡ።', backChat: 'ወደ ውይይት ተመለስ', topics: 'ርዕሶች', all: 'ሁሉም',
@@ -360,7 +359,7 @@ const T = {
     errMsg: 'የምልክት አገልጋዩን ማግኘት አልተቻለም። እንደገና ይሞክሩ።', retry: 'እንደገና ሞክር',
     recorded: 'የተቀረጸ ሐረግ', automatic: 'ራስ-ሰር', dictionary: 'የመዝገበ ቃላት ምልክት', notSigned: 'አልተተረጎመም', sameAs: 'ከላይ ካለው መልዕክት ጋር ተመሳሳይ ምልክቶች',
     play: 'አጫውት', pause: 'ቆም', replay: 'እንደገና', speed: 'ፍጥነት', loop: 'ድገም', download: 'ቪዲዮውን አውርድ',
-    example: 'ምሳሌ ዓረፍተ ነገር', signExample: 'ምሳሌውን በምልክት', credit: 'በ[የአስተርጓሚ ስም] የተሰራ · በመስማት የተሳነው ተባባሪ ዲዛይነር የተገመገመ', related: 'ተዛማጅ',
+    example: 'ምሳሌ ዓረፍተ ነገር', signExample: 'ምሳሌውን በምልክት', credit: 'በአስተርጓሚ የተሰራ · በመስማት የተሳነው ተባባሪ ዲዛይነር የተገመገመ', related: 'ተዛማጅ',
     glossL: 'ምልክቶች በምልክት ቋንቋ ቅደም ተከተል። ያንን ምልክት ብቻ ለማጫወት ይንኩ።', types: { sign: 'ምልክት', finger: 'በጣት ፊደል', point: 'ማመልከት', none: 'ገና ምልክት የለውም', pause: 'ቆም' },
     eyebrows: 'ቅንድብ ከፍ፦ ጥያቄ', shake: 'ራስ መነቅነቅ፦ አይ', of: 'ከ', wordsSigned: 'ቃላት ተተርጉመዋል', wordNoSign: 'ቃል ገና ምልክት የለውም', wordsNoSign: 'ቃላት ገና ምልክት የላቸውም',
     requestThis: 'ይህንን ምልክት ይጠይቁ', lessonExplains: 'ትምህርቱ ይህንን የሚያብራራበት',
@@ -379,11 +378,16 @@ const fmt = s => Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(
 let UID = 1;
 
 class Component extends DCLogic {
-  state = { msgs: [], input: '', inLang: 'auto', collapsed: false, drawer: false, banner: true, view: 'chat', topic: 'all', playing: null, single: false, idx: {}, speed: {}, loop: {}, why: {}, fb: {}, rating: {}, history: [], toast: '', interpMenu: false, offline: typeof navigator !== 'undefined' && navigator.onLine === false, focused: false };
+  state = { msgs: [], input: '', inLang: 'auto', collapsed: false, drawer: false, banner: true, view: 'chat', topic: 'all', playing: null, single: false, idx: {}, speed: {}, loop: {}, why: {}, fb: {}, rating: {}, history: [], toast: '', interpMenu: false, offline: typeof navigator !== 'undefined' && navigator.onLine === false, focused: false, interpName: '' };
   componentDidMount() {
     try { this.setState({ history: JSON.parse(localStorage.getItem('lehulum.asayegn.history') || '[]'), banner: localStorage.getItem('lehulum.asayegn.banner') !== '0' }); } catch (e) {}
     this._on = () => this.setState({ offline: false }); this._off = () => this.setState({ offline: true });
     window.addEventListener('online', this._on); window.addEventListener('offline', this._off);
+    const DATA = ((window.LH_BRIDGE || {}).DATA || ((location.origin || '') + '/demo/data')).replace(/\/?$/, '/');
+    fetch(DATA + 'credits.json').then(r => r.ok ? r.json() : null).then(c => {
+      const p = c && Array.isArray(c.people) && c.people.find(x => x && x.kind === 'interpreter' && x.show && x.name && !/^\[/.test(x.name));
+      if (p) this.setState({ interpName: p.name });
+    }).catch(() => {});
     const B = window.LH_BRIDGE;
     if (B && B.lexicon) {
       B.lexicon().then(data => {
@@ -497,7 +501,8 @@ class Component extends DCLogic {
   }
 
   renderVals() {
-    const lang = this.props.lang || 'en', t = T[lang], s = this.state, w = this.props.w || 1440, LH = window.LH;
+    const lang = this.props.lang || 'en', s = this.state, w = this.props.w || 1440, LH = window.LH;
+    let t = T[lang];
     const desk = w >= 1024, phone = w < 640;
     const sideFull = desk ? !s.collapsed : true;
     const prim = lang;
@@ -551,7 +556,17 @@ class Component extends DCLogic {
         face: r.face === 'eyebrows' ? t.eyebrows : r.face === 'shake' ? t.shake : '', faceIcon: r.face === 'shake' ? '↔' : '◠',
         coverage: isSentence ? (missing ? (r.signed + ' ' + t.of + ' ' + r.total + ' · ' + nMiss + ' ' + (nMiss === 1 ? t.wordNoSign : t.wordsNoSign)) : (lang === 'am' ? r.total + ' ' + t.of + ' ' + r.signed + ' ' + t.wordsSigned : r.signed + ' ' + t.of + ' ' + r.total + ' ' + t.wordsSigned)) : '',
         covColor: missing ? 'var(--warn-ink)' : 'var(--accent-soft-ink)', missing, request: req,
-        lessonLine: (ll || (r.lesson_match)) ? { time: ll ? fmt(ll.s) : fmt(r.lesson_match.start), text: ll ? ll[prim] : r.lesson_match.text, go: () => { const start = ll ? ll.s : (r.lesson_match && r.lesson_match.start) || 0; try { sessionStorage.setItem('lh.lesson.seek', String(start)); } catch (e) {} this.props.go && this.props.go('lesson'); } } : null,
+        lessonLine: (ll || (r.lesson_match)) ? (() => {
+          const start = ll ? ll.s : (r.lesson_match && r.lesson_match.start) || 0;
+          const DATA = ((window.LH_BRIDGE || {}).DATA || ((location.origin || '') + '/demo/data')).replace(/\/?$/, '/');
+          const thumbIdx = start < 12 ? 0 : (start < 26 ? 1 : 2);
+          return {
+            time: fmt(start),
+            text: ll ? ll[prim] : r.lesson_match.text,
+            thumb: DATA + 'posters/ch-' + thumbIdx + '.webp',
+            go: () => { try { sessionStorage.setItem('lh.lesson.seek', String(start)); } catch (e) {} this.props.go && this.props.go('lesson'); },
+          };
+        })() : null,
         fingerspell: () => { this.updMsg(m.id, { res: { input: m.text, chips: [{ type: 'finger', label: m.text.toUpperCase().split('').join('-') }], source: 'automatic', confidence: 60, signed: 1, total: 1 } }); this.play(m.id, 0); },
         fbIsYes: fbv === 'yes', fbIsNo: fbv === 'no',
         fbYesBg: fbv === 'yes' ? 'var(--ink)' : 'transparent', fbYesFg: fbv === 'yes' ? 'var(--bg)' : 'var(--ink)', fbNoBg: fbv === 'no' ? 'var(--ink)' : 'transparent', fbNoFg: fbv === 'no' ? 'var(--bg)' : 'var(--ink)',
@@ -561,6 +576,7 @@ class Component extends DCLogic {
       };
     });
     const hasMsgs = s.msgs.length > 0;
+    if (s.interpName) t = Object.assign({}, t, { interpName: s.interpName, credit: (lang === 'am' ? ('በ' + s.interpName + ' የተሰራ · በመስማት የተሳነው ተባባሪ ዲዛይነር የተገመገመ') : ('Signed by ' + s.interpName + ' · reviewed by Deaf co-designer')) });
     return {
       t, altLang: lang === 'en' ? 'am' : 'en',
       pageH: 'calc(100dvh - ' + (this.props.chromeH || 120) + 'px)',
