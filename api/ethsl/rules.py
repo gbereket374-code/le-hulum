@@ -120,8 +120,14 @@ def _clause(tokens):
     return out, fired, bool(whs), neg
 
 
-def apply(text):
-    doc = analyze(text)
+def apply(text, lang="am"):
+    # FR-SL-01: Amharic or English analyze → same EthSL clause order.
+    use_en = str(lang or "am").lower().startswith("en")
+    if use_en:
+        from api.ethsl.english import analyze_en
+        doc = analyze_en(text)
+    else:
+        doc = analyze(text)
     reasons, glosses, nonmanual = [], [], []
     ambiguous = any(token["ambiguous"] for clause in doc["clauses"] for token in clause)
     neg = False

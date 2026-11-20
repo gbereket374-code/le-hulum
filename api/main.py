@@ -15,7 +15,9 @@ from api.routes.lexicon import router as lexicon_router
 from api.routes.packs import router as packs_router
 from api.routes.phrases import router as phrases_router
 from api.routes.progress import router as progress_router
+from api.routes.ask import router as ask_router
 from api.routes.sign import router as sign_router
+from api.routes.stats import router as stats_router
 from api.routes.webhooks import router as webhooks_router
 
 
@@ -51,6 +53,8 @@ app.include_router(phrases_router)
 app.include_router(glossary_router)
 app.include_router(examples_router)
 app.include_router(sign_router)
+app.include_router(ask_router)
+app.include_router(stats_router)
 app.include_router(jobs_router)
 app.include_router(documents_router)
 app.include_router(certificates_router)

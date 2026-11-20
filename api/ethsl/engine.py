@@ -32,19 +32,28 @@ def _memory_hit(shown, row, memory_score, reasons):
     }
 
 
+def _detect_lang(text, lang):
+    from api.ethsl.english import is_latin
+    raw = (lang or "").strip().lower()
+    # Latin-only text always uses the English path (even if caller defaulted to "am").
+    if is_latin(text):
+        return "en"
+    if raw in ("", "auto", "en"):
+        return "am" if not is_latin(text) else "en"
+    return raw
+
+
 def run(text, lang="am", use_memory=True):
     shown = display(text)
     row, memory_score = lookup(shown) if use_memory else (None, 0.0)
     if row and row.get("clip"):
         return _memory_hit(shown, row, memory_score, [])
-    english = str(lang or "am").lower().startswith("en")
-    if english and not any("\u1200" <= char <= "\u135a" for char in shown):
-        return _empty(shown, "english needs a translation provider")
-    words, reasons, nonmanual, ambiguous = apply(shown)
+    detected = _detect_lang(shown, lang)
+    words, reasons, nonmanual, ambiguous = apply(shown, lang=detected)
     items = realize(words)
     layer, value, covered = gate(items, 0.5 if ambiguous else 1.0, 1.0)
     return {
         "text": shown, "normalized": match_key(shown), "layer": layer, "gloss": items,
         "nonmanual": nonmanual, "confidence": value, "coverage": covered,
-        "playlist": playlist(items), "text_en": "", "reasons": reasons,
+        "playlist": playlist(items), "text_en": "", "reasons": reasons, "lang": detected,
     }
