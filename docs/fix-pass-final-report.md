@@ -70,7 +70,7 @@ Hidden (code kept): empty quote block, credits people `show:false`, Data saver U
 | Check | Result |
 |-------|--------|
 | Hosted fix-pass (placeholders) | **PASS** (16 screenshots) |
-| Hosted axe (4 pages × 3 themes) | Home `pre` overflow needed `tabindex` (fixed); re-check after deploy |
+| Hosted axe (4 pages × 3 themes) | **PASS** (0 violations; Home install `<pre>` given `tabindex="0"`) |
 | Local axe | **PASS** |
 | Local node `--test module/tests` | **PASS** (43) |
 | API ethsl + ask pytest (in container) | **PASS** (11) |
