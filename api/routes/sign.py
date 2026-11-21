@@ -60,8 +60,22 @@ def sign_review(body: dict):
     verdict = body.get("verdict")
     if verdict not in ("approve", "fix", "missing") or not str(body.get("text_am") or "").strip():
         return JSONResponse({"error": "text_am and a verdict of approve, fix, or missing are required."}, status_code=400)
+    rating = body.get("rating")
+    if rating is not None:
+        try:
+            rating = int(rating)
+        except (TypeError, ValueError):
+            return JSONResponse({"error": "rating must be an integer from 1 to 5."}, status_code=400)
+        if rating < 1 or rating > 5:
+            return JSONResponse({"error": "rating must be an integer from 1 to 5."}, status_code=400)
     with session() as db:
-        row = SignReview(text_am=body["text_am"], gloss=str(body.get("gloss") or ""), verdict=verdict, note=str(body.get("note") or ""))
+        row = SignReview(
+            text_am=body["text_am"],
+            gloss=str(body.get("gloss") or ""),
+            verdict=verdict,
+            note=str(body.get("note") or ""),
+            rating=rating,
+        )
         db.add(row)
         db.commit()
         db.refresh(row)

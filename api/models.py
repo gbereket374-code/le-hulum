@@ -71,4 +71,5 @@ class SignReview(SQLModel, table=True):
     gloss: str
     verdict: str
     note: str = ""
+    rating: Optional[int] = None
     created_at: datetime = Field(default_factory=_now)

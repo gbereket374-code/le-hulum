@@ -19,6 +19,12 @@ def get_engine():
         _engine = create_engine(f"sqlite:///{path}", connect_args={"check_same_thread": False})
         _path = path
         SQLModel.metadata.create_all(_engine)
+        # Lightweight migrate: older DBs may lack optional columns.
+        with _engine.connect() as conn:
+            cols = {row[1] for row in conn.exec_driver_sql("PRAGMA table_info(sign_review)").fetchall()}
+            if "rating" not in cols:
+                conn.exec_driver_sql("ALTER TABLE sign_review ADD COLUMN rating INTEGER")
+                conn.commit()
     return _engine
 
 

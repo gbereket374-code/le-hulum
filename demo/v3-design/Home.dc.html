@@ -96,6 +96,17 @@
             <button type="button" onClick="{{ c.go }}" lang="{{ c.lang }}" style="min-height:44px;padding:0 16px;border:1px solid var(--line-strong);border-radius:var(--r-pill);background:var(--surface);font-size:15px;font-weight:500" style-hover="border-color:var(--ink);background:var(--bg)">{{ c.label }}</button>
           </sc-for>
         </div>
+        <sc-if value="{{ pv.show }}" hint-placeholder-val="{{ false }}">
+          <div role="status" aria-live="polite" style="display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:13px;font-weight:600;color:var(--ink-3)">{{ t.preview }}</span>
+            <div style="display:flex;flex-wrap:wrap;gap:6px">
+              <sc-for list="{{ pv.chips }}" as="pc" hint-placeholder-count="3">
+                <span style="min-height:36px;padding:0 12px;border-radius:10px;background:{{ pc.bg }};color:{{ pc.fg }};border:{{ pc.border }};font:600 13px var(--mono);display:inline-flex;align-items:center;gap:6px"><span aria-hidden="true">{{ pc.icon }}</span>{{ pc.label }}</span>
+              </sc-for>
+            </div>
+            <span style="font-size:14px;color:var(--ink-2)">{{ pv.meta }}</span>
+          </div>
+        </sc-if>
       </form>
     </div>
   </section>
@@ -445,19 +456,30 @@ const T = {
 const CHIPS = [['What is a variable?', 'en'], ['ተለዋዋጭ ምንድን ነው?', 'am'], ['ኮዱ ካልሰራ፣ ስህተቱን አረጋግጡ።', 'am']];
 const HERO_FROM = 0.05;
 const HERO_TO = 7.3;
-const HERO_GLOSS = ['HELLO', 'WELCOME'];
 const TYPE = { sign: ['var(--accent)', 'var(--accent-ink)', '1.5px solid transparent', '●'], finger: ['transparent', 'var(--ink)', '1.5px dashed var(--ink)', 'ABC'], point: ['transparent', 'var(--ink)', '1.5px solid var(--ink)', '→'], none: ['var(--warn-soft)', 'var(--warn-ink)', '1.5px dashed var(--warn-ink)', '∅'], pause: ['transparent', 'var(--ink-2)', '1px solid var(--line-strong)', '‖'] };
 
 class Component extends DCLogic {
-  state = { chip: 0, playing: false, reduced: false, q: '', faq: 0, step: 0, copied: false, apiStats: null, credits: null };
+  state = { chip: 0, playing: false, reduced: false, q: '', faq: 0, step: 0, copied: false, apiStats: null, credits: null, heroGloss: [], pv: { show: false, chips: [], meta: '' } };
   componentDidMount() {
     this._i = setInterval(() => this.tick(), 900);
     this.bootHero();
     const B = window.LH_BRIDGE;
     if (B && B.stats) B.stats().then(s => this.setState({ apiStats: s })).catch(() => {});
     const DATA = (B && B.DATA) || ((location.origin || '') + '/demo/data');
-    fetch(DATA.replace(/\/?$/, '/') + 'credits.json').then(r => r.ok ? r.json() : null).then(c => {
+    const base = DATA.replace(/\/?$/, '/');
+    fetch(base + 'credits.json').then(r => r.ok ? r.json() : null).then(c => {
       if (c) this.setState({ credits: c });
+    }).catch(() => {});
+    fetch(base + 'sign.json').then(r => r.ok ? r.json() : null).then(sj => {
+      const seg = sj && Array.isArray(sj.segments) && sj.segments.find(x => x && (x.cue === 'A01' || /A01\.mp4/.test(x.src || '')));
+      const gloss = seg && Array.isArray(seg.gloss) ? seg.gloss.filter(Boolean) : [];
+      if (gloss.length) this.setState({ heroGloss: gloss });
+      else if (B && B.translate) {
+        B.translate('ሰላም፣ እንኳን ደህና መጣችሁ።', 'am').then(res => {
+          const g = (res.gloss || []).map(x => x.gloss).filter(g2 => g2 && g2 !== '|' && g2 !== '‖');
+          if (g.length) this.setState({ heroGloss: g });
+        }).catch(() => {});
+      }
     }).catch(() => {});
   }
   bootHero() {
@@ -496,30 +518,50 @@ class Component extends DCLogic {
       const t = setInterval(() => { if (wire() || ++n > 40) clearInterval(t); }, 100);
     }
   }
-  componentWillUnmount() { clearInterval(this._i); clearTimeout(this._cp); }
+  componentWillUnmount() { clearInterval(this._i); clearTimeout(this._cp); clearTimeout(this._pvT); }
   tick() {
     if (!this.state.playing) return;
-    this.setState(st => ({ chip: (st.chip + 1) % (HERO_GLOSS.length + 1) }));
+    const n = (this.state.heroGloss || []).length || 1;
+    this.setState(st => ({ chip: (st.chip + 1) % (n + 1) }));
+  }
+  previewQ(text) {
+    clearTimeout(this._pvT);
+    const q = String(text || '').trim();
+    if (!q) { this.setState({ pv: { show: false, chips: [], meta: '' } }); return; }
+    this._pvT = setTimeout(() => {
+      const B = window.LH_BRIDGE;
+      if (!B || !B.translate) return;
+      const token = (this._pvTok = (this._pvTok || 0) + 1);
+      B.translate(q).then(res => {
+        if (token !== this._pvTok) return;
+        const card = B.toCard ? B.toCard(res, q) : null;
+        const chipsSrc = card ? card.chips : (res.gloss || []).map(g => ({ type: g.kind === 'missing' ? 'none' : 'sign', label: g.gloss }));
+        const chips = chipsSrc.filter(c => c.label && c.label !== '|' && c.label !== '‖').map(c => {
+          const [bg, fg, border, icon] = TYPE[c.type] || TYPE.sign;
+          return { label: c.label, bg, fg, border, icon };
+        });
+        const signed = card ? card.signed : chips.filter(c => c.icon === '●').length;
+        const total = card ? card.total : chips.length;
+        const lang = this.props.lang || 'en';
+        const t = T[lang];
+        const meta = total
+          ? ((lang === 'am' ? total + ' ' + t.of + ' ' + signed : signed + ' ' + t.of + ' ' + total) + ' ' + t.wordsSigned)
+          : t.noSign;
+        this.setState({ pv: { show: chips.length > 0, chips, meta } });
+      }).catch(() => {
+        if (token === this._pvTok) this.setState({ pv: { show: false, chips: [], meta: '' } });
+      });
+    }, 350);
   }
   renderVals() {
-    const lang = this.props.lang || 'en', t = T[lang], w = this.props.w || 1440, s = this.state, LH = window.LH;
+    const lang = this.props.lang || 'en', t = T[lang], w = this.props.w || 1440, s = this.state;
     const go = p => () => this.props.go && this.props.go(p);
     const open = q => this.props.openStudio && this.props.openStudio(q);
     const split = w >= 768;
-    const chipI = Math.min(s.chip, HERO_GLOSS.length) - 1;
+    const heroGloss = s.heroGloss && s.heroGloss.length ? s.heroGloss : [];
+    const chipI = Math.min(s.chip, heroGloss.length) - 1;
     const DATA = ((window.LH_BRIDGE || {}).DATA || ((location.origin || '') + '/demo/data'));
-    const pr = LH ? LH.translate(s.q || t.signItPh) : null;
-    let pv = { input: s.q || t.signItPh, chips: [], meta: '', first: '' };
-    if (pr) {
-      if (pr.single) {
-        pv.chips = pr.entry ? [{ label: pr.entry.gloss, bg: TYPE.sign[0], fg: TYPE.sign[1], border: TYPE.sign[2], icon: '●' }] : [{ label: pr.input, bg: TYPE.none[0], fg: TYPE.none[1], border: TYPE.none[2], icon: '∅' }];
-        pv.meta = pr.entry ? t.dict + ' · ' + pr.entry.am + ' · ' + pr.entry.en : t.noSign; pv.first = pr.entry ? pr.entry.gloss : '∅';
-      } else {
-        pv.chips = pr.chips.map(c => { const [bg, fg, border, icon] = TYPE[c.type] || TYPE.sign; return { label: c.label, bg, fg, border, icon }; });
-        pv.meta = (lang === 'am' ? pr.total + ' ' + t.of + ' ' + pr.signed : pr.signed + ' ' + t.of + ' ' + pr.total) + ' ' + t.wordsSigned + (pr.source === 'recorded' ? ' · ' + t.recorded : '');
-        pv.first = pr.chips[0] ? pr.chips[0].label : '';
-      }
-    }
+    const pv = s.pv || { show: false, chips: [], meta: '' };
     return {
       t, altLang: lang === 'en' ? 'am' : 'en',
       heroCols: split ? 'minmax(0,1.05fr) minmax(0,.95fr)' : 'minmax(0,1fr)', heroMinH: split ? 'clamp(560px,calc(100vh - 150px),780px)' : '0',
@@ -538,13 +580,13 @@ class Component extends DCLogic {
       heroSrc: DATA + '/memory/A01.mp4',
       heroPoster: DATA + '/posters/A01.webp',
       capAm: t.heroAm, capEn: t.heroEn,
-      glossNow: chipI >= 0 && chipI < HERO_GLOSS.length ? HERO_GLOSS[chipI] : '',
-      heroChips: HERO_GLOSS.map((g, i) => ({ label: g, bg: i <= chipI ? '#8ea9ff' : 'transparent', fg: i <= chipI ? '#0b1430' : '#b8c2dc', border: '1px solid ' + (i <= chipI ? '#8ea9ff' : 'rgba(255,255,255,.3)') })),
+      glossNow: chipI >= 0 && chipI < heroGloss.length ? heroGloss[chipI] : '',
+      heroChips: heroGloss.map((g, i) => ({ label: g, bg: i <= chipI ? '#8ea9ff' : 'transparent', fg: i <= chipI ? '#0b1430' : '#b8c2dc', border: '1px solid ' + (i <= chipI ? '#8ea9ff' : 'rgba(255,255,255,.3)') })),
       goLesson: go('lesson'), goPlatforms: go('platforms'), goStudio: go('studio'),
       proof: t.proof,
-      q: s.q, onQ: e => this.setState({ q: e.target.value }),
+      q: s.q, onQ: e => { const v = e.target.value; this.setState({ q: v }); this.previewQ(v); },
       submit: e => { e && e.preventDefault && e.preventDefault(); open(s.q || t.signItPh); },
-      chips: CHIPS.map(([label, l]) => ({ label, lang: l, go: () => this.setState({ q: label }) })),
+      chips: CHIPS.map(([label, l]) => ({ label, lang: l, go: () => { this.setState({ q: label }); this.previewQ(label); } })),
       pv,
       stats: (typeof window.LH_mapHomeStats === 'function'
         ? window.LH_mapHomeStats(s.apiStats || {

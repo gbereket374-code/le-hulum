@@ -32,6 +32,16 @@
     });
   }
 
+  async function translate(text, lang, extra) {
+    var body = Object.assign({ text: String(text || '').trim() }, extra || {});
+    if (lang && lang !== 'auto') body.lang = lang;
+    return getJSON(API + '/sign/translate', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+  }
+
   async function review(payload) {
     return getJSON(API + '/sign/review', {
       method: 'POST',
@@ -155,7 +165,7 @@
   g.LH_BRIDGE = {
     API: API, DATA: DATA, HOST: CFG.HOST || '',
     isAm: isAm, absMedia: absMedia,
-    ask: ask, review: review, stats: stats, lexicon: lexicon, glossary: glossary,
+    ask: ask, translate: translate, review: review, stats: stats, lexicon: lexicon, glossary: glossary,
     toCard: toCard, chipsFrom: chipsFrom, playPlaylist: playPlaylist,
     loadPrefs: loadPrefs, savePrefs: savePrefs,
   };

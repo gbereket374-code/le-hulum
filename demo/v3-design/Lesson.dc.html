@@ -38,7 +38,7 @@
             </div>
             <sc-if value="{{ isAuto }}" hint-placeholder-val="{{ false }}">
               <span style="display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;color:var(--hero-ink)">
-                <span aria-hidden="true" style="display:flex;gap:2px"><sc-for list="{{ coverageBars }}" as="cb" hint-placeholder-count="14"><span style="width:6px;height:14px;border-radius:2px;background:{{ cb }}"></span></sc-for></span>{{ t.coverage }}
+                <span aria-hidden="true" style="display:flex;gap:2px"><sc-for list="{{ coverageBars }}" as="cb" hint-placeholder-count="14"><span style="width:6px;height:14px;border-radius:2px;background:{{ cb }}"></span></sc-for></span>{{ coverageLabel }}
               </span>
             </sc-if>
           </div>
@@ -62,6 +62,12 @@
                 <div id="lh-poster-play" hidden style="position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:linear-gradient(180deg,rgba(8,13,30,.2),rgba(8,13,30,.55));pointer-events:none">
                   <button type="button" id="lh-poster-btn" aria-label="Play lesson" style="pointer-events:auto;width:clamp(68px,8vw,96px);height:clamp(68px,8vw,96px);border-radius:50%;border:0;background:#8ea9ff;color:#0b1430;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 10px rgba(142,169,255,.22)"><span aria-hidden="true" style="width:0;height:0;border-left:22px solid currentColor;border-top:14px solid transparent;border-bottom:14px solid transparent;margin-left:6px"></span></button>
                 </div>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:10px 14px;border-top:1px solid rgba(255,255,255,.12);background:rgba(8,13,30,.92)">
+                <span style="font-size:14px;font-weight:600;color:#b8c2dc">{{ t.feedbackQ }}</span>
+                <button type="button" onClick="{{ fbYes }}" aria-pressed="{{ fbIsYes }}" style="min-height:44px;padding:0 16px;border:1.5px solid #fff;border-radius:var(--r-pill);background:{{ fbYesBg }};color:{{ fbYesFg }};font-weight:700;font-size:14px">✓ {{ t.understood }}</button>
+                <button type="button" onClick="{{ fbNo }}" aria-pressed="{{ fbIsNo }}" style="min-height:44px;padding:0 16px;border:1.5px solid #fff;border-radius:var(--r-pill);background:{{ fbNoBg }};color:{{ fbNoFg }};font-weight:700;font-size:14px">? {{ t.notClear }}</button>
+                <sc-if value="{{ fbMsg }}" hint-placeholder-val="{{ false }}"><span role="status" aria-live="polite" style="font-size:14px;color:#b8c2dc">{{ fbMsg }}</span></sc-if>
               </div>
             </div>
           </div>
@@ -143,13 +149,14 @@ const T = {
   en: {
     crumbL: 'Breadcrumb', crumb1: 'Savanna demo', crumb2: 'Python basics', crumb3: 'Lesson 1',
     title: 'Python: Your first variable', alt: 'ፓይተን፦ የመጀመሪያ ተለዋዋጭዎ',
-    modeL: 'How this lesson is signed', interp: 'Signed by interpreter', auto: 'Signed automatically', coverage: '6 of 14 lines signed',
+    modeL: 'How this lesson is signed', interp: 'Signed by interpreter', auto: 'Signed automatically', coverage: 'lines signed',
     layoutL: 'Layout', lessonFirst: 'Lesson first', signFirst: 'Sign first', layoutHint: 'Drag the signer, or use ⋯ to move it to a corner.',
     signerWin: 'Signer window', dragHandle: 'Signer window. Drag, or use arrow keys to move.', swap: 'Swap layout', signerMore: 'Signer options', hideSigner: 'Hide signer', showSigner: 'Show signer',
     moveTo: 'Move to corner', tl: 'Top left', tr: 'Top right', bl: 'Bottom left', br: 'Bottom right', sizeL: 'Size', smaller: 'Smaller', larger: 'Larger', opacity: 'Opacity',
     signerSpeed: 'Signer speed', pacing: 'Pacing', smooth: 'Smooth', pauseEnds: 'Pause at ends', off: 'Off',
     waiting: 'Waiting for signer…', skip: 'Skip', noSign: 'No sign for this line yet', noSignB: 'Follow the captions below.',
-    autoBeta: 'Automatic sign (beta)', understood: 'Understood', notClear: 'Not clear', eyebrows: 'Eyebrows: question', shake: 'Head shake: not',
+    autoBeta: 'Automatic sign (beta)', feedbackQ: 'Was this line clear?', understood: 'Understood', notClear: 'Not clear', thanks: 'Thanks', eyebrows: 'Eyebrows: question', shake: 'Head shake: not',
+    coverageOf: 'of', coverageSigned: 'lines signed',
     playLesson: 'Play lesson', complete: 'Lesson complete', replay: 'Replay', askStudio: 'Ask a question in Sign studio',
     teacher: 'Teacher', progress: 'Lesson progress', play: 'Play', pause: 'Pause', back10: 'Back 10 seconds', fwd10: 'Forward 10 seconds',
     captions: 'Captions on or off', signLang: 'Sign language on or off', more: 'More', speed: 'Playback speed', capLang: 'Caption language', amharic: 'Amharic', english: 'English', bothL: 'Both',
@@ -162,13 +169,14 @@ const T = {
   am: {
     crumbL: 'የገጽ መንገድ', crumb1: 'የSavanna ማሳያ', crumb2: 'የፓይተን መሠረታዊያን', crumb3: 'ትምህርት 1',
     title: 'ፓይተን፦ የመጀመሪያ ተለዋዋጭዎ', alt: 'Python: Your first variable',
-    modeL: 'ይህ ትምህርት እንዴት እንደሚተረጎም', interp: 'በአስተርጓሚ የተተረጎመ', auto: 'በራስ-ሰር የተተረጎመ', coverage: 'ከ14 መስመሮች 6ቱ ተተርጉመዋል',
+    modeL: 'ይህ ትምህርት እንዴት እንደሚተረጎም', interp: 'በአስተርጓሚ የተተረጎመ', auto: 'በራስ-ሰር የተተረጎመ', coverage: 'መስመሮች ተተርጉመዋል',
     layoutL: 'አቀማመጥ', lessonFirst: 'ትምህርቱ መጀመሪያ', signFirst: 'ምልክቱ መጀመሪያ', layoutHint: 'አስተርጓሚውን ይጎትቱ፣ ወይም ⋯ ተጠቅመው ወደ ጥግ ያንቀሳቅሱ።',
     signerWin: 'የአስተርጓሚ መስኮት', dragHandle: 'የአስተርጓሚ መስኮት። ይጎትቱ ወይም በቀስት ቁልፎች ያንቀሳቅሱ።', swap: 'አቀማመጥ ቀይር', signerMore: 'የአስተርጓሚ አማራጮች', hideSigner: 'አስተርጓሚውን ደብቅ', showSigner: 'አስተርጓሚውን አሳይ',
     moveTo: 'ወደ ጥግ', tl: 'ላይ ግራ', tr: 'ላይ ቀኝ', bl: 'ታች ግራ', br: 'ታች ቀኝ', sizeL: 'መጠን', smaller: 'አሳንስ', larger: 'አሳድግ', opacity: 'ግልጽነት',
     signerSpeed: 'የአስተርጓሚ ፍጥነት', pacing: 'ቆም ማለት', smooth: 'ለስላሳ', pauseEnds: 'በመጨረሻ ቆም', off: 'ጠፍቷል',
     waiting: 'አስተርጓሚውን በመጠበቅ ላይ…', skip: 'ዝለል', noSign: 'ይህ መስመር ገና ምልክት የለውም', noSignB: 'ከታች ያለውን ጽሑፍ ይከተሉ።',
-    autoBeta: 'ራስ-ሰር ምልክት (ቤታ)', understood: 'ገባኝ', notClear: 'ግልጽ አይደለም', eyebrows: 'ቅንድብ፦ ጥያቄ', shake: 'ራስ መነቅነቅ፦ አይ',
+    autoBeta: 'ራስ-ሰር ምልክት (ቤታ)', feedbackQ: 'ይህ መስመር ግልጽ ነበር?', understood: 'ገባኝ', notClear: 'ግልጽ አይደለም', thanks: 'አመሰግናለን', eyebrows: 'ቅንድብ፦ ጥያቄ', shake: 'ራስ መነቅነቅ፦ አይ',
+    coverageOf: 'ከ', coverageSigned: 'መስመሮች ተተርጉመዋል',
     playLesson: 'ትምህርቱን አጫውት', complete: 'ትምህርቱ ተጠናቋል', replay: 'እንደገና', askStudio: 'በምልክት ስቱዲዮ ጥያቄ ይጠይቁ',
     teacher: 'መምህር', progress: 'የትምህርቱ ሂደት', play: 'አጫውት', pause: 'ቆም', back10: '10 ሰከንድ ወደ ኋላ', fwd10: '10 ሰከንድ ወደ ፊት',
     captions: 'ጽሑፍ አብራ ወይም አጥፋ', signLang: 'ምልክት ቋንቋ አብራ ወይም አጥፋ', more: 'ተጨማሪ', speed: 'የማጫወቻ ፍጥነት', capLang: 'የጽሑፍ ቋንቋ', amharic: 'አማርኛ', english: 'English', bothL: 'ሁለቱም',
@@ -185,8 +193,10 @@ const SIZES = { s: 22, m: 30, l: 38 };
 
 class Component extends DCLogic {
   state = { t: 0, status: 'poster', mode: 'interp', layout: null, rate: 1, caps: true, sign: true, capLang: null, more: false,
-    signerMenu: false, ctl: false, size: null, pos: { x: 74, y: 4 }, opacity: 1, waiting: false, waited: {}, tab: 'chapters', openWord: null, fb: {}, pacing: null, sSpeed: null };
+    signerMenu: false, ctl: false, size: null, pos: { x: 74, y: 4 }, opacity: 1, waiting: false, waited: {}, tab: 'chapters', openWord: null, fb: {}, fbToast: '', pacing: null, sSpeed: null, coverageLabel: '', apiStats: null };
   componentDidMount() {
+    const B = window.LH_BRIDGE;
+    if (B && B.stats) B.stats().then(s => this.setState({ apiStats: s })).catch(() => {});
     this._k = e => {
       if (/INPUT|TEXTAREA/.test(document.activeElement && document.activeElement.tagName)) return;
       if (!document.getElementById('lh-player')) return;
@@ -410,6 +420,21 @@ class Component extends DCLogic {
     const chIdx = curChapter < 0 ? 0 : lesson.chapters.length - 1 - curChapter;
     const fbv = s.fb[lineIdx];
     const sSpeed = s.sSpeed || p.speed || 1;
+    const st = s.apiStats || {};
+    const signedN = Number(st.auto_lines_signed != null ? st.auto_lines_signed : (lesson.lines.filter(l => l.auto).length || lesson.lines.length)) || 0;
+    const totalN = Number(st.lesson_lines != null ? st.lesson_lines : lesson.lines.length) || 0;
+    const coverageLabelEn = signedN + ' of ' + totalN + ' lines signed';
+    const coverageLabelAm = 'ከ' + totalN + ' መስመሮች ' + signedN + 'ቱ ተተርጉመዋል';
+    const sendReview = (verdict) => {
+      const text = line.am || line.en || ('line ' + (lineIdx + 1));
+      const gloss = (line.gloss || []).join(' ');
+      this.setState({ fb: { ...s.fb, [lineIdx]: verdict === 'approve' ? 'yes' : 'no' }, fbToast: t.thanks });
+      clearTimeout(this._fbT); this._fbT = setTimeout(() => this.setState({ fbToast: '' }), 2400);
+      try {
+        const B = window.LH_BRIDGE;
+        B && B.review({ text_am: text, gloss, verdict, note: 'lesson-line:' + (line.id || lineIdx) });
+      } catch (e) {}
+    };
 
     return {
       t, title: t.title, altTitle: t.alt, altLang: lang === 'en' ? 'am' : 'en',
@@ -417,6 +442,7 @@ class Component extends DCLogic {
       isAuto,
       layouts: [['lesson', t.lessonFirst, 'right:2px;bottom:2px;width:7px;height:8px'], ['sign', t.signFirst, 'left:2px;top:2px;width:8px;bottom:2px']].map(([id, label, iconPos]) => ({ label, iconPos, sel: layout === id, ...gsel(layout === id), pick: () => this.setState({ layout: id, signerMenu: false }) })),
       pageCols: wide ? 'minmax(0,1fr) 360px' : 'minmax(0,1fr)', metaChips: t.meta, signerTag: isAuto ? t.tagAuto : t.tagInterp,
+      coverageLabel: lang === 'am' ? coverageLabelAm : coverageLabelEn,
       coverageBars: lesson.lines.map(l => l.auto ? 'var(--hero-accent)' : 'rgba(255,255,255,.22)'),
       legend: [{ icon: '●', label: t.lgSigned }, { icon: 'β', label: t.lgAuto }, { icon: '∅', label: t.lgNone }, { icon: '…', label: t.lgWait }],
       stageCols: signFirstOn ? (phone ? 'minmax(0,1fr)' : 'minmax(0,1.1fr) minmax(0,1fr)') : 'minmax(0,1fr)',
@@ -453,10 +479,11 @@ class Component extends DCLogic {
       capsOn, capBg: capColors[0], capFg: capColors[1],
       capSize: Math.round((phone ? 17 : 20) * capSz) + 'px', capSize2: Math.round((phone ? 15 : 17) * capSz) + 'px', capLabelSize: Math.round(13 * capSz) + 'px',
       capPrimary: capPrimary || (started ? '' : ''), capSecondary,
-      feedbackOn: started && isAuto && line.auto,
+      feedbackOn: true,
       fbIsYes: fbv === 'yes', fbIsNo: fbv === 'no',
       fbYesBg: fbv === 'yes' ? '#fff' : 'transparent', fbYesFg: fbv === 'yes' ? '#1f1e1b' : '#fff', fbNoBg: fbv === 'no' ? '#fff' : 'transparent', fbNoFg: fbv === 'no' ? '#1f1e1b' : '#fff',
-      fbYes: () => this.setState({ fb: { ...s.fb, [lineIdx]: 'yes' } }), fbNo: () => this.setState({ fb: { ...s.fb, [lineIdx]: 'no' } }),
+      fbYes: () => sendReview('approve'), fbNo: () => sendReview('fix'),
+      fbMsg: s.fbToast || '',
       tNow: s.t, seek: e => this.seekTo(+e.target.value), timeText: fmt(s.t) + ' / 0:46',
       chapterTicks: lesson.chapters.slice(1).map(c => (c.t / 46 * 100) + '%'),
       playing: s.status === 'playing', notPlaying: s.status !== 'playing', playLabel: s.status === 'playing' ? t.pause : t.play, showCtlLabels: !phone,

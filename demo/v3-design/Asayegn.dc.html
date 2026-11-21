@@ -199,7 +199,9 @@
                                 <button onClick="{{ m.toggleLoop }}" aria-pressed="{{ m.loop }}" style="min-height:40px;padding:0 12px;border:1px solid rgba(255,255,255,.3);border-radius:var(--r-pill);background:{{ m.loopBg }};color:{{ m.loopFg }};font-size:12px;font-weight:700">{{ t.loop }}</button>
                               </sc-if>
                               <span style="flex:1"></span>
-                              <button onClick="{{ download }}" aria-label="{{ t.download }}" title="{{ t.download }}" style="min-width:44px;min-height:44px;border:0;border-radius:50%;background:transparent;color:#fff;font-size:17px;font-weight:700">⤓</button>
+                              <sc-if value="{{ m.canDownload }}" hint-placeholder-val="{{ false }}">
+                                <button onClick="{{ m.download }}" aria-label="{{ t.download }}" title="{{ t.download }}" style="min-width:44px;min-height:44px;border:0;border-radius:50%;background:transparent;color:#fff;font-size:17px;font-weight:700">⤓</button>
+                              </sc-if>
                             </div>
                           </div>
 
@@ -256,7 +258,6 @@
                                 <p style="margin:0;font:500 22px/1.4 var(--serif)">“{{ m.text }}”</p>
                                 <p style="margin:0;font-size:15px;line-height:1.55;color:var(--ink-2)">{{ t.noSignB }}</p>
                                 <div style="display:flex;gap:8px;flex-wrap:wrap">
-                                  <button onClick="{{ m.fingerspell }}" style="min-height:44px;padding:0 16px;border:1.5px solid var(--ink);border-radius:var(--r-pill);background:transparent;font-weight:700;font-size:14px">{{ t.fingerspell }}</button>
                                   <button onClick="{{ m.request }}" style="min-height:44px;padding:0 16px;border:0;border-radius:var(--r-pill);background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:14px">{{ t.request }}</button>
                                 </div>
                               </div>
@@ -342,7 +343,7 @@ const T = {
     whyRec: 'An interpreter recorded this whole sentence, so you see one natural recording.', whyAuto: 'Each word was matched to a reviewed dictionary sign and joined in EthSL order.',
     whyQ: 'EthSL puts question words like WHAT at the end.', whyNot: 'NOT comes after the verb, with a head shake.', whyNone: 'Words with no sign yet stay in the text and go to our recording queue.', whyWord: 'This is the reviewed dictionary sign for this word.',
     composer: 'Type something to sign', send: 'Send', hint: 'Enter to send · Shift+Enter for a new line · Amharic or English', typing: 'Typing…',
-    thanks: 'Thanks for your feedback.', requested: 'Request sent to the recording queue.', downloaded: 'Download started (demo).', helpMsg: 'Feedback form opens here (demo).',
+    thanks: 'Thanks for your feedback.', requested: 'Request sent to the recording queue.', downloaded: 'Download started.', helpMsg: 'Open questions on Home',
   },
   am: {
     sideL: 'የአሳየኝ ማሰሻ', showMe: 'በምልክት አሳየኝ', newChat: 'አዲስ ውይይት', browse: 'ምልክቶችን ያስሱ', history: 'ታሪክዎ', clear: 'አጽዳ',
@@ -368,7 +369,7 @@ const T = {
     whyRec: 'አስተርጓሚው ሙሉውን ዓረፍተ ነገር ቀርጾታል፤ አንድ ተፈጥሯዊ ቅጂ ያያሉ።', whyAuto: 'እያንዳንዱ ቃል ከተገመገመ የመዝገበ ቃላት ምልክት ጋር ተዛምዶ በምልክት ቋንቋ ቅደም ተከተል ተገናኝቷል።',
     whyQ: 'የምልክት ቋንቋ እንደ «ምን» ያሉ የጥያቄ ቃላትን መጨረሻ ላይ ያስቀምጣል።', whyNot: '«አይ» ከግሱ በኋላ፣ ከራስ መነቅነቅ ጋር ይመጣል።', whyNone: 'ምልክት የሌላቸው ቃላት በጽሑፉ ውስጥ ይቆያሉ፤ ወደ መቅረጫ ወረፋም ይላካሉ።', whyWord: 'ይህ ለዚህ ቃል የተገመገመው የመዝገበ ቃላት ምልክት ነው።',
     composer: 'በምልክት እንዲተረጎም ይጻፉ', send: 'ላክ', hint: 'ለመላክ Enter · ለአዲስ መስመር Shift+Enter · አማርኛ ወይም እንግሊዝኛ', typing: 'በመጻፍ ላይ…',
-    thanks: 'ለአስተያየትዎ እናመሰግናለን።', requested: 'ጥያቄዎ ወደ መቅረጫ ወረፋ ተልኳል።', downloaded: 'ማውረድ ተጀምሯል (ማሳያ)።', helpMsg: 'የአስተያየት ቅጽ እዚህ ይከፈታል (ማሳያ)።',
+    thanks: 'ለአስተያየትዎ እናመሰግናለን።', requested: 'ጥያቄዎ ወደ መቅረጫ ወረፋ ተልኳል።', downloaded: 'ማውረድ ተጀምሯል።', helpMsg: 'ጥያቄዎችን በመነሻ ገጽ ይመልከቱ',
   },
 };
 const TRY = [['What is a variable?', 'en', 'EN'], ['ተለዋዋጭ ምንድን ነው?', 'am', 'አማ'], ['ኮዱ ካልሰራ፣ ስህተቱን አረጋግጡ።', 'am', 'አማ'], ['ሰላም፣ እንኳን ደህና መጣችሁ።', 'am', 'አማ'], ['ኮድ', 'am', 'ኮድ / code']];
@@ -530,7 +531,38 @@ class Component extends DCLogic {
       const fbv = s.fb[m.id], rate = s.rating[m.id] || 0;
       const e = r.entry;
       const ll = r.line != null && LH ? LH.lesson.lines[r.line] : null;
-      const req = () => this.toastMsg(t.requested);
+      const missingWords = chipsRaw.filter(c => c.type === 'none').map(c => c.label).join(' ');
+      const req = () => {
+        this.toastMsg(t.requested);
+        try {
+          const B = window.LH_BRIDGE;
+          B && B.review({
+            text_am: m.text,
+            gloss: missingWords || (this.chipsOf(m).map(c => c.label).join(' ')),
+            verdict: 'missing',
+            note: 'request-sign',
+            rating: s.rating[m.id] || undefined,
+          });
+        } catch (e) {}
+      };
+      const playlist = (r.playlist || []).filter(p => p && p.src);
+      const oneClip = (r.source === 'recorded' && playlist.length === 1)
+        || (isWordReply && r.entry && r.entry.clip);
+      const downloadClip = () => {
+        const src = oneClip
+          ? (playlist[0] && playlist[0].src) || (r.entry && window.LH_BRIDGE && window.LH_BRIDGE.absMedia(r.entry.clip))
+          : '';
+        if (!src) return;
+        const a = document.createElement('a');
+        a.href = src;
+        a.download = '';
+        a.rel = 'noopener';
+        a.target = '_blank';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        this.toastMsg(t.downloaded);
+      };
       return {
         isUser: false, isBot: true, id: m.id, text: m.text, lang: m.lang,
         aria: (badge ? badge + ': ' : '') + m.text,
@@ -556,6 +588,7 @@ class Component extends DCLogic {
         face: r.face === 'eyebrows' ? t.eyebrows : r.face === 'shake' ? t.shake : '', faceIcon: r.face === 'shake' ? '↔' : '◠',
         coverage: isSentence ? (missing ? (r.signed + ' ' + t.of + ' ' + r.total + ' · ' + nMiss + ' ' + (nMiss === 1 ? t.wordNoSign : t.wordsNoSign)) : (lang === 'am' ? r.total + ' ' + t.of + ' ' + r.signed + ' ' + t.wordsSigned : r.signed + ' ' + t.of + ' ' + r.total + ' ' + t.wordsSigned)) : '',
         covColor: missing ? 'var(--warn-ink)' : 'var(--accent-soft-ink)', missing, request: req,
+        canDownload: !!oneClip, download: downloadClip,
         lessonLine: (ll || (r.lesson_match)) ? (() => {
           const start = ll ? ll.s : (r.lesson_match && r.lesson_match.start) || 0;
           const DATA = ((window.LH_BRIDGE || {}).DATA || ((location.origin || '') + '/demo/data')).replace(/\/?$/, '/');
@@ -570,8 +603,15 @@ class Component extends DCLogic {
         fingerspell: () => { this.updMsg(m.id, { res: { input: m.text, chips: [{ type: 'finger', label: m.text.toUpperCase().split('').join('-') }], source: 'automatic', confidence: 60, signed: 1, total: 1 } }); this.play(m.id, 0); },
         fbIsYes: fbv === 'yes', fbIsNo: fbv === 'no',
         fbYesBg: fbv === 'yes' ? 'var(--ink)' : 'transparent', fbYesFg: fbv === 'yes' ? 'var(--bg)' : 'var(--ink)', fbNoBg: fbv === 'no' ? 'var(--ink)' : 'transparent', fbNoFg: fbv === 'no' ? 'var(--bg)' : 'var(--ink)',
-        fbYes: () => { this.setState(st => ({ fb: { ...st.fb, [m.id]: 'yes' } })); this.toastMsg(t.thanks); try { const B = window.LH_BRIDGE; B && B.review({ text_am: m.text, gloss: (this.chipsOf(m).map(c => c.label).join(' ')), verdict: 'approve' }); } catch (e) {} }, fbNo: () => { this.setState(st => ({ fb: { ...st.fb, [m.id]: 'no' } })); this.toastMsg(t.thanks); try { const B = window.LH_BRIDGE; B && B.review({ text_am: m.text, gloss: (this.chipsOf(m).map(c => c.label).join(' ')), verdict: 'fix' }); } catch (e) {} },
-        stars: [1, 2, 3, 4, 5].map(n => ({ glyph: n <= rate ? '★' : '☆', color: n <= rate ? 'var(--accent-soft-ink)' : 'var(--ink-3)', sel: rate === n, aria: n + ' ' + t.star, pick: () => this.setState(st => ({ rating: { ...st.rating, [m.id]: n } })) })),
+        fbYes: () => { this.setState(st => ({ fb: { ...st.fb, [m.id]: 'yes' } })); this.toastMsg(t.thanks); try { const B = window.LH_BRIDGE; B && B.review({ text_am: m.text, gloss: (this.chipsOf(m).map(c => c.label).join(' ')), verdict: 'approve', rating: s.rating[m.id] || undefined }); } catch (e) {} }, fbNo: () => { this.setState(st => ({ fb: { ...st.fb, [m.id]: 'no' } })); this.toastMsg(t.thanks); try { const B = window.LH_BRIDGE; B && B.review({ text_am: m.text, gloss: (this.chipsOf(m).map(c => c.label).join(' ')), verdict: 'fix', rating: s.rating[m.id] || undefined }); } catch (e) {} },
+        stars: [1, 2, 3, 4, 5].map(n => ({ glyph: n <= rate ? '★' : '☆', color: n <= rate ? 'var(--accent-soft-ink)' : 'var(--ink-3)', sel: rate === n, aria: n + ' ' + t.star, pick: () => {
+          this.setState(st => ({ rating: { ...st.rating, [m.id]: n } }));
+          try {
+            const B = window.LH_BRIDGE;
+            const verdict = s.fb[m.id] === 'no' ? 'fix' : 'approve';
+            B && B.review({ text_am: m.text, gloss: (this.chipsOf(m).map(c => c.label).join(' ')), verdict, rating: n, note: 'rating' });
+          } catch (e) {}
+        } })),
         why: !!s.why[m.id], whyIcon: s.why[m.id] ? '−' : '+', toggleWhy: () => this.setState(st => ({ why: { ...st.why, [m.id]: !st.why[m.id] } })), whyItems,
       };
     });
@@ -592,7 +632,8 @@ class Component extends DCLogic {
       hasHistory: s.history.length > 0, noHistory: s.history.length === 0,
       history: s.history.map(text => ({ text, lang: isAm(text) ? 'አማ' : 'EN', go: () => this.post(text) })),
       clearHistory: () => { this.setState({ history: [] }); try { localStorage.removeItem('lehulum.asayegn.history'); } catch (e) {} },
-      openSettings: () => this.props.openSettings && this.props.openSettings(), helpFeedback: () => this.toastMsg(t.helpMsg),
+      openSettings: () => this.props.openSettings && this.props.openSettings(),
+      helpFeedback: () => { if (this.props.go) this.props.go('home'); setTimeout(() => { const el = document.getElementById('faq-h'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 200); },
       goPlatforms: e => { e && e.preventDefault && e.preventDefault(); this.props.go && this.props.go('platforms'); },
       goLesson: () => this.props.go && this.props.go('lesson'),
       interpMenu: s.interpMenu, toggleInterp: () => this.setState({ interpMenu: !s.interpMenu }),
@@ -605,7 +646,6 @@ class Component extends DCLogic {
       tryChips: TRY.map(([label, l, tag]) => ({ label: tag.includes('/') ? tag : label, tag: tag.includes('/') ? '' : tag, lang: l, aria: label, go: () => this.post(label) })),
       judgesTest: () => this.post('What is a variable?', { then: () => this.post('ተለዋዋጭ ምንድን ነው?') }),
       msgs,
-      download: () => this.toastMsg(t.downloaded),
       input: s.input, onInput: e => { this.setState({ input: e.target.value }); e.target.style.height = 'auto'; e.target.style.height = Math.min(140, e.target.scrollHeight) + 'px'; },
       onKey: e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.post(s.input); e.target.style.height = 'auto'; } },
       onFocus: () => this.setState({ focused: true }), onBlur: () => this.setState({ focused: false }),

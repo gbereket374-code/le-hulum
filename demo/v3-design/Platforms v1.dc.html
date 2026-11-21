@@ -222,7 +222,7 @@
 <script type="text/x-dc" data-dc-script>
 const T = {
   en: {
-    ey: 'For platforms · live demo', h1: 'Sign any page. Try it on this one.', lede: 'Below is a normal lesson page. The only thing we added is our script tag. Hover or tab to a paragraph and press its Sign button, drop the pin on a sentence, or select text.',
+    ey: 'For platforms · live demo', h1: 'Sign any page. Try it on this one.', lede: 'Below is a normal lesson page. The only thing we added is our script tag and <db-sign-pin>. Use the floating Sign control to sign any paragraph in the article.',
     hostL: 'Host page style', hostLight: 'Light host page', hostDark: 'Dark host page', demoFrame: 'Demo lesson page', onlyTag: 'This article is a normal web page with only our script tag',
     signPage: 'Sign this page', signSel: 'Sign selection', pin: 'Drag pin', pinAria: 'Sign pin. Drag onto a sentence, or press Enter to start signing from the first paragraph.',
     kbBtn: 'Paragraphs', kbTitle: 'Sign by paragraph', kbHelp: 'Pick a paragraph to start signing there. In Sign mode: Tab moves between blocks, Enter signs, Space pauses, arrows change sentence, Escape stops.',
@@ -240,7 +240,7 @@ const T = {
     endpoints: [['POST', '/sign/translate', 'Text in Amharic or English → gloss, clips, coverage, face signals.'], ['POST', '/sign/lesson', 'Caption file → signed lesson track with pacing.'], ['GET', '/lexicon', 'All published signs with topics and credits.'], ['GET', '/glossary', 'Words for a lesson, with lines they appear in.'], ['POST', '/sign/review', 'Send “Understood / Not clear” feedback for review.']],
   },
   am: {
-    ey: 'ለመድረኮች · የቀጥታ ማሳያ', h1: 'ማንኛውንም ገጽ በምልክት። በዚህኛው ይሞክሩት።', lede: 'ከታች ያለው መደበኛ የትምህርት ገጽ ነው። የጨመርነው የእኛን script tag ብቻ ነው። ወደ አንቀጽ ይጠጉ ወይም Tab ይጫኑ እና የምልክት ቁልፉን ይጫኑ፣ ፒኑን በዓረፍተ ነገር ላይ ይጣሉ፣ ወይም ጽሑፍ ይምረጡ።',
+    ey: 'ለመድረኮች · የቀጥታ ማሳያ', h1: 'ማንኛውንም ገጽ በምልክት። በዚህኛው ይሞክሩት።', lede: 'ከታች ያለው መደበኛ የትምህርት ገጽ ነው። የጨመርነው script tag እና <db-sign-pin> ብቻ ናቸው። ማንኛውንም አንቀጽ ለመተርጎም ተንሳፋፊውን የምልክት መቆጣጠሪያ ይጠቀሙ።',
     hostL: 'የገጹ ገጽታ', hostLight: 'ብሩህ ገጽ', hostDark: 'ጨለማ ገጽ', demoFrame: 'የማሳያ ትምህርት ገጽ', onlyTag: 'ይህ ጽሑፍ የእኛ script tag ብቻ የተጨመረበት መደበኛ ድረ-ገጽ ነው',
     signPage: 'ይህንን ገጽ በምልክት', signSel: 'የተመረጠውን በምልክት', pin: 'ፒኑን ይጎትቱ', pinAria: 'የምልክት ፒን። ወደ ዓረፍተ ነገር ይጎትቱ፣ ወይም ከመጀመሪያው አንቀጽ ለመጀመር Enter ይጫኑ።',
     kbBtn: 'አንቀጾች', kbTitle: 'በአንቀጽ በምልክት', kbHelp: 'ከዚያ ለመጀመር አንቀጽ ይምረጡ። በምልክት ሁነታ፦ Tab በክፍሎች መካከል፣ Enter በምልክት፣ Space ቆም፣ ቀስቶች ዓረፍተ ነገር ይቀይራሉ፣ Escape ያቆማል።',
@@ -289,11 +289,10 @@ class Component extends DCLogic {
   }
   data() {
     if (this._data) return this._data;
-    const LH = window.LH; if (!LH) return [];
     this._data = BLOCKS.map((b, i) => {
       if (b.type === 'code') return { ...b, i, sents: [], signable: false };
-      const sents = splitS(b.text).map((text, si) => { const r = LH.translate(text) || {}; return { i: si, text, chips: r.chips || [], signed: r.signed || 0, total: r.total || 0 }; });
-      return { ...b, i, sents, signable: true, signed: sents.reduce((a, s) => a + s.signed, 0), total: sents.reduce((a, s) => a + s.total, 0) };
+      const sents = splitS(b.text).map((text, si) => ({ i: si, text, chips: [], signed: 0, total: 0 }));
+      return { ...b, i, sents, signable: true, signed: 0, total: 0 };
     });
     return this._data;
   }
@@ -351,44 +350,28 @@ class Component extends DCLogic {
   stop() { clearTimeout(this._t); this.setState({ status: 'idle', active: null, signer: false, selSign: null, pinAt: null, doneBlock: null }); }
 
   renderVals() {
-    const lang = this.props.lang || 'en', t = T[lang], s = this.state, w = this.props.w || 1440, LH = window.LH;
-    const phone = w < 760, signMode = !!this.props.signMode || phone;
+    const lang = this.props.lang || 'en', t = T[lang], s = this.state, w = this.props.w || 1440;
+    const phone = w < 760;
     const d = this.data();
     const H = s.host === 'dark' ? { bg: '#15181d', fg: '#eef0f3', line: '#2c3139', chip: '#232831' } : { bg: '#ffffff', fg: '#1b1e23', line: '#e3e5e8', chip: '#eef1f4' };
     const typeStyle = { sign: ['var(--accent)', 'var(--accent-ink)', '0', '●'], finger: ['transparent', 'var(--ink)', '1.5px dashed var(--ink)', 'ABC'], point: ['transparent', 'var(--ink)', '1.5px solid var(--ink)', '→'], none: ['var(--warn-soft)', 'var(--warn-ink)', '1.5px dashed var(--warn-ink)', '∅'], pause: ['transparent', 'var(--ink-2)', '1px solid var(--line-strong)', '‖'] };
     const cur = this.cur();
     const blocks = d.map(b => {
-      const isActive = !!s.active && s.active.b === b.i && !s.selSign && s.status !== 'done';
-      const isDone = s.status === 'done' && s.doneBlock === b.i;
-      const st = isActive ? s.status : isDone ? 'done' : 'idle';
-      const hasNone = b.signable && b.signed < b.total;
-      const btnOn = b.signable && (signMode || s.hover === b.i || isActive || isDone);
-      const ico = st === 'loading' ? 'load' : st === 'playing' ? 'pause' : st === 'paused' ? 'play' : st === 'done' ? 'replay' : 'sign';
-      const hlSoft = s.host === 'dark' ? 'rgba(233,194,92,.12)' : 'rgba(45,106,74,.07)';
       return {
         i: b.i, isH: b.type === 'h', isP: b.type === 'p' || b.type === 'li', isCode: b.type === 'code', bullet: b.type === 'li', lang: b.lang || 'en', text: b.text,
         fs: b.lang === 'am' ? '19px' : '18px', lh: b.lang === 'am' ? '1.85' : '1.65',
-        tab: b.signable && signMode ? 0 : -1, aria: b.signable && signMode ? t.signBlock + ': ' + b.text : undefined,
-        pad: isActive ? '10px 12px' : '0', bg: isActive ? hlSoft : 'transparent', ring: isActive ? '0 0 0 1.5px ' + (s.host === 'dark' ? '#e9c25c' : '#2d6a4a') : 'none',
-        btnOn, btnTop: isActive ? '6px' : (b.type === 'h' ? '-2px' : '0'),
-        btnBg: isActive ? H.fg : H.bg, btnFg: isActive ? H.bg : H.fg,
-        icoSign: ico === 'sign', icoLoad: ico === 'load', icoPause: ico === 'pause', icoPlay: ico === 'play', icoReplay: ico === 'replay',
-        btnAria: ({ sign: t.signBlock, load: t.loading, pause: t.pause, play: t.play, replay: t.replay })[ico], btnTitle: hasNone ? (b.total - b.signed) + ' ' + t.noWords : t.signBlock,
-        cov: b.signable ? (hasNone ? '∅ ' : '') + b.signed + '/' + b.total : '', covBg: hasNone ? 'var(--warn-soft)' : H.chip, covFg: hasNone ? 'var(--warn-ink)' : H.fg,
-        tipOn: hasNone && s.hover === b.i && !isActive, tip: (b.total - b.signed) + ' ' + t.noWords,
-        enter: () => this.setState({ hover: b.i }), leave: () => this.setState(st2 => st2.hover === b.i ? { hover: null } : null),
-        act: () => { if (st === 'idle' || st === 'done') this.start(b.i, 0); else this.pauseResume(); },
-        key: e => {
-          if (!b.signable || e.target !== e.currentTarget) return;
-          if (e.key === 'Enter') { e.preventDefault(); this.start(b.i, 0); }
-          else if (e.key === ' ') { e.preventDefault(); this.pauseResume(); }
-          else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { if (s.active) { e.preventDefault(); this.advance(1); } }
-          else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { if (s.active) { e.preventDefault(); this.advance(-1); } }
-          else if (e.key === 'Escape') this.stop();
-        },
-        sents: b.sents.map(se => { const on = isActive && s.active.s === se.i;
-          const pinned = s.pinAt && s.pinAt.b === b.i && s.pinAt.s === se.i;
-          return { i: se.i, text: se.text, pin: pinned ? '◆ ' : '', bg: on ? 'var(--hl)' : 'transparent', fg: on ? 'var(--hl-ink)' : 'inherit', deco: on ? 'underline' : 'none', pad: on ? '2px 3px' : '0' }; }),
+        tab: -1, aria: undefined,
+        pad: '0', bg: 'transparent', ring: 'none',
+        btnOn: false, btnTop: '0',
+        btnBg: H.bg, btnFg: H.fg,
+        icoSign: true, icoLoad: false, icoPause: false, icoPlay: false, icoReplay: false,
+        btnAria: t.signBlock, btnTitle: t.signBlock,
+        cov: '', covBg: H.chip, covFg: H.fg,
+        tipOn: false, tip: '',
+        enter: () => {}, leave: () => {},
+        act: () => {},
+        key: () => {},
+        sents: b.sents.map(se => ({ i: se.i, text: se.text, pin: '', bg: 'transparent', fg: 'inherit', deco: 'none', pad: '0' })),
       };
     });
     const chips = (cur ? cur.chips : []).map((c, i) => { const [bg, fg, border, icon] = typeStyle[c.type] || typeStyle.sign; return { label: c.label, bg, fg, border, icon, ring: i === s.chipIdx && s.status !== 'loading' ? '0 0 0 2px var(--surface),0 0 0 4px var(--ink)' : 'none' }; });
@@ -398,29 +381,15 @@ class Component extends DCLogic {
     return {
       t, hosts: [['light', t.hostLight], ['dark', t.hostDark]].map(([id, label]) => ({ label, sel: s.host === id, bg: s.host === id ? 'var(--ink)' : 'transparent', fg: s.host === id ? 'var(--bg)' : 'var(--ink)', pick: () => this.setState({ host: id }) })),
       host: H, frameH: phone ? '640px' : '660px', hostCols: w >= 1100 ? '180px minmax(0,1fr)' : 'minmax(0,1fr)', showHostSide: w >= 1100,
-      articlePadB: phone && s.signer ? '280px' : '120px',
+      articlePadB: '120px',
       blocks,
-      onSelect: e => {
-        const selObj = window.getSelection(); const text = selObj ? selObj.toString().trim() : '';
-        const wrap = e.currentTarget.parentElement.getBoundingClientRect();
-        if (!text || !selObj.rangeCount) { if (s.sel) this.setState({ sel: null }); return; }
-        const r = selObj.getRangeAt(0).getBoundingClientRect();
-        if (!/\s/.test(text)) {
-          const clean = text.replace(/[.,?!።፣"()]/g, ''); const r2 = LH && LH.translate(clean); const entry = r2 && r2.entry;
-          this.setState({ sel: null, pop: { x: Math.max(8, Math.min(r.left - wrap.left, wrap.width - 276)) + 'px', y: (r.bottom - wrap.top + 8) + 'px', word: clean, entry } });
-        } else this.setState({ pop: null, sel: { x: Math.max(8, Math.min(r.right - wrap.left - 60, wrap.width - 200)) + 'px', y: Math.max(8, r.top - wrap.top - 52) + 'px' }, selText: text });
-      },
-      selBtn: s.sel, signSelection: () => {
-        const r = (LH && LH.translate(s.selText)) || {}; const chipsS = r.single ? [{ type: r.entry ? 'sign' : 'none', label: r.entry ? r.entry.gloss : s.selText }] : (r.chips || []);
-        clearTimeout(this._t);
-        this.setState({ sel: null, signer: true, status: 'loading', chipIdx: 0, selSign: { text: s.selText, chips: chipsS, signed: r.signed || 0, total: r.total || chipsS.length }, active: null });
-        this._t = setTimeout(() => { this.setState({ status: 'playing' }); this.tick(); }, 700);
-      },
-      pop: s.pop ? { x: s.pop.x, y: s.pop.y, word: s.pop.word, am: s.pop.entry ? s.pop.entry.am : s.pop.word, en: s.pop.entry ? s.pop.entry.en : '', gloss: s.pop.entry ? s.pop.entry.gloss : '∅', none: !s.pop.entry, open: () => this.props.go && this.props.go('studio') } : null,
-      closePop: () => this.setState({ pop: null }),
-      kbPanel: s.kb, toggleKb: () => this.setState({ kb: !s.kb }),
-      kbItems: order.map((i, n) => ({ n: String(n + 1).padStart(2, '0'), text: d[i].text, go: () => { this.setState({ kb: false }); this.start(i, 0); } })),
-      toolsOn: !(phone && s.signer),
+      onSelect: () => {},
+      selBtn: null, signSelection: () => {},
+      pop: null,
+      closePop: () => {},
+      kbPanel: false, toggleKb: () => {},
+      kbItems: [],
+      toolsOn: false,
       pinDown: e => {
         if (e.button && e.button !== 0) return;
         e.preventDefault();
@@ -443,7 +412,7 @@ class Component extends DCLogic {
       },
       savannaShot: ((window.LH_CONFIG && window.LH_CONFIG.HOST) || location.origin || '') + '/demo/v3-design/img/savanna-proof.webp',
       docsHref: ((window.LH_CONFIG && window.LH_CONFIG.HOST) || location.origin || '') + '/api/docs',
-      signerOn: s.signer,
+      signerOn: false,
       sw: phone ? { right: '0', left: '0', bottom: '0', width: 'auto', radius: '18px 18px 0 0', vidW: '34%' } : { right: '16px', left: 'auto', bottom: '16px', width: '400px', radius: '18px', vidW: '150px' },
       loading: s.status === 'loading', curGloss: s.status !== 'loading' && cur && cur.chips[s.chipIdx] ? cur.chips[s.chipIdx].label : '',
       chips, sentLabel: s.selSign ? t.signSel : t.sentence + ' ' + sentNo + ' ' + t.of + ' ' + totalSents,

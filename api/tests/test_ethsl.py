@@ -125,8 +125,12 @@ def test_sign_routes(data_root, monkeypatch):
         assert segments[0]["source"] == "memory" and segments[0]["src"].endswith("A01.mp4")
         assert segments[1]["source"] == "auto" and segments[1]["playlist"]
         assert segments[2]["source"] == "none"
-        review = client.post("/api/v1/sign/review", json={"text_am": "ፋይሉን አስቀምጡ።", "gloss": "SAVE FILE", "verdict": "approve", "note": "ok"})
-        assert review.status_code == 200 and review.json()["verdict"] == "approve"
+        review = client.post("/api/v1/sign/review", json={"text_am": "ፋይሉን አስቀምጡ።", "gloss": "SAVE FILE", "verdict": "approve", "note": "ok", "rating": 4})
+        assert review.status_code == 200 and review.json()["verdict"] == "approve" and review.json().get("rating") == 4
+        missing = client.post("/api/v1/sign/review", json={"text_am": "ኮድ", "gloss": "CODE", "verdict": "missing", "rating": 2})
+        assert missing.status_code == 200 and missing.json()["verdict"] == "missing" and missing.json().get("rating") == 2
+        bad_rating = client.post("/api/v1/sign/review", json={"text_am": "ኮድ", "gloss": "CODE", "verdict": "fix", "rating": 9})
+        assert bad_rating.status_code == 400
         examples = client.get("/api/v1/examples").json()
         assert any(row["gloss"] == "SAVE FILE" and row["text_am"] == "ፋይሉን አስቀምጡ።" for row in examples)
         assert client.post("/api/v1/sign/translate", json={"text": "  "}).status_code == 400

@@ -358,7 +358,19 @@ const T = {
   },
 };
 const PAGES = ['home', 'lesson', 'studio', 'platforms'];
-const DEF = { mode: 'both', capSize: 100, capStyle: 'dark', signerSize: 'm', speed: 1, pacing: 'pause', motion: false, saver: false };
+const DEF = { mode: 'both', capSize: 100, capStyle: 'dark', signerSize: 'm', speed: 1, pacing: 'pause', motion: false };
+const SIGN_W = { s: 0.22, m: 0.32, l: 0.45 };
+const CAP_STYLE = {
+  dark: { fg: '#ffffff', bg: '#1f1e1b' },
+  light: { fg: '#1f1e1b', bg: '#ffffff' },
+  yellow: { fg: '#ffe14d', bg: '#000000' },
+};
+function mapSignRate(v) {
+  const n = Number(v);
+  if (n === 0.75 || n === 0.85 || n === 1) return n;
+  if (n === 1.25) return 1;
+  return 1;
+}
 
 class Component extends DCLogic {
   state = { page: 'home', lang: 'en', theme: 'light', ann: true, menu: false, themeMenu: false, settings: false, w: window.innerWidth,
@@ -370,9 +382,25 @@ class Component extends DCLogic {
       const s = JSON.parse(localStorage.getItem('lehulum.v1') || '{}');
       let dp = {}; try { dp = JSON.parse(localStorage.getItem('db-player:prefs') || '{}'); } catch (e) {}
       const prefs = { ...DEF, ...(s.prefs || {}) };
-      if (dp.signLayout === 'sign-first') prefs.signFirst = true;
+      if (dp.signLayout === 'sign-first') prefs.mode = 'sign';
+      else if (dp.signLayout === 'lesson-first' && prefs.mode === 'sign') prefs.mode = 'both';
       if (typeof dp.capSize === 'number') prefs.capSize = dp.capSize;
       if (typeof dp.motion === 'boolean') prefs.motion = dp.motion;
+      if (typeof dp.signRate === 'number') prefs.speed = mapSignRate(dp.signRate);
+      if (dp.signPacing) prefs.pacing = dp.signPacing;
+      if (typeof dp.signW === 'number') {
+        if (dp.signW <= 0.26) prefs.signerSize = 's';
+        else if (dp.signW >= 0.4) prefs.signerSize = 'l';
+        else prefs.signerSize = 'm';
+      }
+      if (dp.captionStyle) {
+        const fg = (dp.captionStyle.fg || '').toLowerCase();
+        const bg = (dp.captionStyle.bg || '').toLowerCase();
+        if (fg.includes('ffe1') || fg.includes('ffe14')) prefs.capStyle = 'yellow';
+        else if (bg === '#ffffff' || bg === '#fff') prefs.capStyle = 'light';
+        else prefs.capStyle = 'dark';
+        if (typeof dp.captionStyle.size === 'number') prefs.capSize = dp.captionStyle.size;
+      }
       this.setState({ lang: s.lang || 'en', theme: s.theme || 'light', prefs, ann: s.ann !== false });
     } catch (e) {}
     this.readHash();
@@ -411,12 +439,23 @@ class Component extends DCLogic {
     try { localStorage.setItem('lehulum.v1', JSON.stringify({ lang: s.lang, theme: s.theme, prefs: s.prefs, ann: s.ann })); } catch (e) {}
     try {
       const B = window.LH_BRIDGE; const cur = B ? B.loadPrefs() : JSON.parse(localStorage.getItem('db-player:prefs') || '{}');
+      const colors = CAP_STYLE[s.prefs.capStyle] || CAP_STYLE.dark;
+      const capSize = s.prefs.capSize || 100;
       const next = Object.assign({}, cur, {
-        captions: s.prefs.captions !== false,
-        sign: s.prefs.sign !== false,
+        captions: s.prefs.mode !== 'sign',
+        sign: s.prefs.mode !== 'captions',
         motion: !!s.prefs.motion,
-        capSize: s.prefs.capSize || 100,
+        capSize,
         signLayout: s.prefs.mode === 'sign' ? 'sign-first' : 'lesson-first',
+        signRate: mapSignRate(s.prefs.speed),
+        signPacing: s.prefs.pacing || 'pause',
+        signWait: (s.prefs.pacing || 'pause') !== 'off',
+        signW: SIGN_W[s.prefs.signerSize] || SIGN_W.m,
+        captionStyle: Object.assign({}, cur.captionStyle || {}, {
+          size: capSize,
+          fg: colors.fg,
+          bg: colors.bg,
+        }),
         highContrast: s.theme === 'hc',
       });
       if (B) B.savePrefs(next); else localStorage.setItem('db-player:prefs', JSON.stringify(next));
@@ -487,7 +526,7 @@ class Component extends DCLogic {
       { label: t.learnHow, ...seg('mode', [['sign', t.signFirst], ['captions', t.capsOnly], ['both', t.both]]) },
       { label: t.capColour, ...seg('capStyle', [['dark', t.capDark], ['light', t.capLight], ['yellow', t.capYellow]]) },
       { label: t.signerSize, ...seg('signerSize', [['s', t.small], ['m', t.medium], ['l', t.large]]) },
-      { label: t.signerSpeed, ...seg('speed', [[0.75, '0.75×'], [1, '1×'], [1.25, '1.25×']]) },
+      { label: t.signerSpeed, ...seg('speed', [[0.75, '0.75×'], [0.85, '0.85×'], [1, '1×']]) },
       { label: t.pacingL, ...seg('pacing', [['smooth', t.smooth], ['pause', t.pauseEnds], ['off', t.off]]) },
       { label: t.uiLang, n: 2, options: [['en', 'English'], ['am', 'አማርኛ']].map(([v, label]) => ({ label, sel: s.lang === v, bg: s.lang === v ? 'var(--ink)' : 'transparent', fg: s.lang === v ? 'var(--bg)' : 'var(--ink)', pick: () => this.setState({ lang: v }) })) },
       { label: t.theme, n: 3, options: themes.map(x => ({ label: x.label, sel: x.sel, bg: x.segBg, fg: x.segFg, pick: x.pick })) },
@@ -542,7 +581,7 @@ class Component extends DCLogic {
       openSettings: () => this.setState({ settings: true, themeMenu: false }), closeSettings: () => this.setState({ settings: false }),
       settingsKey: e => { if (e.key === 'Escape') this.setState({ settings: false }); },
       settings: s.settings, settingRows,
-      switchRows: [sw('motion', t.motion, t.motionHint), sw('saver', t.saver, t.saverHint)],
+      switchRows: [sw('motion', t.motion, t.motionHint)],
       capPct: s.prefs.capSize + '%', setCapSize: e => pref('capSize', +e.target.value),
       capPreviewBg: capColors[0], capPreviewFg: capColors[1], capPreviewSize: Math.round(17 * s.prefs.capSize / 100) + 'px',
       shRight: '0', shTop: phone ? 'auto' : '0', shLeft: phone ? '0' : 'auto', shWidth: phone ? '100%' : 'min(460px,100%)',
