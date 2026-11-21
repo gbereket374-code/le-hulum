@@ -528,7 +528,7 @@ class Component extends DCLogic {
       footCols: [
         { title: t.product, links: PAGES.map(p => ({ label: t[p], href: '#' + p, go: e => { e.preventDefault(); this.go(p); } })) },
         { title: t.developers, links: [
-          { label: t.apiDocs, href: (((window.LH_CONFIG && window.LH_CONFIG.HOST) || location.origin) + '/docs'), go: e => { e.preventDefault(); location.href = ((window.LH_CONFIG && window.LH_CONFIG.HOST) || location.origin) + '/docs'; } },
+          { label: t.apiDocs, href: (((window.LH_CONFIG && window.LH_CONFIG.HOST) || location.origin) + '/api/docs'), go: e => { e.preventDefault(); location.href = ((window.LH_CONFIG && window.LH_CONFIG.HOST) || location.origin) + '/api/docs'; } },
           { label: t.install, href: '#platforms', go: e => { e.preventDefault(); this.go('platforms'); } },
           { label: 'GitHub', href: 'https://github.com/dawit-melese/le-hulum', go: e => { e.preventDefault(); window.open('https://github.com/dawit-melese/le-hulum', '_blank', 'noopener'); } },
         ] },
@@ -536,7 +536,6 @@ class Component extends DCLogic {
           { label: t.about, href: '#home', go: e => { e.preventDefault(); this.go('home'); } },
           { label: t.contact, href: (window.LH_CONFIG && window.LH_CONFIG.CONTACT) || 'mailto:hello@lehulum.org', go: () => {} },
           { label: t.hack, href: 'https://www.alxafrica.com/', go: e => { e.preventDefault(); window.open('https://www.alxafrica.com/', '_blank', 'noopener'); } },
-          { label: t.privacy, href: '#home', go: e => { e.preventDefault(); this.go('home'); } },
         ] },
       ],
       settingsBtn: s.page === 'studio' || phone ? '' : t.settings,

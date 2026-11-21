@@ -24,12 +24,12 @@ const BAD = [
 
 fs.mkdirSync(OUT, { recursive: true });
 
-const browser = await chromium.launch({
+const launchOpts = {
   headless: true,
-  // channel chrome avoided: system HTTP cache served stale .dc.html
-  //
   args: ["--disk-cache-size=1", "--disable-http-cache"],
-});
+};
+if (process.env.LH_PW_CHANNEL) launchOpts.channel = process.env.LH_PW_CHANNEL;
+const browser = await chromium.launch(launchOpts);
 let failed = false;
 const report = [];
 

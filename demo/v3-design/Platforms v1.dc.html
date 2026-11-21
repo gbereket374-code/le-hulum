@@ -212,7 +212,7 @@
               </li>
             </sc-for>
           </ul>
-          <a href="#platforms" style="align-self:flex-start;min-height:52px;padding:0 22px;border-radius:var(--r-pill);background:var(--ink);color:var(--bg);text-decoration:none;font-weight:700;display:flex;align-items:center;gap:8px">{{ t.openDocs }} →</a>
+          <a href="{{ docsHref }}" target="_blank" rel="noopener" style="align-self:flex-start;min-height:52px;padding:0 22px;border-radius:var(--r-pill);background:var(--ink);color:var(--bg);text-decoration:none;font-weight:700;display:flex;align-items:center;gap:8px">{{ t.openDocs }} →</a>
         </div>
       </div>
     </div>
@@ -442,6 +442,7 @@ class Component extends DCLogic {
         else this.start(order[0], 0);
       },
       savannaShot: ((window.LH_CONFIG && window.LH_CONFIG.HOST) || location.origin || '') + '/demo/v3-design/img/savanna-proof.webp',
+      docsHref: ((window.LH_CONFIG && window.LH_CONFIG.HOST) || location.origin || '') + '/api/docs',
       signerOn: s.signer,
       sw: phone ? { right: '0', left: '0', bottom: '0', width: 'auto', radius: '18px 18px 0 0', vidW: '34%' } : { right: '16px', left: 'auto', bottom: '16px', width: '400px', radius: '18px', vidW: '150px' },
       loading: s.status === 'loading', curGloss: s.status !== 'loading' && cur && cur.chips[s.chipIdx] ? cur.chips[s.chipIdx].label : '',
