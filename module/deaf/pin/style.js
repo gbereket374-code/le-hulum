@@ -8,7 +8,7 @@ export const PIN_CSS = `
 :host,:host *{box-sizing:border-box}
 :host :focus-visible{outline:3px solid var(--pin-focus);outline-offset:2px}
 [hidden]{display:none !important}
-.launch,.panel,.pin,.pick,.tray{pointer-events:auto}
+.launch,.panel,.pin,.pick,.tray,.sign{pointer-events:auto}
 .launch{position:fixed;right:1rem;bottom:1rem;left:auto;z-index:6;min-width:48px;min-height:52px;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:.55rem;padding:.35rem 1.1rem .35rem .55rem;border:0;border-radius:var(--r-pill,999px);background:var(--bs-body-color,var(--lh-text,#0e1525));color:var(--bs-body-bg,var(--lh-surface,#fff));font:inherit;font-weight:700;text-align:start;box-shadow:0 10px 28px rgba(0,0,0,.28)}
 .launch::before{content:"";flex:none;width:32px;height:32px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#8ea9ff,#2747d6 55%,#f2b544);box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}
 .launch [lang=am]{line-height:1.7;letter-spacing:0;font-size:.72rem;opacity:.9}
@@ -37,6 +37,12 @@ export const PIN_CSS = `
 .votes button[aria-pressed=true]{box-shadow:inset 0 -3px 0 var(--pin)}
 .box{position:fixed;z-index:3;pointer-events:none;background:color-mix(in srgb,var(--pin) 20%,transparent);box-shadow:inset 0 -3px 0 var(--pin)}
 .none{font-weight:700}
+.area{position:fixed;z-index:2;pointer-events:none;border-radius:var(--r-s,10px);background:color-mix(in srgb,var(--pin) 10%,transparent);box-shadow:0 0 0 2px color-mix(in srgb,var(--pin) 45%,transparent)}
+.sign{position:fixed;z-index:5;width:36px;height:36px;display:grid;place-items:center;padding:0;border:0;border-radius:50%;background:var(--pin);color:var(--pin-ink);box-shadow:0 4px 12px rgba(0,0,0,.28);cursor:pointer}
+.sign svg{width:20px;height:20px;fill:currentColor}
+@media (pointer:coarse){.sign{width:44px;height:44px}}
+.sign-window[aria-busy=true]::after{content:"";position:absolute;left:50%;top:50%;z-index:3;width:36px;height:36px;margin:-18px 0 0 -18px;border:4px solid color-mix(in srgb,var(--pin) 30%,transparent);border-top-color:var(--pin);border-radius:50%;animation:pin-spin .8s linear infinite}
+@keyframes pin-spin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion: reduce){:host *{transition:none !important;animation:none !important}}
-@media (prefers-contrast: more){:host{--pin:#ffff00;--pin-ink:#000;--pin-focus:#00e5ff}.launch,.pin,.tray,.panel,.chip{border:2px solid CanvasText}}
+@media (prefers-contrast: more){:host{--pin:#ffff00;--pin-ink:#000;--pin-focus:#00e5ff}.launch,.pin,.sign,.tray,.panel,.chip{border:2px solid CanvasText}}
 `;

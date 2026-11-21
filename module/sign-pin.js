@@ -1,4 +1,5 @@
 // FR-IN-02, FR-IN-04, FR-IN-06, FR-DEAF-01, FR-DEAF-09: Sign text that is already on the page.
+import { bindSignButton } from "./deaf/pin/button.js";
 import { bindGestures } from "./deaf/pin/gestures.js";
 import { bindPinWindow, savePinSize } from "./deaf/pin/place.js";
 import { blocksIn } from "./deaf/pin/page.js";
@@ -39,6 +40,7 @@ class DbSignPin extends HTMLElement {
       mark: (row) => Object.assign(this.dataset, row),
       outline: (range) => this.outline(range),
       focusLauncher: () => this.refs.launch.focus(),
+      changed: () => this.signButton?.changed(),
       announce: (key, vars) => { this.refs.live.textContent = this.t(key, vars); }
     });
     this.bind();
@@ -47,10 +49,10 @@ class DbSignPin extends HTMLElement {
 
   disconnectedCallback() {
     this.session?.stop(false);
+    this.signButton?.destroy();
     document.removeEventListener("keydown", this.onKey);
     document.removeEventListener("selectionchange", this.onSelect);
     document.removeEventListener("click", this.onClick);
-    document.removeEventListener("pointerover", this.onHover);
     window.removeEventListener("resize", this.onResize);
     window.removeEventListener("scroll", this.onScroll, true);
   }
@@ -82,6 +84,7 @@ class DbSignPin extends HTMLElement {
     if (!this.isConnected) return;
     paintPin(this.refs, this.t);
     this.win.paint();
+    this.signButton.changed();
     if (this.openAtStart()) this.openPanel();
   }
 
@@ -89,6 +92,7 @@ class DbSignPin extends HTMLElement {
     this.refs.launch.addEventListener("click", () => (this.refs.panel.open ? this.closePanel(true) : this.openPanel()));
     this.refs.close.addEventListener("click", () => this.closePanel(true));
     bindGestures(this);
+    this.signButton = bindSignButton(this);
   }
 
   openPanel() {

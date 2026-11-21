@@ -55,6 +55,13 @@ export function blocksIn(scope) {
   });
 }
 
+export function blockAt(node, scope) {
+  const el = node?.nodeType === 1 ? node : node?.parentElement;
+  const block = el?.closest?.(BLOCKS);
+  if (!block || !scope?.contains(block) || skipped(block)) return null;
+  return textMap(block).text.trim() ? block : null;
+}
+
 function caretFrom(x, y) {
   const pos = document.caretPositionFromPoint?.(x, y);
   if (pos?.offsetNode) return { node: pos.offsetNode, offset: pos.offset };

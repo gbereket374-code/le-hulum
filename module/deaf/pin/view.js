@@ -74,10 +74,15 @@ export function buildPin(root) {
   const box = document.createElement("div");
   box.className = "box";
   box.hidden = true;
-  root.append(launch, panel, pin, pick, stage, tray, box);
+  const sign = button("sign");
+  sign.hidden = true;
+  const area = document.createElement("div");
+  area.className = "area";
+  area.hidden = true;
+  root.append(launch, panel, pin, pick, stage, tray, box, area, sign);
   return {
     launch, am, en, panel, title, close, list, pin, tip, pick, stage, tray, live, source, translation,
-    chips, coverage, face, beta, none, request, votes, yes, no, thanks, pause, prev, next, stop, box
+    chips, coverage, face, beta, none, request, votes, yes, no, thanks, pause, prev, next, stop, box, sign, area
   };
 }
 

@@ -26,6 +26,18 @@ export function createSession(refs, hooks) {
 
   function t(key, vars) { return hooks.t(key, vars); }
 
+  function changed() { hooks.changed?.(); }
+
+  function busy(on) {
+    if (on) refs.win.root.setAttribute("aria-busy", "true");
+    else refs.win.root.removeAttribute("aria-busy");
+  }
+
+  function showHeld() {
+    refs.pause.setAttribute("aria-pressed", "true");
+    refs.pause.textContent = t("pin_resume");
+  }
+
   function park(range) {
     rect = range?.getBoundingClientRect?.() || null;
     placeSigner(refs.win, rect);
@@ -48,6 +60,7 @@ export function createSession(refs, hooks) {
   }
 
   function show(result, sentence, mine) {
+    busy(false);
     refs.win.show("");
     refs.tray.hidden = false;
     park(sentence.range);
@@ -68,8 +81,16 @@ export function createSession(refs, hooks) {
     });
     if (focusOnce) { focusOnce = false; refs.pause.focus(); }
     const clips = (result.playlist || []).filter((item) => item.src);
-    if (result.layer === "none" || !clips.length) later(mine, advance);
-    else playback.play(result.playlist, () => { if (mine === token && !held) advance(); });
+    const go = () => {
+      if (result.layer === "none" || !clips.length) later(mine, advance);
+      else playback.play(result.playlist, () => { if (mine === token && !held) advance(); });
+    };
+    if (!held) { go(); return; }
+    showHeld();
+    waiting = () => {
+      waiting = null;
+      if (mine === token && !held) go();
+    };
   }
 
   async function step() {
@@ -81,6 +102,9 @@ export function createSession(refs, hooks) {
     current = queue.current();
     if (!current) { stop(false); return; }
     const sentence = current.item;
+    busy(true);
+    refs.win.show("");
+    changed();
     if (current.block !== announced) {
       announced = current.block;
       refs.live.textContent = t("pin_block", {
@@ -129,7 +153,25 @@ export function createSession(refs, hooks) {
     refs.tray.hidden = true;
     current = null;
     announced = -1;
+    busy(false);
+    changed();
     if (focus) hooks.focusLauncher();
+  }
+
+  function halt() {
+    token += 1;
+    held = false;
+    waiting = null;
+    clearTimeout(timer);
+    playback.pause();
+    clearHighlight();
+    hooks.outline(null);
+    current = null;
+    announced = -1;
+    busy(false);
+    refs.pause.setAttribute("aria-pressed", "false");
+    refs.pause.textContent = t("pin_pause");
+    changed();
   }
 
   refs.pause.addEventListener("click", () => {
@@ -140,13 +182,14 @@ export function createSession(refs, hooks) {
       refs.pause.textContent = t("pin_pause");
       if (waiting) waiting();
       else playback.resume();
+      changed();
       return;
     }
     held = true;
     clearTimeout(timer);
     playback.pause();
-    refs.pause.setAttribute("aria-pressed", "true");
-    refs.pause.textContent = t("pin_resume");
+    showHeld();
+    changed();
   });
   refs.prev.addEventListener("click", () => { if (queue.prev()) step(); });
   refs.next.addEventListener("click", () => { if (queue.next(true)) step(); else stop(true); });
@@ -180,6 +223,9 @@ export function createSession(refs, hooks) {
       hooks.announce("signer_speed_value", { value: playback.toggleRate() + "×" });
     },
     stop,
+    halt,
+    status() { return !current ? "idle" : held ? "paused" : "playing"; },
+    range() { return current?.item?.range || null; },
     playWord(item) {
       const mine = token;
       playback.play([item], () => { if (mine === token) step(); });
