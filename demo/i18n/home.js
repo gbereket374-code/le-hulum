@@ -5,8 +5,8 @@
 export const T = {
   en: {
     eyebrow: 'Ethiopian Sign Language for every online lesson',
-    head1: 'Ear to the deaf.', head2: 'Eye for the blind.',
-    altTag: 'ለመስማት ለተሳናቸው ጆሮ፣ ለማየት ለተሳናቸው ዓይን።',
+    head1: 'Your language. Your world.', head2: 'Your right.',
+    altTag: 'ቋንቋችሁ። ዓለማችሁ። መብታችሁ።',
     pitch: 'Ethiopian Sign Language for any online lesson, with one line of code.',
     cta1: 'Watch a signed lesson', cta2: 'Add it to your platform',
     realBadge: 'Real interpreter', pause: 'Pause', play: 'Play',
@@ -52,8 +52,8 @@ export const T = {
   },
   am: {
     eyebrow: 'የኢትዮጵያ ምልክት ቋንቋ ለእያንዳንዱ የኦንላይን ትምህርት',
-    head1: 'ለመስማት ለተሳናቸው ጆሮ፣', head2: 'ለማየት ለተሳናቸው ዓይን።',
-    altTag: 'Ear to the deaf. Eye for the blind.',
+    head1: 'ቋንቋችሁ። ዓለማችሁ።', head2: 'መብታችሁ።',
+    altTag: 'Your language. Your world. Your right.',
     pitch: 'ለማንኛውም የኦንላይን ትምህርት የኢትዮጵያ ምልክት ቋንቋ፣ በአንድ መስመር ኮድ።',
     cta1: 'በምልክት የተተረጎመ ትምህርት ይመልከቱ', cta2: 'ወደ መድረክዎ ያክሉት',
     realBadge: 'እውነተኛ አስተርጓሚ', pause: 'ቆም', play: 'አጫውት',

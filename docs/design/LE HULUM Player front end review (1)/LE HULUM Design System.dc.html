@@ -128,7 +128,7 @@ class Component extends DCLogic {
     const names = { light:'Light', dark:'Dark', hcLight:'High contrast light', hcDark:'High contrast dark' };
     const colors = Object.keys(ROLES).map(k => { const hex = T[k], p = PAIR[k], ph = p[0] === '#' ? p : T[p]; const r = cr(hex, ph); const need = ['bd','fc','ln'].includes(k) ? 3 : 4.5;
       return { name: k, role: ROLES[k], hex, ratio: `${r.toFixed(1)}:1 ${k === 'ln' ? '· decorative' : r >= 7 ? 'AAA' : r >= need ? 'AA' : '—'}`, sw: `height:88px;background:${hex};display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--ln)`, sample: `font-weight:700;font-size:20px;color:${ph}` }; });
-    const type = [['Display · 80/1.02 · 800', 'font-family:var(--fd);font-size:56px;line-height:1.02;font-weight:800;letter-spacing:-0.02em', 'Ear to the deaf.', 'ለሁሉም'],
+    const type = [['Display · 80/1.02 · 800', 'font-family:var(--fd);font-size:56px;line-height:1.02;font-weight:800;letter-spacing:-0.02em', 'Your language. Your world.', 'ለሁሉም'],
       ['H1 · 40/1.1 · 800', 'font-family:var(--fd);font-size:40px;line-height:1.1;font-weight:800;letter-spacing:-0.02em', 'Translate to sign', 'ወደ ምልክት ቋንቋ'],
       ['H2 · 28/1.15 · 800', 'font-family:var(--fd);font-size:28px;line-height:1.15;font-weight:800', 'Sentence timeline', 'የዓረፍተ ነገሮች ቅደም ተከተል'],
       ['Body L · 19/1.6', 'font-size:19px;line-height:1.6', 'Plants use sunlight, water and air.', 'ዕፅዋት የፀሐይ ብርሃንን ይጠቀማሉ።'],

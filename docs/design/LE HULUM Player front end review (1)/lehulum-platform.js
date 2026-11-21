@@ -19,7 +19,7 @@ window.LHP = (function () {
     notifications:['Notifications','ማሳወቂያዎች'], dismiss:['Dismiss','አሰናብት'],
 
     heroKicker:['Ethiopian Sign Language, on demand','የኢትዮጵያ ምልክት ቋንቋ፣ በፈለጉት ጊዜ'],
-    heroTitle:['Ear to the deaf. Eye for the blind.','ለመስማት ለተሳናቸው ጆሮ፣ ለማየት ለተሳናቸው ዓይን።'],
+    heroTitle:['Your language. Your world. Your right.','ቋንቋችሁ። ዓለማችሁ። መብታችሁ።'],
     heroSub:['LE HULUM turns Amharic and English text and video into Ethiopian Sign Language, with synced captions and audio description. Built with Deaf signers for schools, media and public services.','ለሁሉም የአማርኛ እና የእንግሊዝኛ ጽሑፍና ቪዲዮን ወደ ኢትዮጵያ ምልክት ቋንቋ ይተረጉማል፤ ከተመሳሰለ ግርጌ ጽሑፍ እና የድምፅ መግለጫ ጋር። ከመስማት የተሳናቸው ምልክት ሰጪዎች ጋር ለትምህርት ቤቶች፣ ለሚዲያ እና ለሕዝብ አገልግሎቶች የተሠራ።'],
     ctaStart:['Start translating free','በነጻ መተርጎም ይጀምሩ'], ctaDemo:['See plans','እቅዶችን ይመልከቱ'],
     trust1:['Co-designed with Deaf signers','ከመስማት የተሳናቸው ጋር የተነደፈ'], trust2:['WCAG 2.2 AA','WCAG 2.2 AA'], trust3:['Works on 3G','በ3G ይሠራል'],

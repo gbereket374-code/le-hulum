@@ -1,7 +1,7 @@
 # LE HULUM (ለሁሉም) — "for all"
 
-**Ear to the deaf. Eye for the blind.**  
-ለመስማት ለተሳናቸው ጆሮ፣ ለማየት ለተሳናቸው ዓይን።
+**Your language. Your world. Your right.**  
+ቋንቋችሁ። ዓለማችሁ። መብታችሁ።
 
 LE HULUM is an accessibility layer for online learning. One script tag turns any lesson on any website into a lesson that Deaf, blind, low-vision and hard-of-hearing learners, and learners on slow 3G connections, can actually use, with Ethiopian Sign Language (EthSL) first.
 

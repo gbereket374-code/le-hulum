@@ -25,7 +25,7 @@ function applyI18n() {
   if (altEl) {
     if (lang() === 'am') {
       altEl.lang = 'en';
-      altEl.textContent = tr.altTag; // altTag in am = "Ear to the deaf..."
+      altEl.textContent = tr.altTag; // altTag in am = "Your language. Your world..."
     } else {
       altEl.lang = 'am';
       altEl.textContent = tr.altTag; // altTag in en = "ለመስማት…"
