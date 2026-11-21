@@ -14,7 +14,7 @@
 
       <div style="position:relative;order:{{ videoOrder }};min-height:{{ videoMinH }};aspect-ratio:{{ videoAspect }};background:repeating-linear-gradient(135deg,#141e3a 0 2px,#1a2648 2px 16px);overflow:hidden">
         <div aria-hidden="true" style="position:absolute;inset:0;background:{{ videoFade }};pointer-events:none;z-index:1"></div>
-        <video id="lh-hero-vid" src="{{ heroSrc }}" poster="{{ heroPoster }}" muted playsinline loop preload="metadata" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#0a1124" aria-label="{{ t.realBadge }}"></video>
+        <video id="lh-hero-vid" src="{{ heroSrc }}" poster="{{ heroPoster }}" muted playsinline preload="metadata" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#0a1124" aria-label="{{ t.realBadge }}"></video>
         <sc-if value="{{ showPosterPlay }}" hint-placeholder-val="{{ false }}">
           <button onClick="{{ togglePlay }}" aria-label="{{ t.play }}" style="position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);z-index:3;width:72px;height:72px;border:0;border-radius:50%;background:#8ea9ff;color:#0b1430;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 10px rgba(142,169,255,.22)"><span aria-hidden="true" style="width:0;height:0;border-left:18px solid currentColor;border-top:11px solid transparent;border-bottom:11px solid transparent;margin-left:4px"></span></button>
         </sc-if>
@@ -454,8 +454,8 @@ const T = {
   },
 };
 const CHIPS = [['What is a variable?', 'en'], ['ተለዋዋጭ ምንድን ነው?', 'am'], ['ኮዱ ካልሰራ፣ ስህተቱን አረጋግጡ።', 'am']];
-const HERO_FROM = 0.05;
-const HERO_TO = 7.3;
+const HERO_FROM = 1.0;
+const HERO_TO = 3.0;
 const TYPE = { sign: ['var(--accent)', 'var(--accent-ink)', '1.5px solid transparent', '●'], finger: ['transparent', 'var(--ink)', '1.5px dashed var(--ink)', 'ABC'], point: ['transparent', 'var(--ink)', '1.5px solid var(--ink)', '→'], none: ['var(--warn-soft)', 'var(--warn-ink)', '1.5px dashed var(--warn-ink)', '∅'], pause: ['transparent', 'var(--ink-2)', '1px solid var(--line-strong)', '‖'] };
 
 class Component extends DCLogic {
@@ -495,16 +495,27 @@ class Component extends DCLogic {
       if (!v.getAttribute('src')) v.src = DATA + '/memory/A01.mp4';
       v.muted = true;
       v.playsInline = true;
-      v.loop = true;
-      const trim = () => { try { if (v.currentTime < HERO_FROM) v.currentTime = HERO_FROM; } catch (e) {} };
-      v.addEventListener('loadeddata', trim);
-      v.addEventListener('play', () => this.setState({ playing: true }));
-      v.addEventListener('pause', () => this.setState({ playing: false }));
-      v.addEventListener('timeupdate', () => {
-        if (v.currentTime >= HERO_TO - 0.05) {
-          try { v.currentTime = HERO_FROM; } catch (e) {}
-        }
+      v.loop = false;
+      const toStart = () => { try { v.currentTime = HERO_FROM; } catch (e) {} };
+      const hold = (time) => { if (!v.paused && time >= HERO_TO) toStart(); };
+      // Reduced motion keeps the poster: a seek would replace it, so wait for Play.
+      if (!reduced) {
+        if (v.readyState >= 1) toStart();
+        else v.addEventListener('loadedmetadata', toStart, { once: true });
+      }
+      v.addEventListener('play', () => {
+        if (v.currentTime < HERO_FROM || v.currentTime >= HERO_TO) toStart();
+        this.setState({ playing: true });
       });
+      v.addEventListener('pause', () => this.setState({ playing: false }));
+      v.addEventListener('timeupdate', () => hold(v.currentTime));
+      if (v.requestVideoFrameCallback) {
+        const onFrame = (now, meta) => {
+          hold(meta.mediaTime);
+          v.requestVideoFrameCallback(onFrame);
+        };
+        v.requestVideoFrameCallback(onFrame);
+      }
       if (!reduced) {
         v.play().then(() => this.setState({ playing: true })).catch(() => this.setState({ playing: false }));
       } else {
